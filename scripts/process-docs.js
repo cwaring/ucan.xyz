@@ -7,21 +7,82 @@ import { PROCESSING_CONFIG } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
-const specDir = path.resolve(rootDir, '..', 'spec');
 const docsDir = path.resolve(rootDir, 'src', 'content', 'docs');
-
-// Spec processing order (based on dependencies)
-const SPEC_ORDER = PROCESSING_CONFIG.specOrder;
 
 // Link mapping for cross-references
 const LINK_MAPPINGS = PROCESSING_CONFIG.linkMappings;
 
-async function processMarkdown(content, specName) {
+async function fetchFromGitHub(url) {
+  try {
+    console.log(`  📥 Fetching from GitHub: ${url}`);
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const content = await response.text();
+    console.log(`  ✅ Successfully fetched (${content.length} bytes)`);
+    return content;
+  } catch (error) {
+    console.error(`  ❌ Failed to fetch from ${url}:`, error.message);
+    throw error;
+  }
+}
+
+async function processSpecs() {
+  console.log('📋 Processing specifications from GitHub...');
+  
+  // Create directory structure
+  for (const spec of PROCESSING_CONFIG.specs) {
+    const specDir = path.join(docsDir, spec.name);
+    await fs.mkdir(specDir, { recursive: true });
+  }
+  
+  // Create guides directory
+  await fs.mkdir(path.join(docsDir, 'guides'), { recursive: true });
+  
+  // Process each spec
+  for (const spec of PROCESSING_CONFIG.specs) {
+    const targetPath = path.join(docsDir, spec.name, 'index.md');
+    
+    try {
+      console.log(`\n🔄 Processing ${spec.name}...`);
+      
+      // Fetch and process main README.md
+      const content = await fetchFromGitHub(spec.githubUrl);
+      const processedContent = await processMarkdown(content, spec.title);
+      await fs.writeFile(targetPath, processedContent);
+      
+      // Process IPLD schema if available
+      if (spec.schemaUrl) {
+        try {
+          const schemaContent = await fetchFromGitHub(spec.schemaUrl);
+          const processedSchema = await processIPLDSchema(schemaContent, spec.title);
+          
+          const schemaTargetPath = path.join(docsDir, spec.name, 'schema.md');
+          await fs.writeFile(schemaTargetPath, processedSchema);
+          console.log(`  � Created schema documentation for ${spec.name}`);
+        } catch (error) {
+          console.warn(`  ⚠️  Could not fetch schema for ${spec.name}:`, error.message);
+        }
+      }
+      
+      console.log(`  ✅ Processed ${spec.name}`);
+    } catch (error) {
+      console.error(`  ❌ Error processing ${spec.name}:`, error.message);
+    }
+  }
+  
+  return PROCESSING_CONFIG.specs;
+}
+
+async function processMarkdown(content, specName = '') {
   let processed = content;
   
   // Extract title from first h1
   const titleMatch = content.match(/^# (.+)$/m);
-  const title = titleMatch ? titleMatch[1] : `UCAN ${specName}`;
+  const title = titleMatch ? titleMatch[1] : specName;
   
   // Extract version number from various patterns
   let version = null;
@@ -140,10 +201,8 @@ description: "${description}"`;
   return frontmatter + processed;
 }
 
-async function processIPLDSchema(schemaPath, specName) {
-  try {
-    const schemaContent = await fs.readFile(schemaPath, 'utf-8');
-    const frontmatter = `---
+async function processIPLDSchema(schemaContent, specName) {
+  const frontmatter = `---
 title: "${specName} Schema"
 description: "IPLD schema definition for ${specName}"
 ---
@@ -156,22 +215,7 @@ This document contains the IPLD schema definition for ${specName}.
 ${schemaContent}
 \`\`\`
 `;
-    return frontmatter;
-  } catch (error) {
-    console.warn(`No schema file found for ${specName}:`, error.message);
-    return null;
-  }
-}
-
-async function createDirectoryStructure() {
-  // Create main directories
-  for (const spec of SPEC_ORDER) {
-    const specDir = path.join(docsDir, spec.name);
-    await fs.mkdir(specDir, { recursive: true });
-  }
-  
-  // Create guides directory
-  await fs.mkdir(path.join(docsDir, 'guides'), { recursive: true });
+  return frontmatter;
 }
 
 async function clearDocsDirectory() {
@@ -205,41 +249,6 @@ async function clearDocsDirectory() {
   } catch (error) {
     console.error('❌ Error clearing docs directory:', error.message);
     throw error;
-  }
-}
-
-async function processSpecs() {
-  console.log('Creating directory structure...');
-  await createDirectoryStructure();
-  
-  console.log('Processing specifications...');
-  
-  for (const spec of SPEC_ORDER) {
-    const sourcePath = path.join(specDir, spec.source, 'README.md');
-    const targetPath = path.join(docsDir, spec.name, 'index.md');
-    
-    try {
-      console.log(`Processing ${spec.name}...`);
-      
-      // Process main README.md
-      const content = await fs.readFile(sourcePath, 'utf-8');
-      const processedContent = await processMarkdown(content, spec.title);
-      await fs.writeFile(targetPath, processedContent);
-      
-      // Process IPLD schema if it exists
-      const schemaPath = path.join(specDir, spec.source, `${spec.source}.ipldsch`);
-      const schemaContent = await processIPLDSchema(schemaPath, spec.title);
-      
-      if (schemaContent) {
-        const schemaTargetPath = path.join(docsDir, spec.name, 'schema.md');
-        await fs.writeFile(schemaTargetPath, schemaContent);
-        console.log(`  - Created schema documentation for ${spec.name}`);
-      }
-      
-      console.log(`  ✓ Processed ${spec.name}`);
-    } catch (error) {
-      console.error(`Error processing ${spec.name}:`, error.message);
-    }
   }
 }
 
@@ -785,7 +794,7 @@ async function main() {
     console.log('🚀 Starting UCAN documentation processing...');
     
     await clearDocsDirectory();
-    await processSpecs();
+    const specs = await processSpecs();
     await generateSidebarConfig();
     await updateLandingPage();
     await createGuides();

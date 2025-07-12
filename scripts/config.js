@@ -1,15 +1,50 @@
 // Configuration for the UCAN documentation processing script
 
 export const PROCESSING_CONFIG = {
-  // Spec processing order (based on dependencies)
-  specOrder: [
-    { name: 'specification', source: 'spec', title: 'UCAN Specification' },
-    { name: 'delegation', source: 'delegation', title: 'UCAN Delegation' },
-    { name: 'invocation', source: 'invocation', title: 'UCAN Invocation' },
-    { name: 'promise', source: 'promise', title: 'UCAN Promise' },
-    { name: 'revocation', source: 'revocation', title: 'UCAN Revocation' },
-    { name: 'varsig', source: 'varsig', title: 'Variable Signature (Varsig)' },
-    { name: 'container', source: 'container', title: 'UCAN Container' },
+  // Specifications to process - fetched directly from GitHub
+  specs: [
+    { 
+      name: 'specification', 
+      title: 'UCAN Specification',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/spec/main/README.md',
+      schemaUrl: null // No schema file for main spec
+    },
+    { 
+      name: 'delegation', 
+      title: 'UCAN Delegation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/delegation/main/README.md',
+      schemaUrl: 'https://raw.githubusercontent.com/ucan-wg/delegation/main/delegation.ipldsch'
+    },
+    { 
+      name: 'invocation', 
+      title: 'UCAN Invocation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/invocation/main/README.md',
+      schemaUrl: 'https://raw.githubusercontent.com/ucan-wg/invocation/main/invocation.ipldsch'
+    },
+    { 
+      name: 'promise', 
+      title: 'UCAN Promise',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/promise/main/README.md',
+      schemaUrl: null // No schema file yet
+    },
+    { 
+      name: 'revocation', 
+      title: 'UCAN Revocation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/revocation/main/README.md',
+      schemaUrl: 'https://raw.githubusercontent.com/ucan-wg/revocation/main/revocation.ipldsch'
+    },
+    { 
+      name: 'varsig', 
+      title: 'Variable Signature',
+      githubUrl: 'https://raw.githubusercontent.com/ChainAgnostic/varsig/main/README.md',
+      schemaUrl: null // No schema file
+    },
+    { 
+      name: 'container', 
+      title: 'UCAN Container',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/container/main/Readme.md',
+      schemaUrl: null // No schema file
+    },
   ],
 
   // Link mappings for cross-references
@@ -70,7 +105,7 @@ export const PROCESSING_CONFIG = {
         ],
       },
       {
-        label: 'Utilities',
+        label: 'References',
         items: [
           { label: 'Variable Signature', slug: 'varsig' },
         ],
