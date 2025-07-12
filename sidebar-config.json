@@ -53,6 +53,35 @@
           "slug": "varsig"
         }
       ]
+    },
+    {
+      "label": "Libraries",
+      "items": [
+        {
+          "label": "TypeScript",
+          "slug": "libraries/typescript"
+        },
+        {
+          "label": "Rust",
+          "slug": "libraries/rust"
+        },
+        {
+          "label": "Go",
+          "slug": "libraries/go"
+        },
+        {
+          "label": "Haskell",
+          "slug": "libraries/haskell"
+        },
+        {
+          "label": "UCAN IPLD (JS)",
+          "slug": "libraries/js-dag-ucan"
+        },
+        {
+          "label": "UCAN-RPC (JS)",
+          "slug": "libraries/ucanto"
+        }
+      ]
     }
   ]
 }

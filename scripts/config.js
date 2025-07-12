@@ -45,6 +45,43 @@ export const PROCESSING_CONFIG = {
       githubUrl: 'https://raw.githubusercontent.com/ucan-wg/container/main/Readme.md',
       schemaUrl: null // No schema file
     },
+    // Libraries
+    { 
+      name: 'libraries/typescript', 
+      title: 'TypeScript Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/ts-ucan/main/README.md',
+      schemaUrl: null
+    },
+    { 
+      name: 'libraries/rust', 
+      title: 'Rust Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/rs-ucan/main/README.md',
+      schemaUrl: null
+    },
+    { 
+      name: 'libraries/go', 
+      title: 'Go Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/go-ucan/main/Readme.md',
+      schemaUrl: null
+    },
+    { 
+      name: 'libraries/haskell', 
+      title: 'Haskell Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/fission-suite/fission/main/hs-ucan/README.md',
+      schemaUrl: null
+    },
+    { 
+      name: 'libraries/js-dag-ucan', 
+      title: 'UCAN IPLD (JavaScript)',
+      githubUrl: 'https://raw.githubusercontent.com/ipld/js-dag-ucan/main/README.md',
+      schemaUrl: null
+    },
+    { 
+      name: 'libraries/ucanto', 
+      title: 'UCAN-RPC (JavaScript)',
+      githubUrl: 'https://raw.githubusercontent.com/storacha/ucanto/main/Readme.md',
+      schemaUrl: null
+    },
   ],
 
   // Link mappings for cross-references
@@ -108,6 +145,17 @@ export const PROCESSING_CONFIG = {
         label: 'References',
         items: [
           { label: 'Variable Signature', slug: 'varsig' },
+        ],
+      },
+      {
+        label: 'Libraries',
+        items: [
+          { label: 'TypeScript', slug: 'libraries/typescript' },
+          { label: 'Rust', slug: 'libraries/rust' },
+          { label: 'Go', slug: 'libraries/go' },
+          { label: 'Haskell', slug: 'libraries/haskell' },
+          { label: 'UCAN IPLD (JS)', slug: 'libraries/js-dag-ucan' },
+          { label: 'UCAN-RPC (JS)', slug: 'libraries/ucanto' },
         ],
       },
     ],
