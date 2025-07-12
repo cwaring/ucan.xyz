@@ -1,0 +1,58 @@
+{
+  "sidebar": [
+    {
+      "label": "Overview",
+      "items": [
+        {
+          "label": "Introduction",
+          "slug": "specification"
+        }
+      ]
+    },
+    {
+      "label": "Guides",
+      "autogenerate": {
+        "directory": "guides"
+      }
+    },
+    {
+      "label": "Core Specifications",
+      "items": [
+        {
+          "label": "Delegation",
+          "slug": "delegation"
+        },
+        {
+          "label": "Invocation",
+          "slug": "invocation"
+        },
+        {
+          "label": "Promise",
+          "slug": "promise"
+        },
+        {
+          "label": "Revocation",
+          "slug": "revocation"
+        }
+      ]
+    },
+    {
+      "label": "Transport",
+      "items": [
+        {
+          "label": "Container Format",
+          "slug": "container"
+        }
+      ]
+    },
+    {
+      "label": "Utilities",
+      "items": [
+        {
+          "label": "Variable Signature",
+          "slug": "varsig"
+        }
+      ]
+    }
+  ]
+}

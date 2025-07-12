@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
-    "lint:fix": "pnpm lint --fix"
+    "lint:fix": "pnpm lint --fix",
+    "process-docs": "node scripts/process-docs.js",
+    "verify-links": "node scripts/verify-links.js"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.34.4",
