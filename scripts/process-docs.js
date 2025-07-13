@@ -359,8 +359,6 @@ title: "Getting Started with UCAN"
 description: "A beginner's guide to understanding and using User Controlled Authorization Network (UCAN)"
 ---
 
-# Getting Started with UCAN
-
 This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.
 
 ## What is UCAN?
@@ -523,8 +521,6 @@ A: Yes! UCAN is designed to wrap existing authorization systems while adding its
 title: "UCAN Examples"
 description: "Practical examples of using UCAN for authorization and delegation"
 ---
-
-# UCAN Examples
 
 This page contains practical examples of using UCAN for various authorization scenarios.
 
