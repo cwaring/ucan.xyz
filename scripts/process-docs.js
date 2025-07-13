@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PROCESSING_CONFIG } from './config.js';
+import { PROCESSING_CONFIG, convertToEditUrl } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -51,7 +51,7 @@ async function processSpecs() {
       
       // Fetch and process main README.md
       const content = await fetchFromGitHub(spec.githubUrl);
-      const processedContent = await processMarkdown(content, spec.title);
+      const processedContent = await processMarkdown(content, spec.title, spec.githubUrl);
       await fs.writeFile(targetPath, processedContent);
       
       // Process IPLD schema if available
@@ -77,7 +77,7 @@ async function processSpecs() {
   return PROCESSING_CONFIG.specs;
 }
 
-async function processMarkdown(content, specName = '') {
+async function processMarkdown(content, specName = '', githubUrl = null) {
   let processed = content;
   
   // Extract title from first h1
@@ -138,13 +138,19 @@ async function processMarkdown(content, specName = '') {
     abstractMatch[1].replace(/\n/g, ' ').replace(/\[([^\]]+)\]/g, '$1').trim().substring(0, PROCESSING_CONFIG.options.maxDescriptionLength) + '...' :
     `Documentation for ${cleanTitle}`;
   
-  // Add frontmatter with optional version
+  // Add frontmatter with optional version and editUrl
   let frontmatter = `---
 title: "${cleanTitle}"
 description: "${description}"`;
   
   if (version) {
     frontmatter += `\nversion: "${version}"`;
+  }
+  
+  // Add editUrl if githubUrl is provided
+  const editUrl = convertToEditUrl(githubUrl);
+  if (editUrl) {
+    frontmatter += `\neditUrl: "${editUrl}"`;
   }
   
   frontmatter += `\n---\n\n`;

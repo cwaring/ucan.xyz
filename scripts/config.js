@@ -1,5 +1,26 @@
 // Configuration for the UCAN documentation processing script
 
+/**
+ * Convert a GitHub raw URL to an edit URL
+ * @param {string} rawUrl - The raw GitHub URL
+ * @returns {string} - The corresponding edit URL
+ */
+export function convertToEditUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    return null;
+  }
+  
+  // Match pattern: https://raw.githubusercontent.com/owner/repo/branch/path
+  const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.+)$/);
+  
+  if (match) {
+    const [, owner, repo, branch, filepath] = match;
+    return `https://github.com/${owner}/${repo}/blob/${branch}/${filepath}`;
+  }
+  
+  return null;
+}
+
 export const PROCESSING_CONFIG = {
   // Specifications to process - fetched directly from GitHub
   specs: [
