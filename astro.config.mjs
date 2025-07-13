@@ -12,9 +12,22 @@ export default defineConfig({
 			autoTheme: true
 		}),
 		starlight({
-			title: 'UCAN Specification',
+			title: 'UCAN',
+			description: 'User-Controlled Authorization Network (UCAN) is a trustless, secure, local-first, user-originated, distributed authorization scheme. This document provides a high-level overview of the UCAN specification and its components.',
+			favicon: '/favicon.ico',
+			head: [
+				// Add favicon fallback for Safari.
+				{
+					tag: 'link',
+					attrs: {
+						rel: 'icon',
+						href: '/favicon.ico',
+						sizes: '32x32',
+					},
+				},
+			],
 			social: [
-				{ icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg/spec' }
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg' }
 			],
 			sidebar: sidebarConfig.sidebar,
 		}),
