@@ -33,14 +33,9 @@
         {
           "label": "Revocation",
           "slug": "revocation"
-        }
-      ]
-    },
-    {
-      "label": "Transport",
-      "items": [
+        },
         {
-          "label": "Container Format",
+          "label": "Container",
           "slug": "container"
         }
       ]
@@ -58,7 +53,7 @@
       "label": "Libraries",
       "items": [
         {
-          "label": "TypeScript",
+          "label": "JS",
           "slug": "libraries/typescript"
         },
         {
@@ -68,18 +63,6 @@
         {
           "label": "Go",
           "slug": "libraries/go"
-        },
-        {
-          "label": "Haskell",
-          "slug": "libraries/haskell"
-        },
-        {
-          "label": "UCAN IPLD (JS)",
-          "slug": "libraries/js-dag-ucan"
-        },
-        {
-          "label": "UCAN-RPC (JS)",
-          "slug": "libraries/ucanto"
         }
       ]
     }
