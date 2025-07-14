@@ -69,7 +69,7 @@ export const PROCESSING_CONFIG = {
     // Libraries
     { 
       name: 'libraries/typescript', 
-      title: 'TypeScript Implementation',
+      title: 'JS Implementation',
       githubUrl: 'https://raw.githubusercontent.com/ucan-wg/ts-ucan/main/README.md',
       schemaUrl: null
     },
@@ -83,24 +83,6 @@ export const PROCESSING_CONFIG = {
       name: 'libraries/go', 
       title: 'Go Implementation',
       githubUrl: 'https://raw.githubusercontent.com/ucan-wg/go-ucan/main/Readme.md',
-      schemaUrl: null
-    },
-    { 
-      name: 'libraries/haskell', 
-      title: 'Haskell Implementation',
-      githubUrl: 'https://raw.githubusercontent.com/fission-suite/fission/main/hs-ucan/README.md',
-      schemaUrl: null
-    },
-    { 
-      name: 'libraries/js-dag-ucan', 
-      title: 'UCAN IPLD (JavaScript)',
-      githubUrl: 'https://raw.githubusercontent.com/ipld/js-dag-ucan/main/README.md',
-      schemaUrl: null
-    },
-    { 
-      name: 'libraries/ucanto', 
-      title: 'UCAN-RPC (JavaScript)',
-      githubUrl: 'https://raw.githubusercontent.com/storacha/ucanto/main/Readme.md',
       schemaUrl: null
     },
   ],
@@ -154,13 +136,9 @@ export const PROCESSING_CONFIG = {
           { label: 'Invocation', slug: 'invocation' },
           { label: 'Promise', slug: 'promise' },
           { label: 'Revocation', slug: 'revocation' },
-        ],
-      },
-      {
-        label: 'Transport',
-        items: [
-          { label: 'Container Format', slug: 'container' },
-        ],
+          { label: 'Container', slug: 'container' }, 
+        ]
+        ,
       },
       {
         label: 'References',
@@ -171,12 +149,9 @@ export const PROCESSING_CONFIG = {
       {
         label: 'Libraries',
         items: [
-          { label: 'TypeScript', slug: 'libraries/typescript' },
+          { label: 'JS', slug: 'libraries/typescript' },
           { label: 'Rust', slug: 'libraries/rust' },
           { label: 'Go', slug: 'libraries/go' },
-          { label: 'Haskell', slug: 'libraries/haskell' },
-          { label: 'UCAN IPLD (JS)', slug: 'libraries/js-dag-ucan' },
-          { label: 'UCAN-RPC (JS)', slug: 'libraries/ucanto' },
         ],
       },
     ],
