@@ -10,13 +10,13 @@ importers:
     dependencies:
       '@astrojs/starlight':
         specifier: ^0.34.5
-        version: 0.34.5(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
+        version: 0.34.5(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
       astro:
-        specifier: ^5.11.0
-        version: 5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
+        specifier: ^5.11.1
+        version: 5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
       astro-mermaid:
         specifier: ^1.0.4
-        version: 1.0.4(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))(mermaid@11.8.1)
+        version: 1.0.4(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))(mermaid@11.8.1)
       mermaid:
         specifier: ^11.8.1
         version: 11.8.1
@@ -137,9 +137,6 @@ packages:
   '@ctrl/tinycolor@4.1.0':
     resolution: {integrity: sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==}
     engines: {node: '>=14'}
-
-  '@emnapi/runtime@1.4.3':
-    resolution: {integrity: sha512-pBPWdu6MLKROBX05wSNKcNb++m5Er+KQ9QkB+WVM+pW2Kx9hoSrVTnu3BdkI5eBLZoKu/J6mW/B6i6bJB2ytXQ==}
 
   '@emnapi/runtime@1.4.4':
     resolution: {integrity: sha512-hHyapA4A3gPaDCNfiqyZUStTMqIkKRshqPIuDOXv1hcBnD4U3l8cP0T1HMCfGRxQ6V64TGCcoswChANyOAwbQg==}
@@ -1152,8 +1149,8 @@ packages:
       astro: ^4.0.0 || ^5.0.0
       mermaid: ^10.0.0 || ^11.0.0
 
-  astro@5.11.0:
-    resolution: {integrity: sha512-MEICntERthUxJPSSDsDiZuwiCMrsaYy3fnDhp4c6ScUfldCB8RBnB/myYdpTFXpwYBy6SgVsHQ1H4MuuA7ro/Q==}
+  astro@5.11.1:
+    resolution: {integrity: sha512-32dpUh0tXSV/FR2q2/z7LOA6IXl7RqET9J51IA0pPSSi3exhRP3EOSQGjBq10DzXT7VrvplDrFqwfiiWBS8oYA==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -3626,12 +3623,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.3.0(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))':
+  '@astrojs/mdx@4.3.0(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.2
       '@mdx-js/mdx': 3.1.0(acorn@8.15.0)
       acorn: 8.15.0
-      astro: 5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
+      astro: 5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -3655,17 +3652,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.20
 
-  '@astrojs/starlight@0.34.5(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))':
+  '@astrojs/starlight@0.34.5(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.2
-      '@astrojs/mdx': 4.3.0(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
+      '@astrojs/mdx': 4.3.0(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
       '@astrojs/sitemap': 3.4.0
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
-      astro-expressive-code: 0.41.2(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
+      astro: 5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
+      astro-expressive-code: 0.41.2(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -3749,11 +3746,6 @@ snapshots:
   '@chevrotain/utils@11.0.3': {}
 
   '@ctrl/tinycolor@4.1.0': {}
-
-  '@emnapi/runtime@1.4.3':
-    dependencies:
-      tslib: 2.8.1
-    optional: true
 
   '@emnapi/runtime@1.4.4':
     dependencies:
@@ -4074,7 +4066,7 @@ snapshots:
 
   '@img/sharp-wasm32@0.33.5':
     dependencies:
-      '@emnapi/runtime': 1.4.3
+      '@emnapi/runtime': 1.4.4
     optional: true
 
   '@img/sharp-wasm32@0.34.3':
@@ -4726,19 +4718,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  astro-expressive-code@0.41.2(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)):
+  astro-expressive-code@0.41.2(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)):
     dependencies:
-      astro: 5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
+      astro: 5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
       rehype-expressive-code: 0.41.2
 
-  astro-mermaid@1.0.4(astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))(mermaid@11.8.1):
+  astro-mermaid@1.0.4(astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0))(mermaid@11.8.1):
     dependencies:
-      astro: 5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
+      astro: 5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0)
       mdast-util-to-string: 4.0.0
       mermaid: 11.8.1
       unist-util-visit: 5.0.0
 
-  astro@5.11.0(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0):
+  astro@5.11.1(@types/node@22.15.21)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.8.0):
     dependencies:
       '@astrojs/compiler': 2.12.2
       '@astrojs/internal-helpers': 0.6.1
@@ -4747,7 +4739,7 @@ snapshots:
       '@capsizecss/unpack': 2.4.0
       '@oslojs/encoding': 1.1.0
       '@rollup/pluginutils': 5.1.4(rollup@4.41.0)
-      acorn: 8.14.1
+      acorn: 8.15.0
       aria-query: 5.3.2
       axobject-query: 4.1.0
       boxen: 8.0.1
