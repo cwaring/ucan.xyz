@@ -15,7 +15,7 @@
     "verify-links": "node scripts/verify-links.js"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.34.5",
+    "@astrojs/starlight": "^0.34.6",
     "astro": "^5.11.1",
     "astro-mermaid": "^1.0.4",
     "mermaid": "^11.8.1",
