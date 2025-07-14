@@ -1,6 +1,9 @@
 ---
 title: "Getting Started with UCAN"
 description: "A beginner's guide to understanding and using User Controlled Authorization Network (UCAN)"
+sidebar:
+  label: "Getting Started"
+  order: 1
 ---
 
 This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.

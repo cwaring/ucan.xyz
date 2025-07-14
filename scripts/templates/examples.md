@@ -1,6 +1,9 @@
 ---
 title: "UCAN Examples"
 description: "Practical examples of using UCAN for authorization and delegation"
+sidebar:
+  label: "Examples"
+  order: 2
 ---
 
 This page contains practical examples of using UCAN for various authorization scenarios.
