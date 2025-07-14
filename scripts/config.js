@@ -130,7 +130,7 @@ export const PROCESSING_CONFIG = {
         autogenerate: { directory: 'guides' },
       },
       {
-        label: 'Core Specifications',
+        label: 'Sub Specifications',
         items: [
           { label: 'Delegation', slug: 'delegation' },
           { label: 'Invocation', slug: 'invocation' },
