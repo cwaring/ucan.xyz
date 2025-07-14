@@ -8,6 +8,8 @@ sidebar:
 
 This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.
 
+> **Note**: The code examples in this guide use the TypeScript UCAN library (`@ucans/ucans`) for illustration. Different UCAN libraries may have different APIs and be at different specification versions. Always refer to your chosen library's documentation for exact API details.
+
 ## What is UCAN?
 
 UCAN is a **trustless**, **secure**, **local-first**, **user-originated** authorization scheme that lets you:
@@ -84,52 +86,82 @@ How to revoke capabilities after they've been issued.
 
 ### 1. File System Access
 ```javascript
-// Alice delegates read access to Bob
-const delegation = await alice.delegate({
-  audience: bob.did(),
+// Using TypeScript UCAN library
+import * as ucans from "@ucans/ucans"
+
+// Alice creates a keypair and delegates read access to Bob
+const aliceKeypair = await ucans.EdKeypair.create()
+const bobDid = "did:key:z6Mk3..." // Bob's DID
+
+const delegation = await ucans.build({
+  audience: bobDid,
+  issuer: aliceKeypair,
   capabilities: [{
-    resource: "file://alice/documents/report.pdf",
-    ability: "read"
+    with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
+    can: { namespace: "fs", segments: ["read"] }
   }],
-  expiration: Date.now() + 3600000 // 1 hour
+  lifetimeInSeconds: 3600 // 1 hour
 });
 
-// Bob can now read the file
-const result = await bob.invoke({
-  capability: delegation,
-  resource: "file://alice/documents/report.pdf",
-  ability: "read"
+// Encode the UCAN for transport
+const token = ucans.encode(delegation);
+
+// Bob can verify and use the delegation
+const result = await ucans.verify(token, {
+  audience: bobDid,
+  isRevoked: async ucan => false,
+  requiredCapabilities: [{
+    capability: {
+      with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
+      can: { namespace: "fs", segments: ["read"] }
+    },
+    rootIssuer: aliceKeypair.did()
+  }]
 });
 ```
 
 ### 2. API Access
 ```javascript
-// Service owner delegates API access
-const apiAccess = await service.delegate({
-  audience: user.did(),
+// Service owner delegates API access using TypeScript library
+import * as ucans from "@ucans/ucans"
+
+const serviceKeypair = await ucans.EdKeypair.create()
+const userDid = "did:key:z6MkUser..." // User's DID
+
+const apiAccess = await ucans.build({
+  audience: userDid,
+  issuer: serviceKeypair,
   capabilities: [{
-    resource: "api://service.com/users",
-    ability: "read",
-    conditions: {
-      rateLimit: 100, // requests per hour
-      scope: "public" // only public data
-    }
+    with: { scheme: "https", hierPart: "//service.com/api/users" },
+    can: { namespace: "api", segments: ["read"] }
+  }],
+  lifetimeInSeconds: 86400, // 24 hours
+  facts: [{
+    rateLimit: { requests_per_hour: 100 },
+    scope: "public" // only public data
   }]
 });
 ```
 
 ### 3. Collaborative Documents
 ```javascript
-// Alice shares edit access to document
-const editAccess = await alice.delegate({
-  audience: collaborator.did(),
+// Alice shares edit access to document using TypeScript library
+import * as ucans from "@ucans/ucans"
+
+const aliceKeypair = await ucans.EdKeypair.create()
+const collaboratorDid = "did:key:z6MkCollab..." // Collaborator's DID
+
+const editAccess = await ucans.build({
+  audience: collaboratorDid,
+  issuer: aliceKeypair,
   capabilities: [{
-    resource: "doc://alice/project-proposal",
-    ability: "edit",
-    conditions: {
-      sections: ["comments", "suggestions"], // limited sections
-      expiry: "2024-01-01T00:00:00Z"
-    }
+    with: { scheme: "doc", hierPart: "//alice/project-proposal" },
+    can: { namespace: "doc", segments: ["edit"] }
+  }],
+  lifetimeInSeconds: 604800, // 1 week
+  facts: [{
+    allowedSections: ["comments", "suggestions"], // limited sections
+    expiry: "2025-12-31T23:59:59Z" // explicit expiry date
   }]
 });
 ```
@@ -137,8 +169,8 @@ const editAccess = await alice.delegate({
 ## Next Steps
 
 1. **Read the specifications** - Start with the [UCAN Delegation](/delegation/) spec
-2. **Explore examples** - Check out the code samples in each specification
-3. **Try an implementation** - Look for UCAN libraries in your preferred language
+2. **Explore examples** - Check out the detailed [Examples](/guides/examples/) page
+3. **Try an implementation** - Choose a UCAN library for your preferred language
 4. **Join the community** - Participate in discussions on the UCAN GitHub
 
 ## Additional Resources
@@ -146,6 +178,9 @@ const editAccess = await alice.delegate({
 - [UCAN Website](https://ucan.xyz)
 - [GitHub Repository](https://github.com/ucan-wg/spec)
 - [Implementation Libraries](https://github.com/ucan-wg)
+  - **JavaScript/TypeScript**: [`@ucans/ucans`](https://github.com/ucan-wg/ts-ucan) (NPM: `ucans`)
+  - **Rust**: [`ucan`](https://github.com/ucan-wg/rs-ucan)
+  - **Go**: [`go-ucan`](https://github.com/ucan-wg/go-ucan)
 
 ## Questions?
 
