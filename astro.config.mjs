@@ -2,10 +2,12 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
+import starlightLLMsTxt from 'starlight-llms-txt';
 import sidebarConfig from './sidebar-config.json';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://ucan.xyz',
 	integrations: [
 		mermaid({
 			theme: 'default',
@@ -30,6 +32,9 @@ export default defineConfig({
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg' }
 			],
 			sidebar: sidebarConfig.sidebar,
+			plugins: [
+				starlightLLMsTxt()
+			],
 		}),
 	],
 });
