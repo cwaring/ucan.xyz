@@ -15,6 +15,10 @@ export default defineConfig({
 		}),
 		starlight({
 			title: 'UCAN',
+			logo: {
+				light: '/src/assets/logo.png',
+				dark: '/src/assets/logo.png',
+			},
 			description: 'User-Controlled Authorization Network (UCAN) is a trustless, secure, local-first, user-originated, distributed authorization scheme. This document provides a high-level overview of the UCAN specification and its components.',
 			favicon: '/favicon.ico',
 			head: [
