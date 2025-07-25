@@ -68,9 +68,9 @@ export const PROCESSING_CONFIG = {
     },
     // Libraries
     { 
-      name: 'libraries/typescript', 
-      title: 'JS Implementation',
-      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/ts-ucan/main/README.md',
+      name: 'libraries/javascript', 
+      title: 'JavaScript Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/hugomrdias/iso-repo/refs/heads/main/packages/iso-ucan/readme.md',
       schemaUrl: null
     },
     { 
@@ -149,7 +149,7 @@ export const PROCESSING_CONFIG = {
       {
         label: 'Libraries',
         items: [
-          { label: 'JS', slug: 'libraries/typescript' },
+          { label: 'JavaScript', slug: 'libraries/javascript' },
           { label: 'Rust', slug: 'libraries/rust' },
           { label: 'Go', slug: 'libraries/go' },
         ],

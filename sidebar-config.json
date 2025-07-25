@@ -53,8 +53,8 @@
       "label": "Libraries",
       "items": [
         {
-          "label": "JS",
-          "slug": "libraries/typescript"
+          "label": "JavaScript",
+          "slug": "libraries/javascript"
         },
         {
           "label": "Rust",
