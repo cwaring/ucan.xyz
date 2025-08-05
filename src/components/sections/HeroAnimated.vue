@@ -11,7 +11,7 @@
       class="text-muted-foreground text-lg lg:text-xl max-w-xl lg:max-w-2xl inline-block text-center animate-fade-in-up"
       style="animation-delay: 0.15s"
     >
-      UCAN is a trustless, secure, local-first authorization protocol that puts users in control of their permissions — no central authority required.
+      UCAN is a trustless, secure, local-first authorization network that puts users in control of their permissions — no central authority required.
     </p>
 
     <div
@@ -37,24 +37,13 @@
       class="hidden md:flex justify-center relative overflow-hidden pt-24 lg:pt-32 animate-fade-in-up"
       style="animation-delay: 0.3s"
     >
-      <div class="w-[75%] h-[400px] bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg shadow-2xl flex items-center justify-center">
-        <div class="text-center">
-          <div class="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-16 h-16 text-primary" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
-              <path d="M2 17L12 22L22 17"/>
-              <path d="M2 12L12 17L22 12"/>
-            </svg>
-          </div>
-          <p class="text-muted-foreground">Decentralized Authorization Network</p>
-        </div>
-      </div>
+      <UcanIllustration />
 
       <div
         class="hidden lg:block absolute top-42 left-[5%] w-11/12 h-[300px] bg-primary rounded-full filter blur-[72px] opacity-40 -z-10 animate-fade-in"
         style="animation-delay: 0.8s"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-background to-80% z-30" />
+      <div class="absolute inset-0 z-30" />
     </div>
   </div>
 </template>
@@ -62,6 +51,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { buttonVariants } from "../ui/button"
+import UcanIllustration from "../UcanIllustration.vue"
 
 // Props
 const specUrl = '/specification/'
