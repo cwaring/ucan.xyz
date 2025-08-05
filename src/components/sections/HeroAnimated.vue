@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex-col items-start md:items-center justify-center flex pt-20 lg:pt-32 relative z-10 px-4 md:px-0">
+  <div class="w-full flex-col items-center justify-center flex pt-20 lg:pt-32 relative z-10 px-4 md:px-0">
     <h1
       class="text-5xl lg:text-[4.25rem] font-bold tracking-tight mb-4 mt-12 lg:mt-0 text-center animate-fade-in-up"
       style="animation-delay: 0s"
@@ -8,14 +8,14 @@
     </h1>
     
     <p
-      class="text-muted-foreground text-lg lg:text-xl max-w-xl lg:max-w-2xl inline-block text-center animate-fade-in-up"
+      class="text-muted-foreground text-lg lg:text-xl max-w-xl lg:max-w-2xl text-center animate-fade-in-up"
       style="animation-delay: 0.15s"
     >
       UCAN is a trustless, secure, local-first authorization network that puts users in control of their permissions — no central authority required.
     </p>
 
     <div
-      class="flex flex-col sm:flex-row items-center gap-4 mt-10 animate-fade-in-up"
+      class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 animate-fade-in-up"
       style="animation-delay: 0.2s"
     >
       <a :href="specUrl" :class="buttonClasses.primary">

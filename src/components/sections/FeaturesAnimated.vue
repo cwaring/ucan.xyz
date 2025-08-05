@@ -2,7 +2,7 @@
   <section class="w-full mt-48 md:mt-20 lg:mt-0 py-12 md:pb-24 lg:pb-32 xl:pb-48 bg-card/30 z-50">
     <div class="relative">
       <div class="container space-y-12 px-4 md:px-6 relative max-w-7xl mx-auto">
-        <div class="flex flex-col items-start md:items-center justify-center space-y-4 text-left md:text-center animate-fade-in-up">
+        <div class="flex flex-col items-center justify-center space-y-4 text-center animate-fade-in-up">
           <div class="space-y-2 mb-8">
             <div class="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
             <h2 class="text-3xl font-bold tracking-tight sm:text-5xl">Why Choose UCAN</h2>
