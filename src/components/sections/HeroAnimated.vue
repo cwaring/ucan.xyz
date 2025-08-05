@@ -11,7 +11,7 @@
       class="text-muted-foreground text-lg lg:text-xl max-w-xl lg:max-w-2xl inline-block text-center animate-fade-in-up"
       style="animation-delay: 0.15s"
     >
-      UCAN is a trustless, secure, local-first authorization network that puts users in control of their permissions — no central authority required.
+      UCAN is a trustless, secure, local-first authorization protocol that puts users in control of their permissions — no central authority required.
     </p>
 
     <div
