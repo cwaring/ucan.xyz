@@ -1,0 +1,129 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import { Icon } from "astro-icon/components"
+import { buttonVariants } from "../components/ui/button"
+---
+
+<BaseLayout title="Getting Started with UCAN" description="Learn how to implement UCAN authorization in your applications.">
+    <div class="min-h-screen pt-32 px-8 max-w-4xl mx-auto mb-24">
+        <h1 class="text-4xl font-bold mb-8">Getting Started with UCAN</h1>
+
+        <p class="mb-6 text-muted-foreground text-lg">
+            This guide will walk you through the basics of implementing UCAN (User Controlled Authorization Network) in your applications.
+        </p>
+        
+        <div class="bg-card/50 rounded-lg p-6 mb-8 border border-border/50">
+            <h2 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                <Icon name="lucide:lightbulb" class="w-5 h-5 text-primary" />
+                What is UCAN?
+            </h2>
+            <p class="text-muted-foreground">
+                UCAN is a capability-based authorization system that enables users to delegate permissions without requiring a centralized authority. It's built on cryptographic tokens and allows for decentralized, secure, and fine-grained access control.
+            </p>
+        </div>
+
+        <h2 class="text-3xl font-semibold mt-10 mb-6">Core Concepts</h2>
+        
+        <div class="grid gap-6 mb-8">
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Icon name="lucide:key" class="w-5 h-5 text-primary" />
+                    Capabilities
+                </h3>
+                <p class="text-muted-foreground">
+                    UCANs represent capabilities - specific permissions that can be delegated to others. Each capability defines what actions can be performed on which resources.
+                </p>
+            </div>
+
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Icon name="lucide:users" class="w-5 h-5 text-primary" />
+                    Delegation
+                </h3>
+                <p class="text-muted-foreground">
+                    Users can delegate their capabilities to others, creating a chain of authorization. Delegations can include constraints like time limits and reduced scope.
+                </p>
+            </div>
+
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Icon name="lucide:play" class="w-5 h-5 text-primary" />
+                    Invocation
+                </h3>
+                <p class="text-muted-foreground">
+                    To use a capability, you create an invocation that references the UCAN token and specifies the exact action you want to perform.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-semibold mt-10 mb-6">Quick Start</h2>
+        
+        <div class="space-y-6">
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-bold">1</span>
+                    Choose Your Library
+                </h3>
+                <p class="text-muted-foreground mb-4">
+                    Select a UCAN library for your programming language. We have official implementations for JavaScript, Rust, and Go.
+                </p>
+                <a href="/libraries/" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                    <Icon class="size-4 mr-2" name="lucide:code" />
+                    Browse Libraries
+                </a>
+            </div>
+
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-bold">2</span>
+                    Create Your First UCAN
+                </h3>
+                <p class="text-muted-foreground mb-4">
+                    Start by creating a root UCAN that grants yourself the capabilities you need for your application.
+                </p>
+                <div class="bg-background/50 rounded p-4 text-sm font-mono">
+                    <div class="text-muted-foreground">// Example in JavaScript</div>
+                    <div><span class="text-green-400">import</span> * <span class="text-green-400">as</span> ucans <span class="text-green-400">from</span> <span class="text-orange-400">"@ucans/ucans"</span></div>
+                    <br/>
+                    <div><span class="text-green-400">const</span> delegation = <span class="text-green-400">await</span> ucans.build({"{"}</div>
+                    <div>&nbsp;&nbsp;audience: targetDID,</div>
+                    <div>&nbsp;&nbsp;issuer: myKeypair,</div>
+                    <div>&nbsp;&nbsp;capabilities: [/* your capabilities */],</div>
+                    <div>&nbsp;&nbsp;lifetimeInSeconds: <span class="text-blue-400">3600</span></div>
+                    <div>{"})"}</div>
+                </div>
+            </div>
+
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-bold">3</span>
+                    Delegate and Invoke
+                </h3>
+                <p class="text-muted-foreground mb-4">
+                    Delegate capabilities to other users and create invocations to exercise those capabilities.
+                </p>
+                <a href="/guides/examples/" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                    <Icon class="size-4 mr-2" name="lucide:book" />
+                    See Examples
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-12 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-8 text-center">
+            <h2 class="text-2xl font-semibold mb-4">Ready to Dive Deeper?</h2>
+            <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Explore the full specification to understand all of UCAN's capabilities and implementation details.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="/specification/" class={buttonVariants({ variant: "default" })}>
+                    <Icon class="size-4 mr-2" name="lucide:book" />
+                    Read Specification
+                </a>
+                <a href="/guides/examples/" class={buttonVariants({ variant: "outline" })}>
+                    <Icon class="size-4 mr-2" name="lucide:code" />
+                    View Examples
+                </a>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
