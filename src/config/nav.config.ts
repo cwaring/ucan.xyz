@@ -14,9 +14,9 @@ export const communityLinks = [
 ];
 
 export const mainNavLinks = [
-  { href: "/inspector/", label: "Inspector" },
   { href: "/getting-started/", label: "Getting Started" },
   { href: "/libraries/", label: "Libraries" },
+  { href: "/inspector/", label: "Inspector" },
   { href: "/about/", label: "About" },
 ];
 
