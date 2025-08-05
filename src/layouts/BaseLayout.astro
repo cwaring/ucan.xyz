@@ -1,0 +1,27 @@
+---
+import BaseHead from "../components/BaseHead.astro"
+import Footer from "../components/Footer.astro"
+import Header from "../components/Header.astro"
+import "../styles/globals.css"
+
+const SITE_TITLE = "UCAN - User Controlled Authorization Network"
+const SITE_DESCRIPTION = "A trustless, secure, local-first, user-originated, distributed authorization scheme."
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead title={title ?? SITE_TITLE} description={description ?? SITE_DESCRIPTION} />
+  </head>
+  <body class="dark">
+    <div class="min-h-screen bg-background text-foreground">
+      <Header title="UCAN" />
+      <div>
+        <slot />
+      </div>
+      <Footer />
+    </div>
+  </body>
+</html>
