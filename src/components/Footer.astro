@@ -4,7 +4,7 @@ import { documentationLinks, communityLinks } from "../config/nav.config";
 ---
 
 <footer class="p-6 md:pt-12 pb-8 w-full bg-background/60 backdrop-blur-lg z-50 border-t border-border/40">
-    <div class="container max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+    <div class="container max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm">
       <div class="col-span-1 sm:col-span-2 md:col-span-2 flex flex-col gap-2">
         <a href="/" class="flex items-start gap-2">
             <img src="/favicon.ico" alt="UCAN Logo" class="w-6 h-6" />
@@ -27,12 +27,16 @@ import { documentationLinks, communityLinks } from "../config/nav.config";
         ))}
       </div>
     </div>
-    <div class="container max-w-7xl mt-10 text-sm text-muted-foreground flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="container max-w-7xl mx-auto mt-10 text-sm text-muted-foreground flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="text-center sm:text-left">© 2025 UCAN Working Group. All rights reserved.</div>
         <div class="flex items-center gap-4">
             <a href="https://github.com/ucan-wg" aria-label="GitHub" class="hover:text-foreground transition-colors">
               <Icon name="lucide:github" class="w-5 h-5" />
               <span class="sr-only">UCAN GitHub</span>
+            </a>
+            <a href="https://discord.gg/zSfgeHhKxA" aria-label="Discord" class="hover:text-foreground transition-colors">
+              <Icon name="lucide:message-circle" class="w-5 h-5" />
+              <span class="sr-only">UCAN Discord</span>
             </a>
         </div>
     </div>
