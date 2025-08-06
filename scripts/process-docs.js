@@ -263,17 +263,7 @@ async function generateSidebarConfig() {
   console.log('Sidebar configuration will be automatically loaded by astro.config.mjs');
 }
 
-async function updateLandingPage() {
-  console.log('Updating landing page...');
-  
-  // Read template file
-  const landingPageTemplate = path.join(__dirname, 'templates', 'landing-page.mdx');
-  const landingPageContent = await fs.readFile(landingPageTemplate, 'utf8');
-
-  const landingPagePath = path.join(docsDir, 'index.mdx');
-  await fs.writeFile(landingPagePath, landingPageContent);
-  console.log('Updated landing page');
-}
+// Landing page update function removed as it's no longer needed
 
 async function createGuides() {
   console.log('Creating guides...');
@@ -303,7 +293,6 @@ async function main() {
     await clearDocsDirectory();
     await processSpecs();
     await generateSidebarConfig();
-    await updateLandingPage();
     await createGuides();
     
     console.log('\n✅ Documentation processing complete!');
