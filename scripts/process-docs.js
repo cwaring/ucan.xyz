@@ -9,6 +9,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const docsDir = path.resolve(rootDir, 'src', 'content', 'docs');
 
+/**
+ * Sanitizes text by removing Markdown formatting and HTML tags
+ * @param {string} text - Text to be sanitized
+ * @return {string} - Sanitized text
+ */
+function sanitizeText(text) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep link text
+    .replace(/\[\!\[.*?\]\(.*?\)\]\(.*?\)/g, '') // Remove image links
+    .replace(/\!\[.*?\]\(.*?\)/g, '') // Remove images
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
+    .replace(/\`(.*?)\`/g, '$1') // Remove inline code markdown
+    .replace(/\<.*?\>/g, '') // Remove HTML tags
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+
 async function fetchFromGitHub(url) {
   try {
     console.log(`  📥 Fetching from GitHub: ${url}`);
@@ -121,17 +139,8 @@ async function processMarkdown(content, specName = '', githubUrl = null) {
     cleanTitle = title.replace(/\s*\b(?:v|version\s+)?\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z0-9.-]+)?\b/i, '').trim();
   }
   
-  // Sanitize markdown and HTML from title
-  cleanTitle = cleanTitle
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep link text
-    .replace(/\[\!\[.*?\]\(.*?\)\]\(.*?\)/g, '') // Remove image links
-    .replace(/\!\[.*?\]\(.*?\)/g, '') // Remove images
-    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
-    .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
-    .replace(/\`(.*?)\`/g, '$1') // Remove inline code markdown
-    .replace(/\<.*?\>/g, '') // Remove HTML tags
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .trim();
+  // Sanitize markdown and HTML from title using the generic sanitizeText function
+  cleanTitle = sanitizeText(cleanTitle);
   
   // Remove title from body if configured to do so
   if (PROCESSING_CONFIG.options.removeTitleFromBody && titleMatch) {
@@ -141,9 +150,13 @@ async function processMarkdown(content, specName = '', githubUrl = null) {
   
   // Extract description from abstract or first paragraph
   const abstractMatch = processed.match(/# Abstract\s*\n\s*(.+?)(?=\n#|\n\n|$)/s);
-  const description = abstractMatch ? 
-    abstractMatch[1].replace(/\n/g, ' ').replace(/\[([^\]]+)\]/g, '$1').trim().substring(0, PROCESSING_CONFIG.options.maxDescriptionLength) + '...' :
+  const rawDescription = abstractMatch ? 
+    abstractMatch[1].replace(/\n/g, ' ') : 
     `Documentation for ${cleanTitle}`;
+    
+  // Sanitize the description and truncate if needed
+  const description = sanitizeText(rawDescription).substring(0, PROCESSING_CONFIG.options.maxDescriptionLength) + 
+    (abstractMatch ? '...' : '');
   
   // Add frontmatter with optional version and editUrl
   let frontmatter = `---
