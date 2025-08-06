@@ -1,98 +1,23 @@
 /**
  * Shared link processing utilities for UCAN documentation
- * Used by both simple-review.js and process-docs.js to ensure consistency
+ * Used by both content-review.js and process-docs.js to ensure consistency
  * 
  * This is the SINGLE SOURCE OF TRUTH for all UCAN link processing
  */
 
 /**
- * Master link definitions - the single source of truth for all UCAN links
- * This object defines all possible link targets and their variations
+ * Simple URL mapping for converting GitHub URLs to local documentation links
+ * This handles exact URL replacements and automatically preserves hash fragments
  */
-export const UCAN_LINKS = {
-  // Main UCAN specifications
-  'UCAN': {
-    url: '/specification/',
-    variants: ['UCAN', 'ucan', 'high level spec']
-  },
-  'UCAN Delegation': {
-    url: '/delegation/',
-    variants: ['UCAN Delegation', 'delegation']
-  },
-  'UCAN Invocation': {
-    url: '/invocation/',
-    variants: ['UCAN Invocation', 'invocation']
-  },
-  'UCAN Envelope': {
-    url: '/specification/#ucan-envelope',
-    variants: ['UCAN Envelope', 'envelope']
-  },
-  'UCAN Promise': {
-    url: '/promise/',
-    variants: ['UCAN Promise', 'promise']
-  },
-  'UCAN Revocation': {
-    url: '/revocation/',
-    variants: ['UCAN Revocation', 'revocation']
-  },
-  'UCAN Container': {
-    url: '/container/',
-    variants: ['UCAN Container', 'container']
-  },
-  'Variable Signature': {
-    url: '/varsig/',
-    variants: ['Variable Signature', 'varsig']
-  }
-};
-
-/**
- * Generate all link fix patterns from the master UCAN_LINKS definition
- */
-function generateLinkFixes() {
-  const fixes = [];
-  
-  Object.entries(UCAN_LINKS).forEach(([name, { url, variants }]) => {
-    variants.forEach(variant => {
-      // Direct link fixes: [variant](other-url) → [variant](correct-url)
-      fixes.push({
-        name: variant,
-        pattern: new RegExp(`\\[${escapeRegex(variant)}\\]\\((?!${escapeRegex(url)})([^)]*)\\)`, 'g'),
-        replacement: `[${variant}](${url})`
-      });
-      
-      // Reference-style link fixes: [variant][ref] → [variant](correct-url)
-      fixes.push({
-        name: `${variant} reference`,
-        pattern: new RegExp(`\\[${escapeRegex(variant)}\\]\\[\\w+\\]`, 'g'),
-        replacement: `[${variant}](${url})`
-      });
-      
-      // Standalone link fixes: [variant] → [variant](correct-url) (but not [variant]: or [variant]( )
-      fixes.push({
-        name: `${variant} standalone`,
-        pattern: new RegExp(`\\[${escapeRegex(variant)}\\](?!\\(|\\[|:)`, 'g'),
-        replacement: `[${variant}](${url})`
-      });
-    });
-  });
-  
-  return fixes;
-}
-
-/**
- * Generate reference link mappings from the master UCAN_LINKS definition
- */
-function generateReferenceMappings() {
-  const mappings = {};
-  
-  Object.entries(UCAN_LINKS).forEach(([name, { url, variants }]) => {
-    variants.forEach(variant => {
-      mappings[`[${variant}]`] = url;
-    });
-  });
-  
-  return mappings;
-}
+export const URL_MAPPINGS = [
+  { from: 'https://github.com/ucan-wg/spec', to: '/specification/' },
+  { from: 'https://github.com/ucan-wg/delegation', to: '/delegation/' },
+  { from: 'https://github.com/ucan-wg/invocation', to: '/invocation/' },
+  { from: 'https://github.com/ucan-wg/promise', to: '/promise/' },
+  { from: 'https://github.com/ucan-wg/revocation', to: '/revocation/' },
+  { from: 'https://github.com/ucan-wg/container', to: '/container/' },
+  { from: 'https://github.com/ChainAgnostic/varsig', to: '/varsig/' }
+];
 
 /**
  * Escape special regex characters
@@ -101,39 +26,37 @@ function escapeRegex(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-// Generate all patterns from the master definition
-const ALL_LINK_FIXES = generateLinkFixes();
-const REFERENCE_MAPPINGS = generateReferenceMappings();
-
 /**
- * Apply all UCAN link standardization fixes to content
+ * Apply URL transformations to content
  * @param {string} content - The content to process
- * @returns {string} - The processed content with standardized links
+ * @returns {string} - The processed content with transformed URLs
  */
 export function standardizeUCANLinks(content) {
   let processed = content;
   
-  // Apply all generated link fixes
-  for (const { pattern, replacement } of ALL_LINK_FIXES) {
-    processed = processed.replace(pattern, replacement);
-  }
-  
-  return processed;
-}
-
-/**
- * Apply reference link mappings to content (for process-docs.js)
- * @param {string} content - The content to process
- * @returns {string} - The processed content with mapped reference links
- */
-export function applyReferenceLinkMappings(content) {
-  let processed = content;
-  
-  // Apply generated reference mappings to reference-style definitions
-  Object.entries(REFERENCE_MAPPINGS).forEach(([pattern, replacement]) => {
-    // Handle reference-style link definitions like [UCAN]: some-url
-    const refPattern = new RegExp(`\\${pattern}:\\s*[^\\s]+`, 'g');
-    processed = processed.replace(refPattern, `${pattern}: ${replacement}`);
+  // Apply each URL mapping
+  URL_MAPPINGS.forEach(({ from, to }) => {
+    // Create variants with and without trailing slash (only for base URLs without hashes)
+    const fromVariants = [
+      from,
+      from.endsWith('/') ? from.slice(0, -1) : from + '/'
+    ];
+    
+    fromVariants.forEach(fromUrl => {
+      const escapedUrl = escapeRegex(fromUrl);
+      
+      // Replace in direct links with optional hash: [text](url#hash) -> [text](local-url#hash)
+      const linkPattern = new RegExp(`\\[([^\\]]+)\\]\\(${escapedUrl}(#[^)]*)?\\)`, 'g');
+      processed = processed.replace(linkPattern, (match, linkText, hash) => {
+        return `[${linkText}](${to}${hash || ''})`;
+      });
+      
+      // Replace in reference definitions with optional hash: [label]: url#hash -> [label]: local-url#hash
+      const refPattern = new RegExp(`^(\\s*\\[[^\\]]+\\]):\\s*${escapedUrl}(#[^\\s]*)?\\s*$`, 'gm');
+      processed = processed.replace(refPattern, (match, label, hash) => {
+        return `${label}: ${to}${hash || ''}`;
+      });
+    });
   });
   
   return processed;
@@ -147,13 +70,31 @@ export function applyReferenceLinkMappings(content) {
 export function checkUCANLinkIssues(content) {
   const issues = [];
   
-  // Check for each type of inconsistent link using generated fixes
-  for (const { name, pattern } of ALL_LINK_FIXES) {
-    const matches = content.match(pattern);
-    if (matches) {
-      issues.push(`${matches.length} inconsistent ${name} links`);
-    }
-  }
+  // Check for GitHub URLs that should be converted to local links
+  URL_MAPPINGS.forEach(({ from, to }) => {
+    const variants = [
+      from,
+      from.endsWith('/') ? from.slice(0, -1) : from + '/'
+    ];
+    
+    variants.forEach(url => {
+      const escapedUrl = escapeRegex(url);
+      
+      // Check for direct links that need conversion (with optional hash)
+      const linkPattern = new RegExp(`\\[([^\\]]+)\\]\\(${escapedUrl}(#[^)]*)?\\)`, 'g');
+      const linkMatches = content.match(linkPattern);
+      if (linkMatches) {
+        issues.push(`${linkMatches.length} links pointing to ${url} (should be ${to})`);
+      }
+      
+      // Check for reference definitions that need conversion (with optional hash)
+      const refPattern = new RegExp(`^\\s*\\[[^\\]]+\\]:\\s*${escapedUrl}(#[^\\s]*)?\\s*$`, 'gm');
+      const refMatches = content.match(refPattern);
+      if (refMatches) {
+        issues.push(`${refMatches.length} reference definitions pointing to ${url} (should be ${to})`);
+      }
+    });
+  });
   
   return issues;
 }

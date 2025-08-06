@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PROCESSING_CONFIG, convertToEditUrl } from './config.js';
-import { standardizeUCANLinks, applyReferenceLinkMappings } from './link-processing.js';
+import { standardizeUCANLinks } from './link-processing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -178,9 +178,6 @@ description: "${description}"`;
   
   // Process cross-references using shared link processing module
   processed = standardizeUCANLinks(processed);
-  
-  // Apply reference link mappings
-  processed = applyReferenceLinkMappings(processed);
   
   // Process internal section links (convert to anchor links)
   processed = processed.replace(/\[([^\]]+)\]:\s*#([a-zA-Z0-9-]+)/g, '[$1]: #$2');
