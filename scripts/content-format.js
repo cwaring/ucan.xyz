@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const contentDir = path.resolve(rootDir, 'src', 'content');
 
-console.log('🔍 UCAN Documentation Review');
+console.log('🔍 UCAN Content Format');
 console.log('============================\n');
 
 // Find all markdown files in content directory only

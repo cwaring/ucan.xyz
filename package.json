@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "pnpm run process-docs & astro build",
+    "build": "pnpm process-docs & pnpm content-format & astro build",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "process-docs": "node scripts/process-docs.js",
-    "verify-links": "node scripts/verify-links.js"
+    "content-format": "node scripts/content-format.js"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.35.1",

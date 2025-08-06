@@ -1,23 +1,55 @@
 /**
  * Shared link processing utilities for UCAN documentation
- * Used by both content-review.js and process-docs.js to ensure consistency
  * 
- * This is the SINGLE SOURCE OF TRUTH for all UCAN link processing
  */
 
+import { PROCESSING_CONFIG } from './config.js';
+
 /**
- * Simple URL mapping for converting GitHub URLs to local documentation links
- * This handles exact URL replacements and automatically preserves hash fragments
+ * Convert a raw GitHub URL to a repository URL
+ * @param {string} rawUrl - The raw GitHub URL (e.g., https://raw.githubusercontent.com/owner/repo/branch/file)
+ * @returns {string} - The repository URL (e.g., https://github.com/owner/repo)
  */
-export const URL_MAPPINGS = [
-  { from: 'https://github.com/ucan-wg/spec', to: '/specification/' },
-  { from: 'https://github.com/ucan-wg/delegation', to: '/delegation/' },
-  { from: 'https://github.com/ucan-wg/invocation', to: '/invocation/' },
-  { from: 'https://github.com/ucan-wg/promise', to: '/promise/' },
-  { from: 'https://github.com/ucan-wg/revocation', to: '/revocation/' },
-  { from: 'https://github.com/ucan-wg/container', to: '/container/' },
-  { from: 'https://github.com/ChainAgnostic/varsig', to: '/varsig/' }
-];
+function convertRawUrlToRepoUrl(rawUrl) {
+  // Match pattern: https://raw.githubusercontent.com/owner/repo/branch/path
+  const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/[^\/]+\/.+$/);
+  
+  if (match) {
+    const [, owner, repo] = match;
+    return `https://github.com/${owner}/${repo}`;
+  }
+  
+  return null;
+}
+
+/**
+ * Generate URL mappings from PROCESSING_CONFIG specs
+ * @param {Array} specs - Array of spec configurations from PROCESSING_CONFIG
+ * @returns {Array} - Array of URL mappings
+ */
+export function generateUrlMappings(specs) {
+  const mappings = [];
+  
+  specs.forEach(spec => {
+    if (spec.githubUrl) {
+      const repoUrl = convertRawUrlToRepoUrl(spec.githubUrl);
+      if (repoUrl) {
+        mappings.push({
+          from: repoUrl,
+          to: `/${spec.name}/`
+        });
+      }
+    }
+  });
+  
+  return mappings;
+}
+
+/**
+ * URL mappings generated from PROCESSING_CONFIG specs
+ * This is the single source of truth for URL transformations
+ */
+const URL_MAPPINGS = generateUrlMappings(PROCESSING_CONFIG.specs);
 
 /**
  * Escape special regex characters
@@ -29,13 +61,14 @@ function escapeRegex(string) {
 /**
  * Apply URL transformations to content
  * @param {string} content - The content to process
+ * @param {Array} [urlMappings] - Optional custom URL mappings, defaults to URL_MAPPINGS
  * @returns {string} - The processed content with transformed URLs
  */
-export function standardizeUCANLinks(content) {
+export function standardizeUCANLinks(content, urlMappings = URL_MAPPINGS) {
   let processed = content;
   
   // Apply each URL mapping
-  URL_MAPPINGS.forEach(({ from, to }) => {
+  urlMappings.forEach(({ from, to }) => {
     // Create variants with and without trailing slash (only for base URLs without hashes)
     const fromVariants = [
       from,
