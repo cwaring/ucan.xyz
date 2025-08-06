@@ -121,6 +121,18 @@ async function processMarkdown(content, specName = '', githubUrl = null) {
     cleanTitle = title.replace(/\s*\b(?:v|version\s+)?\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z0-9.-]+)?\b/i, '').trim();
   }
   
+  // Sanitize markdown and HTML from title
+  cleanTitle = cleanTitle
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep link text
+    .replace(/\[\!\[.*?\]\(.*?\)\]\(.*?\)/g, '') // Remove image links
+    .replace(/\!\[.*?\]\(.*?\)/g, '') // Remove images
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
+    .replace(/\`(.*?)\`/g, '$1') // Remove inline code markdown
+    .replace(/\<.*?\>/g, '') // Remove HTML tags
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+  
   // Remove title from body if configured to do so
   if (PROCESSING_CONFIG.options.removeTitleFromBody && titleMatch) {
     // Remove the first h1 heading and any immediately following version line
