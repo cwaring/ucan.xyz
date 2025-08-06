@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PROCESSING_CONFIG, convertToEditUrl } from './config.js';
+import { standardizeUCANLinks, applyReferenceLinkMappings } from './link-processing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -175,45 +176,11 @@ description: "${description}"`;
   
   frontmatter += `\n---\n\n`;
   
-  // Process cross-references with a simple, elegant approach
-  // Split document into main content and reference links section
-  const externalLinksMarker = '<!-- External Links -->';
-  const parts = processed.split(externalLinksMarker);
-  let mainContent = parts[0];
-  let referenceSection = parts.length > 1 ? externalLinksMarker + parts[1] : '';
+  // Process cross-references using shared link processing module
+  processed = standardizeUCANLinks(processed);
   
-  // Only process inline links in the main content, leave reference section untouched
-  // Process in specific order to avoid conflicts
-  
-  // First, handle reference-style link usage (these should be converted to direct links)
-  mainContent = mainContent.replace(/\[UCAN Delegation\]\[delegation\]/g, '[UCAN Delegation](/delegation/)');
-  mainContent = mainContent.replace(/\[UCAN Invocation\]\[invocation\]/g, '[UCAN Invocation](/invocation/)');
-  mainContent = mainContent.replace(/\[UCAN Revocation\]\[revocation\]/g, '[UCAN Revocation](/revocation/)');
-  mainContent = mainContent.replace(/\[UCAN Promise\]\[promise\]/g, '[UCAN Promise](/promise/)');
-  
-  // Then handle standalone UCAN references (not already linked and not reference definitions)
-  mainContent = mainContent.replace(/\[UCAN Delegation\](?!\(|\[|:)/g, '[UCAN Delegation](/delegation/)');
-  mainContent = mainContent.replace(/\[UCAN Invocation\](?!\(|\[|:)/g, '[UCAN Invocation](/invocation/)');
-  mainContent = mainContent.replace(/\[UCAN Revocation\](?!\(|\[|:)/g, '[UCAN Revocation](/revocation/)');
-  mainContent = mainContent.replace(/\[UCAN Promise\](?!\(|\[|:)/g, '[UCAN Promise](/promise/)');
-  mainContent = mainContent.replace(/\[UCAN Envelope\](?!\(|\[|:)/g, '[UCAN Envelope](/specification/#ucan-envelope)');
-  
-  // Handle other references
-  mainContent = mainContent.replace(/\[high level spec\](?!\(|\[|:)/g, '[high level spec](/specification/)');
-  
-  // UCAN should be last to avoid conflicts
-  mainContent = mainContent.replace(/\[UCAN\](?!\(|\[|:|\s)/g, '[UCAN](/specification/)');
-  
-  // Update reference definitions in the reference section
-  Object.entries(PROCESSING_CONFIG.linkMappings).forEach(([pattern, replacement]) => {
-    // Handle reference-style links like [UCAN]: https://github.com/ucan-wg/spec
-    const githubPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const refPattern = new RegExp(`\\[([^\\]]+)\\]:\\s*${githubPattern}`, 'g');
-    referenceSection = referenceSection.replace(refPattern, `[$1]: ${replacement}`);
-  });
-  
-  // Recombine the document
-  processed = mainContent + referenceSection;
+  // Apply reference link mappings
+  processed = applyReferenceLinkMappings(processed);
   
   // Process internal section links (convert to anchor links)
   processed = processed.replace(/\[([^\]]+)\]:\s*#([a-zA-Z0-9-]+)/g, '[$1]: #$2');
