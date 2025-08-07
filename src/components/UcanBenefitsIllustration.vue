@@ -50,7 +50,7 @@
       
       <!-- Benefit 1: Trustless (Top Left) -->
       <g class="animate-fade-in" style="animation-delay: 0.7s">
-        <circle cx="200" cy="100" r="25" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+        <circle cx="200" cy="100" r="25" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- ShieldX icon from Lucide -->
         <g transform="translate(192, 92)">
           <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" 
@@ -68,7 +68,7 @@
       
       <!-- Benefit 2: Secure (Top Right) -->
       <g class="animate-fade-in" style="animation-delay: 0.9s">
-        <circle cx="600" cy="100" r="25" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+        <circle cx="600" cy="100" r="25" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- Lock icon from Lucide -->
         <g transform="translate(592, 92)">
           <rect width="18" height="11" x="3" y="11" rx="2" ry="2" stroke="oklch(0.54 0.25 263)" stroke-width="1.5" fill="none" transform="scale(0.67)"/>
@@ -85,7 +85,7 @@
       
       <!-- Benefit 3: Local-First (Bottom Left) -->
       <g class="animate-fade-in" style="animation-delay: 1.1s">
-        <circle cx="200" cy="260" r="25" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+        <circle cx="200" cy="260" r="25" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- Monitor icon from Lucide -->
         <g transform="translate(192, 252)">
           <rect width="20" height="14" x="2" y="3" rx="2" ry="2" stroke="oklch(0.54 0.25 263)" stroke-width="1.5" fill="none" transform="scale(0.67)"/>
@@ -102,7 +102,7 @@
       
       <!-- Benefit 4: User-Controlled (Bottom Right) -->
       <g class="animate-fade-in" style="animation-delay: 1.3s">
-        <circle cx="600" cy="260" r="25" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+        <circle cx="600" cy="260" r="25" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- User icon from Lucide -->
         <g transform="translate(592, 252)">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="oklch(0.54 0.25 263)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="scale(0.67)"/>
@@ -118,7 +118,7 @@
       
       <!-- Benefit 5: Scalable (Right side) -->
       <g class="animate-fade-in" style="animation-delay: 1.5s">
-                <circle cx="700" cy="180" r="20" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+                <circle cx="700" cy="180" r="20" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- GitBranch icon from Lucide -->
         <g transform="translate(692, 172)">
           <line x1="6" x2="6" y1="3" y2="15" stroke="oklch(0.54 0.25 263)" stroke-width="1.5" transform="scale(0.67)"/>
@@ -136,7 +136,7 @@
       
       <!-- Benefit 6: Composable (Left side) -->
       <g class="animate-fade-in" style="animation-delay: 1.7s">
-                <circle cx="100" cy="180" r="20" fill="none" stroke="oklch(0.7 0.01 260)" stroke-width="2"/>
+                <circle cx="100" cy="180" r="20" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="2"/>
         <!-- Blocks icon from Lucide -->
         <g transform="translate(92, 172)">
           <rect width="7" height="7" x="14" y="3" rx="1" stroke="oklch(0.54 0.25 263)" stroke-width="1.5" fill="none" transform="scale(0.67)"/>
@@ -167,8 +167,8 @@
 }
 
 .animate-pulse-delayed {
-  animation: pulse-subtle 3s ease-in-out infinite 3.0s;
-  transform-origin: center;
+  animation: svg-pulse 3s ease-in-out infinite 3.0s;
+  transform-origin: 400px 180px;
 }
 
 .dash-flow-path {
@@ -184,14 +184,14 @@
   }
 }
 
-@keyframes pulse-subtle {
+@keyframes svg-pulse {
   0%, 100% {
     opacity: 0.1;
     transform: scale(1);
   }
   50% {
-    opacity: 0.15;
-    transform: scale(1.05);
+    opacity: 0.2;
+    transform: scale(1.2);
   }
 }
 
