@@ -34,15 +34,10 @@
     </div>
 
     <div
-      class="hidden md:flex justify-center relative overflow-hidden pt-24 lg:pt-32 animate-fade-in-up"
+      class="hidden md:flex justify-center relative overflow-hidden pt-8 lg:pt-8 animate-fade-in-up"
       style="animation-delay: 0.3s"
     >
-      <UcanIllustration />
-
-      <div
-        class="hidden lg:block absolute top-42 left-[5%] w-11/12 h-[300px] bg-primary rounded-full filter blur-[72px] opacity-40 -z-10 animate-fade-in"
-        style="animation-delay: 0.8s"
-      />
+      <UcanBenefitsIllustration />
       <div class="absolute inset-0 z-30" />
     </div>
   </div>
@@ -51,7 +46,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { buttonVariants } from "../ui/button"
-import UcanIllustration from "../UcanIllustration.vue"
+import UcanBenefitsIllustration from "../UcanBenefitsIllustration.vue"
 
 // Props
 const specUrl = '/specification/'
