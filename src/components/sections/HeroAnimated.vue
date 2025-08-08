@@ -1,10 +1,10 @@
 <template>
   <div class="w-full flex-col items-center justify-center flex pt-20 lg:pt-32 relative z-10 px-4 md:px-0">
     <h1
-      class="text-5xl lg:text-[4.25rem] font-bold tracking-tight mb-4 mt-12 lg:mt-0 text-center animate-fade-in-up"
+      class="text-4xl lg:text-6xl font-bold tracking-tight mb-3 mt-8 lg:mt-0 text-center animate-fade-in-up"
       style="animation-delay: 0s"
     >
-      Decentralized Authorization
+      Zero-Trust Auth,<br/>for Apps and AI
     </h1>
     
     <p
