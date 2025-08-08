@@ -41,9 +41,9 @@
       
       <!-- Central UCAN logo/icon -->
       <g class="animate-fade-in" style="animation-delay: 1.8s">
-        <circle cx="400" cy="180" r="35" fill="oklch(0.54 0.25 263)" opacity="0.1" class="animate-pulse-delayed"/>
-        <circle cx="400" cy="180" r="35" fill="none" stroke="oklch(0.54 0.25 263)" stroke-width="3"/>
-        <text x="400" y="188" text-anchor="middle" fill="oklch(0.54 0.25 263)" font-size="16" font-weight="bold">
+        <circle cx="400" cy="180" r="35" fill="#F0AC5D" opacity="0.1" class="animate-pulse-delayed"/>
+        <circle cx="400" cy="180" r="35" fill="none" stroke="#F0AC5D" stroke-width="3"/>
+        <text x="400" y="188" text-anchor="middle" fill="#F0AC5D" font-size="16" font-weight="bold">
           UCAN
         </text>
       </g>
