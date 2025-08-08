@@ -1,0 +1,179 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import { Icon } from "astro-icon/components"
+import { buttonVariants } from "../components/ui/button"
+---
+
+<BaseLayout title="UCAN Inspector - Coming Soon" description="A powerful tool for inspecting, validating, and debugging UCAN tokens. Coming soon!">
+    <div class="min-h-screen pt-32 px-8 max-w-4xl mx-auto mb-24">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/10 rounded-full mb-8">
+                <Icon name="lucide:search" class="w-12 h-12 text-primary" />
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">
+                UCAN Inspector
+            </h1>
+            
+            <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                A powerful developer tool for inspecting, validating, and debugging UCAN tokens. 
+                Decode capabilities, verify signatures, and explore delegation chains with ease.
+            </p>
+            
+            <div class="inline-flex items-center gap-2 bg-card/50 rounded-full px-6 py-3 border border-border/50">
+                <Icon name="lucide:clock" class="w-5 h-5 text-primary" />
+                <span class="text-sm font-medium">Coming Soon</span>
+            </div>
+        </div>
+
+        <!-- Features Preview -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-semibold mb-8 text-center">What to Expect</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:eye" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Token Inspection</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Decode and examine UCAN tokens in a human-readable format. View headers, payloads, and signatures clearly.
+                    </p>
+                </div>
+
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:shield-check" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Signature Validation</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Verify cryptographic signatures and check token authenticity against public keys and DIDs.
+                    </p>
+                </div>
+
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:git-branch" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Delegation Chains</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Visualize and trace delegation chains to understand capability inheritance and authority flows.
+                    </p>
+                </div>
+
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:calendar" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Expiration Analysis</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Check token expiration times and validity periods with clear visual indicators.
+                    </p>
+                </div>
+
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:bug" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Debug Mode</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Advanced debugging features with detailed error messages and validation warnings.
+                    </p>
+                </div>
+
+                <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                    <div class="feature-icon mb-4">
+                        <Icon name="lucide:download" class="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 class="text-lg font-semibold mb-3">Export & Share</h3>
+                    <p class="text-muted-foreground text-sm">
+                        Export inspection results and share token analysis with your team securely.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Mockup -->
+        <div class="mb-16">            
+            <div class="bg-card/30 rounded-lg border border-border/50 p-8">
+                <div class="bg-card rounded border border-border">
+                    <!-- Mockup header -->
+                    <div class="border-b border-border p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-destructive rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <div class="ml-4 text-sm text-muted-foreground">UCAN Inspector</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mockup content -->
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <div class="text-sm text-muted-foreground mb-2">Paste your UCAN token:</div>
+                            <div class="bg-background/50 rounded border border-border p-3 text-sm font-mono text-muted-foreground">
+                                eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsInVjdiI6IjAuMTAuMCJ9...
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm font-medium mb-2">Header</div>
+                                <div class="bg-background/50 rounded border border-border p-3 text-xs font-mono">
+                                    <div class="text-muted-foreground">{"{"}</div>
+                                    <div class="ml-2">"alg": "EdDSA",</div>
+                                    <div class="ml-2">"typ": "JWT",</div>
+                                    <div class="ml-2">"ucv": "0.10.0"</div>
+                                    <div class="text-muted-foreground">{"}"}</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="text-sm font-medium mb-2">Capabilities</div>
+                                <div class="bg-background/50 rounded border border-border p-3 text-xs">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-muted-foreground">file/read</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-muted-foreground">file/write</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-8">
+            <h2 class="text-2xl font-semibold mb-4">Stay Updated</h2>
+            <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                We're working hard to bring you the UCAN Inspector. In the meantime, explore our documentation 
+                and libraries to start building with UCAN.
+            </p>
+            
+            <div class="flex justify-center gap-4 flex-wrap">
+                <a href="/getting-started/" class={buttonVariants({ variant: "default" })}>
+                    <Icon class="size-4 mr-2" name="lucide:play" />
+                    Get Started
+                </a>
+                <a href="/specification/" class={buttonVariants({ variant: "outline" })}>
+                    <Icon class="size-4 mr-2" name="lucide:book" />
+                    Read Spec
+                </a>
+                <a href="/libraries/" class={buttonVariants({ variant: "outline" })}>
+                    <Icon class="size-4 mr-2" name="lucide:code" />
+                    View Libraries
+                </a>
+                <a href="https://github.com/ucan-wg" class={buttonVariants({ variant: "ghost" })}>
+                    <Icon class="size-4 mr-2" name="lucide:github" />
+                    Follow Progress
+                </a>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
