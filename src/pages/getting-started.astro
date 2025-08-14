@@ -83,13 +83,14 @@ import { buttonVariants } from "../components/ui/button"
                 </p>
                 <div class="bg-background/50 rounded p-4 text-sm font-mono">
                     <div class="text-muted-foreground">// Example in JavaScript</div>
-                    <div><span class="text-green-400">import</span> * <span class="text-green-400">as</span> ucans <span class="text-green-400">from</span> <span class="text-orange-400">"@ucans/ucans"</span></div>
+                    <div><span class="text-green-400">import</span> {"{"} Capability {"}"} <span class="text-green-400">from</span> <span class="text-orange-400">"iso-ucan/capability"</span></div>
                     <br/>
-                    <div><span class="text-green-400">const</span> delegation = <span class="text-green-400">await</span> ucans.build({"{"}</div>
-                    <div>&nbsp;&nbsp;audience: targetDID,</div>
-                    <div>&nbsp;&nbsp;issuer: myKeypair,</div>
-                    <div>&nbsp;&nbsp;capabilities: [/* your capabilities */],</div>
-                    <div>&nbsp;&nbsp;lifetimeInSeconds: <span class="text-blue-400">3600</span></div>
+                    <div><span class="text-green-400">const</span> delegation = <span class="text-green-400">await</span> MyCap.delegate({"{"}</div>
+                    <div>&nbsp;&nbsp;iss: myKeypair,</div>
+                    <div>&nbsp;&nbsp;aud: targetDID,</div>
+                    <div>&nbsp;&nbsp;sub: myKeypair,</div>
+                    <div>&nbsp;&nbsp;pol: [],</div>
+                    <div>&nbsp;&nbsp;exp: <span class="text-blue-400">Math.floor(Date.now() / 1000) + 3600</span></div>
                     <div>{"})"}</div>
                 </div>
             </div>

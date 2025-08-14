@@ -8,7 +8,7 @@ sidebar:
 
 This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.
 
-> **Note**: The code examples in this guide use the TypeScript UCAN library (`@ucans/ucans`) for illustration. Different UCAN libraries may have different APIs and be at different specification versions. Always refer to your chosen library's documentation for exact API details.
+> **Note**: The code examples in this guide use the JavaScript UCAN library (`iso-ucan`) for illustration. Different UCAN libraries may have different APIs and be at different specification versions. Always refer to your chosen library's documentation for exact API details.
 
 ## What is UCAN?
 
@@ -86,84 +86,107 @@ How to revoke capabilities after they've been issued.
 
 ### 1. File System Access
 ```javascript
-// Using TypeScript UCAN library
-import * as ucans from "@ucans/ucans"
+// Using JavaScript UCAN library
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
 // Alice creates a keypair and delegates read access to Bob
-const aliceKeypair = await ucans.EdKeypair.create()
-const bobDid = "did:key:z6Mk3..." // Bob's DID
+const store = new Store(new MemoryDriver())
 
-const delegation = await ucans.build({
-  audience: bobDid,
-  issuer: aliceKeypair,
-  capabilities: [{
-    with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-    can: { namespace: "fs", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 3600 // 1 hour
-});
+const FileReadCap = Capability.from({
+  schema: z.never(),
+  cmd: 'file:///alice/documents/report.pdf#read',
+})
 
-// Encode the UCAN for transport
-const token = ucans.encode(delegation);
+const alice = await EdDSASigner.generate()
+const bob = await EdDSASigner.generate()
 
-// Bob can verify and use the delegation
-const result = await ucans.verify(token, {
-  audience: bobDid,
-  isRevoked: async ucan => false,
-  requiredCapabilities: [{
-    capability: {
-      with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-      can: { namespace: "fs", segments: ["read"] }
-    },
-    rootIssuer: aliceKeypair.did()
-  }]
-});
+const delegation = await FileReadCap.delegate({
+  iss: alice,
+  aud: bob,
+  sub: alice,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour
+})
+
+// Store the delegation for later use
+await store.set(delegation)
+
+// Bob can verify and use the delegation by creating an invocation
+const invocation = await FileReadCap.invoke({
+  iss: bob,
+  sub: alice,
+  args: {},
+  store,
+  exp: Math.floor(Date.now() / 1000) + 300,
+})
 ```
 
 ### 2. API Access
 ```javascript
-// Service owner delegates API access using TypeScript library
-import * as ucans from "@ucans/ucans"
+// Service owner delegates API access using JavaScript library
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const serviceKeypair = await ucans.EdKeypair.create()
-const userDid = "did:key:z6MkUser..." // User's DID
+const store = new Store(new MemoryDriver())
 
-const apiAccess = await ucans.build({
-  audience: userDid,
-  issuer: serviceKeypair,
-  capabilities: [{
-    with: { scheme: "https", hierPart: "//service.com/api/users" },
-    can: { namespace: "api", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 86400, // 24 hours
-  facts: [{
-    rateLimit: { requests_per_hour: 100 },
-    scope: "public" // only public data
-  }]
-});
+const ApiReadCap = Capability.from({
+  schema: z.object({
+    rateLimit: z.object({
+      requests_per_hour: z.number()
+    }),
+    scope: z.string()
+  }),
+  cmd: 'https://service.com/api/users#read',
+})
+
+const service = await EdDSASigner.generate()
+const user = await EdDSASigner.generate()
+
+const apiAccess = await ApiReadCap.delegate({
+  iss: service,
+  aud: user,
+  sub: service,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
+})
 ```
 
 ### 3. Collaborative Documents
 ```javascript
-// Alice shares edit access to document using TypeScript library
-import * as ucans from "@ucans/ucans"
+// Alice shares edit access to document using JavaScript library
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const aliceKeypair = await ucans.EdKeypair.create()
-const collaboratorDid = "did:key:z6MkCollab..." // Collaborator's DID
+const store = new Store(new MemoryDriver())
 
-const editAccess = await ucans.build({
-  audience: collaboratorDid,
-  issuer: aliceKeypair,
-  capabilities: [{
-    with: { scheme: "doc", hierPart: "//alice/project-proposal" },
-    can: { namespace: "doc", segments: ["edit"] }
-  }],
-  lifetimeInSeconds: 604800, // 1 week
-  facts: [{
-    allowedSections: ["comments", "suggestions"], // limited sections
-    expiry: "2025-12-31T23:59:59Z" // explicit expiry date
-  }]
-});
+const DocEditCap = Capability.from({
+  schema: z.object({
+    allowedSections: z.array(z.string()),
+    expiry: z.string()
+  }),
+  cmd: 'doc://alice/project-proposal#edit',
+})
+
+const alice = await EdDSASigner.generate()
+const collaborator = await EdDSASigner.generate()
+
+const editAccess = await DocEditCap.delegate({
+  iss: alice,
+  aud: collaborator,
+  sub: alice,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 604800, // 1 week
+})
 ```
 
 ## Next Steps
@@ -178,7 +201,7 @@ const editAccess = await ucans.build({
 - [UCAN Website](https://ucan.xyz)
 - [GitHub Repository](https://github.com/ucan-wg/spec)
 - [Implementation Libraries](https://github.com/ucan-wg)
-  - **JavaScript/TypeScript**: [`@ucans/ucans`](https://github.com/ucan-wg/ts-ucan) (NPM: `ucans`)
+  - **JavaScript**: [`iso-ucan`](https://github.com/hugomrdias/iso-repo/tree/main/packages/iso-ucan) (NPM: `iso-ucan`)
   - **Rust**: [`ucan`](https://github.com/ucan-wg/rs-ucan)
   - **Go**: [`go-ucan`](https://github.com/ucan-wg/go-ucan)
 

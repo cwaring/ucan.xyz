@@ -10,7 +10,7 @@ This page contains practical examples of using UCAN for various authorization sc
 
 > **Note**: These examples show the conceptual structure and high-level API patterns. Actual implementations may vary depending on the UCAN library you're using. Refer to the specific library documentation for exact API details.
 
-> **Version Note**: Different UCAN library implementations are at different stages of the specification. TypeScript (`@ucans/ucans`) implements v0.8.1, Rust (`ucan`) implements v0.10.0-canary, and Go (`go-ucan`) implements v1.0.0-rc.1. API patterns and payload structures may differ between versions.
+> **Version Note**: Different UCAN library implementations are at different stages of the specification. JavaScript (`iso-ucan`) implements the latest specification, Rust (`ucan`) implements v0.10.0-canary, and Go (`go-ucan`) implements v1.0.0-rc.1. API patterns and payload structures may differ between versions.
 
 ## Example 1: File System Access
 
@@ -52,39 +52,43 @@ const delegation = {
 ### High-Level API Usage
 
 ```javascript
-// Using the TypeScript UCAN library
-import * as ucans from "@ucans/ucans"
+// Using the JavaScript UCAN library
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-// Alice creates and signs the delegation
-const aliceKeypair = await ucans.EdKeypair.create()
-const bobDid = "did:key:z6Mk3..." // Bob's DID
+// Alice creates the file read capability and delegates to Bob
+const store = new Store(new MemoryDriver())
 
-const delegation = await ucans.build({
-  audience: bobDid,
-  issuer: aliceKeypair,
-  capabilities: [{
-    with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-    can: { namespace: "fs", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 3600, // 1 hour
-  facts: []
-});
+const FileReadCap = Capability.from({
+  schema: z.never(),
+  cmd: 'file:///alice/documents/report.pdf#read',
+})
 
-// Encode the UCAN for transport
-const token = ucans.encode(delegation);
+const alice = await EdDSASigner.generate()
+const bob = await EdDSASigner.generate()
 
-// Bob can verify and use the delegation
-const result = await ucans.verify(token, {
-  audience: bobDid,
-  isRevoked: async ucan => false,
-  requiredCapabilities: [{
-    capability: {
-      with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-      can: { namespace: "fs", segments: ["read"] }
-    },
-    rootIssuer: aliceKeypair.did()
-  }]
-});
+const delegation = await FileReadCap.delegate({
+  iss: alice,
+  aud: bob,
+  sub: alice,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+})
+
+// Store the delegation for later verification
+await store.set(delegation)
+
+// Bob can verify and use the delegation by invoking the capability
+const invocation = await FileReadCap.invoke({
+  iss: bob,
+  sub: alice,
+  args: {},
+  store,
+  exp: Math.floor(Date.now() / 1000) + 300, // 5 minutes
+})
 ```
 
 ## Example 2: API Rate Limiting
@@ -123,38 +127,48 @@ const apiDelegation = {
 ### High-Level API Usage
 
 ```javascript
-// Service delegates API access using TypeScript library
-import * as ucans from "@ucans/ucans"
+// Service delegates API access using JavaScript library
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const serviceKeypair = await ucans.EdKeypair.create()
-const clientDid = "did:key:z6Mkclient..."
+const store = new Store(new MemoryDriver())
 
-const apiAccess = await ucans.build({
-  audience: clientDid,
-  issuer: serviceKeypair,
-  capabilities: [{
-    with: { scheme: "https", hierPart: "//service.example.com/api/users" },
-    can: { namespace: "api", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 86400, // 24 hours
-  facts: [
-    { rate_limit: { requests_per_hour: 100, reset_time: "hourly" } }
-  ]
-});
+const ApiReadCap = Capability.from({
+  schema: z.object({
+    rate_limit: z.object({
+      requests_per_hour: z.number(),
+      reset_time: z.string()
+    }).optional()
+  }),
+  cmd: 'https://service.example.com/api/users#read',
+})
 
-// Client can verify and use the delegation
-const token = ucans.encode(apiAccess);
-const result = await ucans.verify(token, {
-  audience: clientDid,
-  isRevoked: async ucan => false,
-  requiredCapabilities: [{
-    capability: {
-      with: { scheme: "https", hierPart: "//service.example.com/api/users" },
-      can: { namespace: "api", segments: ["read"] }
-    },
-    rootIssuer: serviceKeypair.did()
-  }]
-});
+const service = await EdDSASigner.generate()
+const client = await EdDSASigner.generate()
+
+const apiAccess = await ApiReadCap.delegate({
+  iss: service,
+  aud: client,
+  sub: service,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
+})
+
+await store.set(apiAccess)
+
+// Client can invoke the capability
+const invocation = await ApiReadCap.invoke({
+  iss: client,
+  sub: service,
+  args: {
+    rate_limit: { requests_per_hour: 100, reset_time: "hourly" }
+  },
+  store,
+  exp: Math.floor(Date.now() / 1000) + 300,
+})
 ```
 
 ## Real-World Implementation Notes
@@ -163,21 +177,29 @@ const result = await ucans.verify(token, {
 
 Different UCAN libraries may have different APIs. Here are examples for popular implementations:
 
-#### TypeScript (@ucans/ucans)
+#### JavaScript (iso-ucan)
 ```javascript
-import * as ucans from "@ucans/ucans"
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const keypair = await ucans.EdKeypair.create()
-const delegation = await ucans.build({
-  audience: "did:key:zabcde...", // recipient DID
-  issuer: keypair, // signing key
-  capabilities: [{
-    with: { scheme: "wnfs", hierPart: "//boris.fission.name/public/photos/" },
-    can: { namespace: "wnfs", segments: ["OVERWRITE"] }
-  }],
-  lifetimeInSeconds: 3600
+const store = new Store(new MemoryDriver())
+const FileCap = Capability.from({
+  schema: z.never(),
+  cmd: 'wnfs://boris.fission.name/public/photos/#overwrite',
 })
-const token = ucans.encode(delegation)
+
+const keypair = await EdDSASigner.generate()
+const audience = await EdDSASigner.generate()
+const delegation = await FileCap.delegate({
+  iss: keypair,
+  aud: audience,
+  sub: keypair,
+  pol: [],
+  exp: Math.floor(Date.now() / 1000) + 3600
+})
 ```
 
 #### Rust (ucan)
@@ -264,7 +286,7 @@ kzJWVmYW1lZ...(signature)
 - [UCAN Revocation Specification](/revocation/) - Capability revocation
 
 ### Implementation Libraries
-- **JavaScript/TypeScript**: [`@ucans/ucans`](https://github.com/ucan-wg/ts-ucan) (NPM: `ucans`)
+- **JavaScript**: [`iso-ucan`](https://github.com/hugomrdias/iso-repo/tree/main/packages/iso-ucan) (NPM: `iso-ucan`)
 - **Rust**: [`ucan`](https://github.com/ucan-wg/rs-ucan) 
 - **Go**: [`go-ucan`](https://github.com/ucan-wg/go-ucan)
 - **Haskell**: [`hs-ucan`](https://github.com/fission-suite/fission)

@@ -52,7 +52,7 @@ GitHub Sources                    → Generated Documentation
 ├── ucan-wg/promise/README.md    → /src/content/docs/promise/index.md
 ├── ucan-wg/container/Readme.md  → /src/content/docs/container/index.md
 ├── ChainAgnostic/varsig/README.md → /src/content/docs/varsig/index.md
-├── ucan-wg/ts-ucan/README.md    → /src/content/docs/libraries/typescript/index.md
+├── hugomrdias/iso-repo/packages/iso-ucan/readme.md    → /src/content/docs/libraries/javascript/index.md
 ├── ucan-wg/rs-ucan/README.md    → /src/content/docs/libraries/rust/index.md
 ├── ucan-wg/go-ucan/Readme.md    → /src/content/docs/libraries/go/index.md
 ├── fission-suite/fission/hs-ucan/README.md → /src/content/docs/libraries/haskell/index.md
@@ -71,7 +71,7 @@ The script processes specifications in dependency order:
 5. **revocation** - UCAN Revocation (depends on delegation & invocation)
 6. **varsig** - Variable signature spec (used by others)
 7. **container** - Container format (transport layer)
-8. **libraries/typescript** - TypeScript implementation
+8. **libraries/javascript** - JavaScript implementation
 9. **libraries/rust** - Rust implementation
 10. **libraries/go** - Go implementation
 11. **libraries/haskell** - Haskell implementation
@@ -92,7 +92,7 @@ The script fetches documentation from these repositories:
 - **ChainAgnostic/varsig** - Variable signature
 
 ### Libraries
-- **ucan-wg/ts-ucan** - TypeScript implementation
+- **hugomrdias/iso-repo** - JavaScript implementation
 - **ucan-wg/rs-ucan** - Rust implementation
 - **ucan-wg/go-ucan** - Go implementation
 - **fission-suite/fission** - Haskell implementation
@@ -168,7 +168,7 @@ The script generates:
 
 1. **Processed Documentation**: Markdown files in `/src/content/docs/`
    - Core specifications (delegation, invocation, etc.)
-   - Library implementations (TypeScript, Rust, Go, etc.)
+   - Library implementations (JavaScript, Rust, Go, etc.)
    - Generated guides and examples
 2. **Schema Documentation**: IPLD schema files converted to markdown
 3. **Sidebar Configuration**: JSON file with navigation structure including Libraries section
