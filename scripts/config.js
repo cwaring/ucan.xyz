@@ -68,9 +68,9 @@ export const PROCESSING_CONFIG = {
     },
     // Libraries
     { 
-      name: 'libraries/typescript', 
-      title: 'JS Implementation',
-      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/ts-ucan/main/README.md',
+      name: 'libraries/javascript', 
+      title: 'JavaScript Implementation',
+      githubUrl: 'https://raw.githubusercontent.com/hugomrdias/iso-repo/refs/heads/main/packages/iso-ucan/readme.md',
       schemaUrl: null
     },
     { 
@@ -86,27 +86,6 @@ export const PROCESSING_CONFIG = {
       schemaUrl: null
     },
   ],
-
-  // Link mappings for cross-references
-  linkMappings: {
-    // Cross-spec links
-    '[UCAN]': '/specification/',
-    '[UCAN Delegation]': '/delegation/',
-    '[UCAN Invocation]': '/invocation/',
-    '[UCAN Promise]': '/promise/',
-    '[UCAN Revocation]': '/revocation/',
-    '[delegation]': '/delegation/',
-    '[invocation]': '/invocation/',
-    '[promise]': '/promise/',
-    '[revocation]': '/revocation/',
-    '[UCAN Envelope]': '/specification/#ucan-envelope',
-    
-    // GitHub links (keep as external)
-    'https://github.com/ucan-wg/spec': 'https://github.com/ucan-wg/spec',
-    'https://github.com/ucan-wg/delegation': 'https://github.com/ucan-wg/delegation',
-    'https://github.com/ucan-wg/invocation': 'https://github.com/ucan-wg/invocation',
-    'https://github.com/ucan-wg/revocation': 'https://github.com/ucan-wg/revocation',
-  },
 
   // Sections to remove from processed documents
   sectionsToRemove: [
@@ -149,7 +128,7 @@ export const PROCESSING_CONFIG = {
       {
         label: 'Libraries',
         items: [
-          { label: 'JS', slug: 'libraries/typescript' },
+          { label: 'JavaScript', slug: 'libraries/javascript' },
           { label: 'Rust', slug: 'libraries/rust' },
           { label: 'Go', slug: 'libraries/go' },
         ],

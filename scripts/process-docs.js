@@ -4,10 +4,29 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { PROCESSING_CONFIG, convertToEditUrl } from './config.js';
+import { standardizeUCANLinks } from './link-processing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const docsDir = path.resolve(rootDir, 'src', 'content', 'docs');
+
+/**
+ * Sanitizes text by removing Markdown formatting and HTML tags
+ * @param {string} text - Text to be sanitized
+ * @return {string} - Sanitized text
+ */
+function sanitizeText(text) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep link text
+    .replace(/\[\!\[.*?\]\(.*?\)\]\(.*?\)/g, '') // Remove image links
+    .replace(/\!\[.*?\]\(.*?\)/g, '') // Remove images
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
+    .replace(/\`(.*?)\`/g, '$1') // Remove inline code markdown
+    .replace(/\<.*?\>/g, '') // Remove HTML tags
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
 
 async function fetchFromGitHub(url) {
   try {
@@ -121,6 +140,9 @@ async function processMarkdown(content, specName = '', githubUrl = null) {
     cleanTitle = title.replace(/\s*\b(?:v|version\s+)?\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z0-9.-]+)?\b/i, '').trim();
   }
   
+  // Sanitize markdown and HTML from title using the generic sanitizeText function
+  cleanTitle = sanitizeText(cleanTitle);
+  
   // Remove title from body if configured to do so
   if (PROCESSING_CONFIG.options.removeTitleFromBody && titleMatch) {
     // Remove the first h1 heading and any immediately following version line
@@ -129,9 +151,13 @@ async function processMarkdown(content, specName = '', githubUrl = null) {
   
   // Extract description from abstract or first paragraph
   const abstractMatch = processed.match(/# Abstract\s*\n\s*(.+?)(?=\n#|\n\n|$)/s);
-  const description = abstractMatch ? 
-    abstractMatch[1].replace(/\n/g, ' ').replace(/\[([^\]]+)\]/g, '$1').trim().substring(0, PROCESSING_CONFIG.options.maxDescriptionLength) + '...' :
+  const rawDescription = abstractMatch ? 
+    abstractMatch[1].replace(/\n/g, ' ') : 
     `Documentation for ${cleanTitle}`;
+    
+  // Sanitize the description and truncate if needed
+  const description = sanitizeText(rawDescription).substring(0, PROCESSING_CONFIG.options.maxDescriptionLength) + 
+    (abstractMatch ? '...' : '');
   
   // Add frontmatter with optional version and editUrl
   let frontmatter = `---
@@ -150,45 +176,8 @@ description: "${description}"`;
   
   frontmatter += `\n---\n\n`;
   
-  // Process cross-references with a simple, elegant approach
-  // Split document into main content and reference links section
-  const externalLinksMarker = '<!-- External Links -->';
-  const parts = processed.split(externalLinksMarker);
-  let mainContent = parts[0];
-  let referenceSection = parts.length > 1 ? externalLinksMarker + parts[1] : '';
-  
-  // Only process inline links in the main content, leave reference section untouched
-  // Process in specific order to avoid conflicts
-  
-  // First, handle reference-style link usage (these should be converted to direct links)
-  mainContent = mainContent.replace(/\[UCAN Delegation\]\[delegation\]/g, '[UCAN Delegation](/delegation/)');
-  mainContent = mainContent.replace(/\[UCAN Invocation\]\[invocation\]/g, '[UCAN Invocation](/invocation/)');
-  mainContent = mainContent.replace(/\[UCAN Revocation\]\[revocation\]/g, '[UCAN Revocation](/revocation/)');
-  mainContent = mainContent.replace(/\[UCAN Promise\]\[promise\]/g, '[UCAN Promise](/promise/)');
-  
-  // Then handle standalone UCAN references (not already linked and not reference definitions)
-  mainContent = mainContent.replace(/\[UCAN Delegation\](?!\(|\[|:)/g, '[UCAN Delegation](/delegation/)');
-  mainContent = mainContent.replace(/\[UCAN Invocation\](?!\(|\[|:)/g, '[UCAN Invocation](/invocation/)');
-  mainContent = mainContent.replace(/\[UCAN Revocation\](?!\(|\[|:)/g, '[UCAN Revocation](/revocation/)');
-  mainContent = mainContent.replace(/\[UCAN Promise\](?!\(|\[|:)/g, '[UCAN Promise](/promise/)');
-  mainContent = mainContent.replace(/\[UCAN Envelope\](?!\(|\[|:)/g, '[UCAN Envelope](/specification/#ucan-envelope)');
-  
-  // Handle other references
-  mainContent = mainContent.replace(/\[high level spec\](?!\(|\[|:)/g, '[high level spec](/specification/)');
-  
-  // UCAN should be last to avoid conflicts
-  mainContent = mainContent.replace(/\[UCAN\](?!\(|\[|:|\s)/g, '[UCAN](/specification/)');
-  
-  // Update reference definitions in the reference section
-  Object.entries(PROCESSING_CONFIG.linkMappings).forEach(([pattern, replacement]) => {
-    // Handle reference-style links like [UCAN]: https://github.com/ucan-wg/spec
-    const githubPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const refPattern = new RegExp(`\\[([^\\]]+)\\]:\\s*${githubPattern}`, 'g');
-    referenceSection = referenceSection.replace(refPattern, `[$1]: ${replacement}`);
-  });
-  
-  // Recombine the document
-  processed = mainContent + referenceSection;
+  // Process cross-references using shared link processing module
+  processed = standardizeUCANLinks(processed);
   
   // Process internal section links (convert to anchor links)
   processed = processed.replace(/\[([^\]]+)\]:\s*#([a-zA-Z0-9-]+)/g, '[$1]: #$2');
@@ -263,17 +252,7 @@ async function generateSidebarConfig() {
   console.log('Sidebar configuration will be automatically loaded by astro.config.mjs');
 }
 
-async function updateLandingPage() {
-  console.log('Updating landing page...');
-  
-  // Read template file
-  const landingPageTemplate = path.join(__dirname, 'templates', 'landing-page.mdx');
-  const landingPageContent = await fs.readFile(landingPageTemplate, 'utf8');
-
-  const landingPagePath = path.join(docsDir, 'index.mdx');
-  await fs.writeFile(landingPagePath, landingPageContent);
-  console.log('Updated landing page');
-}
+// Landing page update function removed as it's no longer needed
 
 async function createGuides() {
   console.log('Creating guides...');
@@ -303,7 +282,6 @@ async function main() {
     await clearDocsDirectory();
     await processSpecs();
     await generateSidebarConfig();
-    await updateLandingPage();
     await createGuides();
     
     console.log('\n✅ Documentation processing complete!');

@@ -15,20 +15,12 @@ export default [
   // Apply recommended Astro linting rules
   ...eslintPluginAstro.configs['jsx-a11y-recommended'],
   
-  // Add TypeScript support for Astro files
+  // Additional Astro-specific configuration (optional overrides)
   {
     files: ['**/*.astro'],
-    languageOptions: {
-      parser: tseslintParser,
-      parserOptions: {
-        project: './tsconfig.json',
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        extraFileExtensions: ['.astro']
-      }
-    },
-    plugins: {
-      '@typescript-eslint': tseslint
+    rules: {
+      // Add any Astro-specific rule overrides here if needed
+      // The Astro plugin handles parsing automatically
     }
   },
 

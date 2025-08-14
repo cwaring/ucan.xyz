@@ -1,0 +1,179 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import { Icon } from "astro-icon/components"
+import { buttonVariants } from "../components/ui/button"
+---
+
+<BaseLayout title="UCAN Libraries" description="Available UCAN libraries and implementations for different programming languages.">
+    <div class="min-h-screen pt-32 px-8 max-w-6xl mx-auto mb-24">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold mb-6">UCAN Libraries</h1>
+            <p class="text-muted-foreground text-lg max-w-3xl mx-auto">
+                Choose from official and community-maintained libraries to implement UCAN authorization in your applications.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- JavaScript -->
+            <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-yellow-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:code" class="w-6 h-6 text-yellow-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">JavaScript</h3>
+                        <p class="text-sm text-muted-foreground">Official implementation</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    Full-featured UCAN implementation for Node.js and browser environments.
+                </p>
+                <div class="flex gap-2">
+                    <a href="/libraries/javascript/" class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:book" />
+                        Docs
+                    </a>
+                    <a href="https://github.com/ucan-wg/ts-ucan" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:github" />
+                        GitHub
+                    </a>
+                </div>
+            </div>
+
+            <!-- Rust -->
+            <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:settings" class="w-6 h-6 text-orange-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Rust</h3>
+                        <p class="text-sm text-muted-foreground">Official implementation</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    High-performance UCAN implementation with zero-copy parsing and strong type safety.
+                </p>
+                <div class="flex gap-2">
+                    <a href="/libraries/rust/" class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:book" />
+                        Docs
+                    </a>
+                    <a href="https://github.com/ucan-wg/rs-ucan" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:github" />
+                        GitHub
+                    </a>
+                </div>
+            </div>
+
+            <!-- Go -->
+            <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:zap" class="w-6 h-6 text-blue-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Go</h3>
+                        <p class="text-sm text-muted-foreground">Official implementation</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    Efficient UCAN implementation optimized for server-side applications and microservices.
+                </p>
+                <div class="flex gap-2">
+                    <a href="/libraries/go/" class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:book" />
+                        Docs
+                    </a>
+                    <a href="https://github.com/ucan-wg/go-ucan" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:github" />
+                        GitHub
+                    </a>
+                </div>
+            </div>
+
+            <!-- Python (Coming Soon) -->
+            <div class="bg-card rounded-lg p-6 border border-border opacity-75">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:code" class="w-6 h-6 text-green-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Python</h3>
+                        <p class="text-sm text-muted-foreground">Coming Soon</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    Python implementation is currently in development. Follow our progress on GitHub.
+                </p>
+                <div class="flex gap-2">
+                    <button disabled class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:clock" />
+                        In Development
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ruby (In Development) -->
+            <div class="bg-card rounded-lg p-6 border border-border opacity-75">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:gem" class="w-6 h-6 text-red-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Ruby</h3>
+                        <p class="text-sm text-muted-foreground">In Development</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    Ruby implementation is currently in development. Follow our progress on GitHub.
+                </p>
+                <div class="flex gap-2">
+                    <button disabled class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:clock" />
+                        In Development
+                    </button>
+                </div>
+            </div>
+
+            <!-- Swift (Community) -->
+            <div class="bg-card rounded-lg p-6 border border-border">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                        <Icon name="lucide:smartphone" class="w-6 h-6 text-purple-500" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Swift</h3>
+                        <p class="text-sm text-muted-foreground">Community maintained</p>
+                    </div>
+                </div>
+                <p class="text-muted-foreground mb-4">
+                    UCAN implementation for iOS and macOS applications.
+                </p>
+                <div class="flex gap-2">
+                    <a href="#" class={buttonVariants({ variant: "outline", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:external-link" />
+                        View Project
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-16 text-center">
+            <h2 class="text-2xl font-semibold mb-4">Contributing</h2>
+            <p class="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Want to create a UCAN implementation for your favorite language? We'd love to help! Check out our implementation guide and join our community.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="/guides/implementation/" class={buttonVariants({ variant: "default" })}>
+                    <Icon class="size-4 mr-2" name="lucide:book" />
+                    Implementation Guide
+                </a>
+                <a href="https://github.com/ucan-wg" class={buttonVariants({ variant: "outline" })}>
+                    <Icon class="size-4 mr-2" name="lucide:github" />
+                    Join on GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</BaseLayout>

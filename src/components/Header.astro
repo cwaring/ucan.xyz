@@ -1,0 +1,48 @@
+---
+import { Icon } from 'astro-icon/components'
+import { buttonVariants } from "../components/ui/button"
+import MobileSheet from './MobileSheet.vue';
+import { mainNavLinks, actionLinks } from "../config/nav.config";
+
+const { title } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 bg-background/60 backdrop-blur-lg w-full py-4 px-8 z-50 border-b border-border/40">
+    <nav class="max-w-screen-2xl mx-auto flex items-center justify-between">
+        <!-- Logo - Left -->
+        <a href="/" class="flex flex-row items-center gap-3 transition-colors duration-300 group">
+            <img src="/favicon.ico" alt="UCAN Logo" class="w-8 h-8 transition-transform duration-300 group-hover:scale-110" />
+            <span class="font-bold text-xl">{title}</span>
+        </a>
+        
+        <!-- Primary Navigation - Left aligned until lg, then center -->
+        <div class="hidden md:flex flex-row items-center gap-2 text-card-foreground lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
+            {mainNavLinks.map(link => (
+              <a 
+                href={link.href} 
+                class={`px-4 py-2 rounded-full transition-all duration-300 text-sm ${
+                  currentPath === link.href 
+                    ? 'bg-muted text-foreground' 
+                    : 'hover:bg-accent hover:text-accent-foreground'
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+        </div>
+        
+        <!-- Action Buttons - Right -->
+        <div class="hidden md:flex flex-row items-center gap-2">
+            {actionLinks.map(link => (
+              <a href={link.href} class={buttonVariants({ variant: link.variant, size: "sm" })}>
+                <Icon class="size-4 mr-2" name={link.icon} />
+                {link.label}
+              </a>
+            ))}
+        </div>
+        
+        <!-- Mobile Menu -->
+        <MobileSheet client:load />
+    </nav>
+</header>
