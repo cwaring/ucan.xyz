@@ -220,7 +220,7 @@ const invocation = await DocEditCap.invoke({
   sub: alice,
   args: {
     allowedSections: ["introduction", "methodology"],
-    expiry: "2024-01-01T00:00:00Z"
+    expiry: "2026-12-31T23:59:59Z"
   },
   store,
   exp: nowInSeconds + 300,
