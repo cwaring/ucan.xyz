@@ -6,28 +6,41 @@ sidebar:
   order: 1
 ---
 
-This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.
+This guide provides a quick introduction to UCAN (User Controlled Authorization Network) and walks you through building your first UCAN-enabled application.
 
-> **Note**: The code examples in this guide use the JavaScript UCAN library (`iso-ucan`) for illustration. Different UCAN libraries may have different APIs and be at different specification versions. Always refer to your chosen library's documentation for exact API details.
+> **Implementation Note**: This guide uses the JavaScript UCAN library (`iso-ucan`) for code examples. Different UCAN libraries may have varying APIs and support different specification versions. Always refer to your chosen library's documentation for exact implementation details.
 
 ## What is UCAN?
 
-UCAN is a **trustless**, **secure**, **local-first**, **user-originated** authorization scheme that lets you:
+UCAN is a **decentralized authorization system** that enables secure, offline-capable delegation of permissions without requiring centralized servers or sharing cryptographic keys.
 
-- **Delegate authority** without sharing cryptographic keys
-- **Work offline** with full authorization capabilities
-- **Scale authorization** across distributed systems
-- **Maintain user control** over their data and permissions
+### Core Benefits
 
-## Key Concepts
+- 🔑 **No shared secrets** - Delegate authority without sharing private keys
+- 🌐 **Offline-first** - Work without internet connectivity or central servers  
+- 🔗 **Chainable** - Create delegation chains across multiple parties
+- 🛡️ **Cryptographically secure** - Built on proven public-key cryptography
+- ⚡ **Locally verifiable** - No network calls needed for authorization
 
-### 1. Capabilities vs Permissions
+### How UCAN Differs from Traditional Auth
 
-Traditional systems use **Access Control Lists (ACLs)** - a list of who can do what:
+| Traditional Auth (OAuth, etc.) | UCAN |
+|--------------------------------|------|
+| Centralized authorization server | Decentralized, peer-to-peer |
+| Online verification required | Offline verification possible |
+| Shared secrets or tokens | Public-key cryptography |
+| Revocation requires server | Revocation via cryptographic proofs |
+
+## Core Concepts
+
+### Capabilities vs Permissions
+
+**Traditional Access Control Lists (ACLs)** define who can do what:
 ```
-Alice can read file.txt
-Bob can write file.txt
-Charlie can read file.txt
+Users Table:
+- Alice: can read file.txt, write file.txt
+- Bob: can read file.txt  
+- Charlie: can read file.txt, delete file.txt
 ```
 
 UCAN uses **capabilities** - tokens that grant specific abilities:
@@ -36,23 +49,36 @@ Token A grants "read file.txt"
 Token B grants "write file.txt"
 ```
 
-### 2. Delegation
+### Delegation Chains
 
-With UCAN, you can delegate authority to others without sharing your keys:
+UCAN enables secure delegation without key sharing:
+
+```mermaid
+graph TD
+    A[Alice Root Authority] -->|delegates read| B[Bob Capability]
+    B -->|delegates read| C[Charlie Capability] 
+    C -->|exercises capability| D[File System Grants Access]
+```
+
+Each delegation:
+- ✅ Is cryptographically signed by the delegator
+- ✅ Can be verified independently 
+- ✅ Can include additional restrictions (attenuation)
+- ✅ Has built-in expiration
+
+### Verification Without Servers
 
 ```mermaid
 graph LR
-    A[Alice] -->|delegates read permission| B[Bob]
-    B -->|delegates read permission| C[Charlie]
-    C -->|can now read file.txt| D[File System]
+    A[Charlie's Request] --> B[Local Verification]
+    B --> C{Valid Chain?}
+    C -->|Yes| D[Grant Access]
+    C -->|No| E[Deny Access]
+    
+    F[Alice's Public Key] --> B
+    G[Bob's Delegation] --> B
+    H[Charlie's Delegation] --> B
 ```
-
-### 3. Verification
-
-Each UCAN can be verified independently:
-- **Cryptographic signatures** prove authenticity
-- **Certificate chains** show delegation path
-- **No central authority** needed for verification
 
 ## Core Specifications
 
@@ -237,11 +263,11 @@ const invocation = await DocEditCap.invoke({
 ## Additional Resources
 
 - [UCAN Website](https://ucan.xyz)
-- [GitHub Repository](https://github.com/ucan-wg/spec)
-- [Implementation Libraries](https://github.com/ucan-wg)
-  - **JavaScript**: [`iso-ucan`](https://github.com/hugomrdias/iso-repo/tree/main/packages/iso-ucan) (NPM: `iso-ucan`)
-  - **Rust**: [`ucan`](https://github.com/ucan-wg/rs-ucan)
-  - **Go**: [`go-ucan`](https://github.com/ucan-wg/go-ucan)
+- [UCAN GitHub Working Group](https://github.com/ucan-wg/)
+- [Implementation Libraries](/libraries/)
+  - **JavaScript**: [`iso-ucan`](/libraries/javascript/) (NPM: `iso-ucan`)
+  - **Rust**: [`ucan`](/libraries/rust/)
+  - **Go**: [`go-ucan`](/libraries/go/)
 
 ## Questions?
 
