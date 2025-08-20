@@ -86,30 +86,34 @@ How to revoke capabilities after they've been issued.
 
 ### 1. File System Access
 ```javascript
-// Using JavaScript UCAN library
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
 import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
-// Alice creates a keypair and delegates read access to Bob
+// Set up store for delegation management
 const store = new Store(new MemoryDriver())
 
+// Define the file read capability
 const FileReadCap = Capability.from({
   schema: z.never(),
   cmd: 'file:///alice/documents/report.pdf#read',
 })
 
+// Generate keypairs for Alice and Bob
 const alice = await EdDSASigner.generate()
 const bob = await EdDSASigner.generate()
 
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Alice delegates read access to Bob
 const delegation = await FileReadCap.delegate({
-  iss: alice,
-  aud: bob,
-  sub: alice,
-  pol: [],
-  exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour
+  iss: alice,    // Alice issues the delegation
+  aud: bob,      // Bob receives the capability
+  sub: alice,    // Alice owns the resource
+  pol: [],      // No additional policies
+  exp: nowInSeconds + 3600 // Expires in 1 hour
 })
 
 // Store the delegation for later use
@@ -117,17 +121,16 @@ await store.set(delegation)
 
 // Bob can verify and use the delegation by creating an invocation
 const invocation = await FileReadCap.invoke({
-  iss: bob,
-  sub: alice,
-  args: {},
-  store,
-  exp: Math.floor(Date.now() / 1000) + 300,
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice is the resource owner
+  args: {},      // No additional arguments needed
+  store,         // Store containing the delegation chain
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
 })
 ```
 
 ### 2. API Access
 ```javascript
-// Service owner delegates API access using JavaScript library
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
 import { MemoryDriver } from 'iso-kv/drivers/memory'
@@ -136,6 +139,7 @@ import { z } from 'zod'
 
 const store = new Store(new MemoryDriver())
 
+// Define API access capability with rate limiting constraints
 const ApiReadCap = Capability.from({
   schema: z.object({
     rateLimit: z.object({
@@ -149,18 +153,34 @@ const ApiReadCap = Capability.from({
 const service = await EdDSASigner.generate()
 const user = await EdDSASigner.generate()
 
-const apiAccess = await ApiReadCap.delegate({
-  iss: service,
-  aud: user,
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Service delegates API access to user
+const delegation = await ApiReadCap.delegate({
+  iss: service,  // Service issues the delegation
+  aud: user,     // User receives the capability
+  sub: service,  // Service owns the API
+  pol: [],      // No additional policies
+  exp: nowInSeconds + 86400, // Expires in 24 hours
+})
+
+await store.set(delegation)
+
+// User can invoke the capability
+const invocation = await ApiReadCap.invoke({
+  iss: user,
   sub: service,
-  pol: [],
-  exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
+  args: {
+    rateLimit: { requests_per_hour: 100 },
+    scope: "read"
+  },
+  store,
+  exp: nowInSeconds + 300,
 })
 ```
 
 ### 3. Collaborative Documents
 ```javascript
-// Alice shares edit access to document using JavaScript library
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
 import { MemoryDriver } from 'iso-kv/drivers/memory'
@@ -169,6 +189,7 @@ import { z } from 'zod'
 
 const store = new Store(new MemoryDriver())
 
+// Define document edit capability with constraints
 const DocEditCap = Capability.from({
   schema: z.object({
     allowedSections: z.array(z.string()),
@@ -180,12 +201,29 @@ const DocEditCap = Capability.from({
 const alice = await EdDSASigner.generate()
 const collaborator = await EdDSASigner.generate()
 
-const editAccess = await DocEditCap.delegate({
-  iss: alice,
-  aud: collaborator,
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Alice shares edit access to document
+const delegation = await DocEditCap.delegate({
+  iss: alice,        // Alice issues the delegation
+  aud: collaborator, // Collaborator receives the capability
+  sub: alice,        // Alice owns the document
+  pol: [],          // No additional policies
+  exp: nowInSeconds + 604800, // Expires in 1 week
+})
+
+await store.set(delegation)
+
+// Collaborator can invoke the capability to edit
+const invocation = await DocEditCap.invoke({
+  iss: collaborator,
   sub: alice,
-  pol: [],
-  exp: Math.floor(Date.now() / 1000) + 604800, // 1 week
+  args: {
+    allowedSections: ["introduction", "methodology"],
+    expiry: "2024-01-01T00:00:00Z"
+  },
+  store,
+  exp: nowInSeconds + 300,
 })
 ```
 

@@ -17,77 +17,49 @@ This page contains practical examples of using UCAN for various authorization sc
 ### Scenario
 Alice wants to give Bob temporary read access to a specific file.
 
-### UCAN Delegation Structure
+### Implementation using iso-ucan
 
 ```javascript
-// UCAN Delegation (conceptual structure - actual format may vary by library)
-const delegation = {
-  // Standard JWT header
-  header: {
-    alg: "EdDSA",
-    typ: "JWT",
-    uav: "1.0.0" // UCAN version (varies by implementation)
-  },
-  
-  // UCAN payload (conceptual - see library docs for exact format)
-  payload: {
-    iss: "did:key:z6Mkv...", // Alice's DID (issuer)
-    aud: "did:key:z6Mk3...", // Bob's DID (audience)
-    sub: "did:key:z6Mkv...", // Subject (Alice owns the resource)
-    att: [{                  // Attenuation (capabilities) - actual format varies
-      with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-      can: { namespace: "fs", segments: ["read"] }
-    }],
-    exp: Math.floor(Date.now() / 1000) + 3600, // Unix timestamp (1 hour)
-    nbf: Math.floor(Date.now() / 1000),        // Not before (now)
-    iat: Math.floor(Date.now() / 1000),        // Issued at
-    fct: []                                    // Facts (empty)
-  },
-  
-  // Signature (calculated)
-  signature: "..." // EdDSA signature over header.payload
-};
-```
-
-### High-Level API Usage
-
-```javascript
-// Using the JavaScript UCAN library
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
 import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
-// Alice creates the file read capability and delegates to Bob
+// Set up store for delegation management
 const store = new Store(new MemoryDriver())
 
+// Define the file read capability
 const FileReadCap = Capability.from({
   schema: z.never(),
   cmd: 'file:///alice/documents/report.pdf#read',
 })
 
+// Generate keypairs for Alice and Bob
 const alice = await EdDSASigner.generate()
 const bob = await EdDSASigner.generate()
 
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Alice delegates file read capability to Bob
 const delegation = await FileReadCap.delegate({
-  iss: alice,
-  aud: bob,
-  sub: alice,
-  pol: [],
-  exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+  iss: alice,    // Alice issues the delegation
+  aud: bob,      // Bob is the audience who receives the capability
+  sub: alice,    // Alice is the subject (resource owner)
+  pol: [],      // No additional policies
+  exp: nowInSeconds + 3600, // Expires in 1 hour
 })
 
 // Store the delegation for later verification
 await store.set(delegation)
 
-// Bob can verify and use the delegation by invoking the capability
+// Bob can now invoke the capability to read the file
 const invocation = await FileReadCap.invoke({
-  iss: bob,
-  sub: alice,
-  args: {},
-  store,
-  exp: Math.floor(Date.now() / 1000) + 300, // 5 minutes
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice is the resource owner
+  args: {},      // No additional arguments for this capability
+  store,         // Store containing the delegation chain
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
 })
 ```
 
@@ -96,88 +68,67 @@ const invocation = await FileReadCap.invoke({
 ### Scenario
 A service wants to delegate API access with rate limiting constraints.
 
-### UCAN Delegation Structure
+### Implementation using iso-ucan
 
 ```javascript
-// API access delegation with rate limiting (conceptual structure)
-const apiDelegation = {
-  header: {
-    alg: "EdDSA",
-    typ: "JWT",
-    uav: "1.0.0" // Version varies by implementation
-  },
-  payload: {
-    iss: "did:key:z6Mkservice...", // Service DID
-    aud: "did:key:z6Mkclient...",  // Client DID
-    sub: "did:key:z6Mkservice...", // Service owns the API
-    att: [{                        // Attenuation (capabilities) 
-      with: { scheme: "https", hierPart: "//service.example.com/api/users" },
-      can: { namespace: "api", segments: ["read"] }
-    }],
-    exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
-    nbf: Math.floor(Date.now() / 1000),
-    iat: Math.floor(Date.now() / 1000),
-    fct: [
-      { "rate_limit": { "requests_per_hour": 100, "reset_time": "hourly" } }
-    ]
-  }
-};
-```
-
-### High-Level API Usage
-
-```javascript
-// Service delegates API access using JavaScript library
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
 import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
+// Set up store for delegation management
 const store = new Store(new MemoryDriver())
 
+// Define the API read capability with rate limiting schema
 const ApiReadCap = Capability.from({
   schema: z.object({
     rate_limit: z.object({
       requests_per_hour: z.number(),
       reset_time: z.string()
-    }).optional()
+    })
   }),
   cmd: 'https://service.example.com/api/users#read',
 })
 
+// Generate keypairs for service and client
 const service = await EdDSASigner.generate()
 const client = await EdDSASigner.generate()
 
-const apiAccess = await ApiReadCap.delegate({
-  iss: service,
-  aud: client,
-  sub: service,
-  pol: [],
-  exp: Math.floor(Date.now() / 1000) + 86400, // 24 hours
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Service delegates API access to client with rate limiting
+const delegation = await ApiReadCap.delegate({
+  iss: service,  // Service issues the delegation
+  aud: client,   // Client receives the capability
+  sub: service,  // Service owns the API resource
+  pol: [],      // No additional policies
+  exp: nowInSeconds + 86400, // Expires in 24 hours
 })
 
-await store.set(apiAccess)
+await store.set(delegation)
 
-// Client can invoke the capability
+// Client can invoke the capability with rate limiting parameters
 const invocation = await ApiReadCap.invoke({
-  iss: client,
-  sub: service,
+  iss: client,   // Client is invoking the capability
+  sub: service,  // Service is the resource owner
   args: {
-    rate_limit: { requests_per_hour: 100, reset_time: "hourly" }
+    rate_limit: { 
+      requests_per_hour: 100, 
+      reset_time: "hourly" 
+    }
   },
-  store,
-  exp: Math.floor(Date.now() / 1000) + 300,
+  store,         // Store containing the delegation chain
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
 })
 ```
 
 ## Real-World Implementation Notes
 
-### Library-Specific APIs
+### Complete Example with Account Creation
 
-Different UCAN libraries may have different APIs. Here are examples for popular implementations:
+Here's a more comprehensive example following the pattern from the `iso-ucan` documentation:
 
-#### JavaScript (iso-ucan)
 ```javascript
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
@@ -186,21 +137,74 @@ import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
 const store = new Store(new MemoryDriver())
-const FileCap = Capability.from({
-  schema: z.never(),
-  cmd: 'wnfs://boris.fission.name/public/photos/#overwrite',
+
+// Define account creation capability
+const AccountCreateCap = Capability.from({
+  schema: z.object({
+    type: z.string(),
+    properties: z.object({
+      name: z.string(),
+    }).strict(),
+  }),
+  cmd: '/account/create',
 })
 
-const keypair = await EdDSASigner.generate()
-const audience = await EdDSASigner.generate()
-const delegation = await FileCap.delegate({
-  iss: keypair,
-  aud: audience,
-  sub: keypair,
+// Define general account capability
+const AccountCap = Capability.from({
+  schema: z.never(),
+  cmd: '/account',
+})
+
+// Generate keypairs for all parties
+const owner = await EdDSASigner.generate()
+const bob = await EdDSASigner.generate()
+const invoker = await EdDSASigner.generate()
+
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Owner delegates account capability to Bob
+const ownerDelegation = await AccountCap.delegate({
+  iss: owner,
+  aud: bob,
+  sub: owner,
   pol: [],
-  exp: Math.floor(Date.now() / 1000) + 3600
+  exp: nowInSeconds + 1000,
+})
+
+await store.set(ownerDelegation)
+
+// Bob further delegates to invoker
+const bobDelegation = await AccountCap.delegate({
+  iss: bob,
+  aud: invoker,
+  sub: owner,
+  pol: [],
+  exp: nowInSeconds + 1000,
+})
+
+await store.set(bobDelegation)
+
+// Invoker can now create an account using the delegation chain
+const invocation = await AccountCreateCap.invoke({
+  iss: invoker,
+  sub: owner,
+  args: {
+    type: 'account',
+    properties: {
+      name: 'John Doe',
+    },
+  },
+  store,
+  exp: nowInSeconds + 1000,
 })
 ```
+
+### Other UCAN Library Examples
+
+While this guide focuses on `iso-ucan`, here are examples for other popular implementations:
+
+#### JavaScript (iso-ucan)
+The examples above demonstrate the current `iso-ucan` API. For the latest documentation, refer to the [`iso-ucan` package documentation](https://github.com/hugomrdias/iso-repo/tree/main/packages/iso-ucan).
 
 #### Rust (ucan)
 ```rust
@@ -229,13 +233,7 @@ token, err := ucan.NewBuilder().
 
 ### Transport and Storage
 
-UCANs are typically encoded as JWTs for transport:
-
-```
-eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsInVhdiI6IjEuMC4wIn0.
-eyJpc3MiOiJkaWQ6a2V5Ono2TWt2...(base64url encoded payload)...
-kzJWVmYW1lZ...(signature)
-```
+UCANs in `iso-ucan` are handled as structured objects that can be serialized for transport and storage as needed by your application.
 
 ## Best Practices
 
@@ -243,32 +241,32 @@ kzJWVmYW1lZ...(signature)
 
 1. **Principle of Least Authority (PoLA)**: Only delegate the minimum necessary permissions
    ```javascript
-   // Good: Specific resource and ability
-   { 
-     with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-     can: { namespace: "fs", segments: ["read"] }
-   }
+   // Good: Specific resource and capability
+   const FileReadCap = Capability.from({
+     schema: z.never(),
+     cmd: 'file:///alice/documents/report.pdf#read',
+   })
    
    // Avoid: Overly broad permissions  
-   { 
-     with: { scheme: "file", hierPart: "///alice/*" },
-     can: { namespace: "fs", segments: ["*"] }
-   }
+   const AllFilesCap = Capability.from({
+     schema: z.never(),
+     cmd: 'file:///alice/*#*',
+   })
    ```
 
 2. **Short Expiry Times**: Use the shortest practical expiration times
    ```javascript
    // Good: Short-lived for temporary access
-   lifetimeInSeconds: 3600 // 1 hour
+   exp: nowInSeconds + 3600 // 1 hour
    
    // Good: Longer for trusted devices  
-   lifetimeInSeconds: 2592000 // 30 days
+   exp: nowInSeconds + 2592000 // 30 days
    
-   // Avoid: No expiration unless absolutely necessary
-   expiration: Infinity // Never expires
+   // Avoid: Very long expiration unless absolutely necessary
+   exp: nowInSeconds + 31536000 // 1 year
    ```
 
-3. **Specific Policies**: Be as specific as possible in policy constraints
+3. **Specific Capabilities**: Be as specific as possible in capability definitions
 4. **Secure Key Management**: Keep private keys secure and never share them
 
 ### Implementation Guidelines
