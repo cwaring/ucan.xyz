@@ -119,47 +119,53 @@ import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
 // Set up store for delegation management
+// This store will track all delegations and resolve delegation chains
 const store = new Store(new MemoryDriver())
 
-// Define the file read capability
+// Define the file read capability with schema validation
+// The schema ensures that invocations include a valid file path
 const FileReadCap = Capability.from({
   schema: z.object({
     path: z.string(),
   }),
-  cmd: '/file/read',
+  cmd: '/file/read',  // Command identifier following UCAN v1 spec
 })
 
-// Generate keypairs for Alice and Bob
+// Generate keypairs for Alice (resource owner) and Bob (delegatee)
+// In production, these would be long-lived identity keypairs
 const alice = await EdDSASigner.generate()
 const bob = await EdDSASigner.generate()
 
 const nowInSeconds = Math.floor(Date.now() / 1000)
 
-// Alice delegates read access to Bob
+// Alice creates a delegation to Bob for file read access
+// This grants Bob the authority to read files on Alice's behalf
 const delegation = await FileReadCap.delegate({
-  iss: alice,
-  aud: bob,
-  sub: alice,
-  pol: [],
-  exp: nowInSeconds + 3600
+  iss: alice,    // Alice issues this delegation
+  aud: bob,      // Bob is the audience (recipient)
+  sub: alice,    // Alice is the subject (resource owner)
+  pol: [],      // No additional policy constraints
+  exp: nowInSeconds + 3600, // Expires in 1 hour for security
 })
 
-// Store the delegation for later use
+// Store the delegation for later lookup during invocation
+// The store enables automatic delegation chain resolution
 await store.set(delegation)
 
-// Bob can verify and use the delegation by creating an invocation
+// Bob can now invoke this capability to read a specific file
+// The invocation proves Bob's authority and specifies the action
 const invocation = await FileReadCap.invoke({
-  iss: bob,
-  sub: alice,
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice's system will execute the action
   args: {
-    path: '/documents/report.pdf'
+    path: '/documents/report.pdf'  // Specific file to read
   },
-  store,
-  exp: nowInSeconds + 300,
+  store,         // Store containing the delegation proof
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
 })
 ```
 
-### 2. API Access
+### 2. API Access Control
 ```javascript
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
@@ -167,49 +173,52 @@ import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
+// Initialize store for managing delegations
 const store = new Store(new MemoryDriver())
 
-// Define API access capability with rate limiting constraints
+// Define API read capability with endpoint validation
+// Schema ensures the endpoint parameter is a valid string
 const ApiReadCap = Capability.from({
   schema: z.object({
-    rateLimit: z.object({
-      requests_per_hour: z.number()
-    }),
-    scope: z.string()
+    endpoint: z.string(),
   }),
-  cmd: '/api/users/read',
+  cmd: '/api/read',  // Command for API read operations
 })
 
+// Create keypairs for service owner and client application
+// Service owns the API, client needs read access to specific endpoints
 const service = await EdDSASigner.generate()
-const user = await EdDSASigner.generate()
+const client = await EdDSASigner.generate()
 
 const nowInSeconds = Math.floor(Date.now() / 1000)
 
-// Service delegates API access to user
+// Service grants client permission to read from API endpoints
+// This could be part of an OAuth-like flow with UCAN tokens
 const delegation = await ApiReadCap.delegate({
-  iss: service,
-  aud: user,
-  sub: service,
-  pol: [],
-  exp: nowInSeconds + 86400,
+  iss: service,  // Service issues the delegation
+  aud: client,   // Client receives the capability
+  sub: service,  // Service owns the API resources
+  pol: [],      // No additional constraints
+  exp: nowInSeconds + 86400, // Valid for 24 hours
 })
 
+// Store delegation to enable invocation validation
 await store.set(delegation)
 
-// User can invoke the capability
+// Client invokes the capability to access a specific API endpoint
+// This acts as an authorization proof for the API request
 const invocation = await ApiReadCap.invoke({
-  iss: user,
-  sub: service,
+  iss: client,   // Client is making the request
+  sub: service,  // Service will process the request
   args: {
-    rateLimit: { requests_per_hour: 100 },
-    scope: "read"
+    endpoint: '/users/profile'  // Specific API endpoint to access
   },
-  store,
-  exp: nowInSeconds + 300,
+  store,         // Store with delegation proof
+  exp: nowInSeconds + 300, // Request expires in 5 minutes
 })
 ```
 
-### 3. Collaborative Documents
+### 3. Document Collaboration
 ```javascript
 import { Capability } from 'iso-ucan/capability'
 import { Store } from 'iso-ucan/store'
@@ -217,43 +226,48 @@ import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
+// Set up store for delegation chain management
 const store = new Store(new MemoryDriver())
 
-// Define document edit capability with constraints
+// Define document edit capability with document ID validation
+// Schema requires a valid document identifier for all operations
 const DocEditCap = Capability.from({
   schema: z.object({
-    allowedSections: z.array(z.string()),
-    expiry: z.string()
+    docId: z.string(),
   }),
-  cmd: '/document/edit',
+  cmd: '/doc/edit',  // Command for document editing operations
 })
 
-const alice = await EdDSASigner.generate()
+// Generate keypairs for document owner and collaborator
+// Owner controls document permissions, collaborator needs edit access
+const owner = await EdDSASigner.generate()
 const collaborator = await EdDSASigner.generate()
 
 const nowInSeconds = Math.floor(Date.now() / 1000)
 
-// Alice shares edit access to document
+// Owner delegates document editing rights to collaborator
+// This enables secure document sharing without password sharing
 const delegation = await DocEditCap.delegate({
-  iss: alice,
-  aud: collaborator,
-  sub: alice,
-  pol: [],
-  exp: nowInSeconds + 604800,
+  iss: owner,        // Document owner issues delegation
+  aud: collaborator, // Collaborator receives edit permission
+  sub: owner,        // Owner maintains document ownership
+  pol: [],          // No additional policy restrictions
+  exp: nowInSeconds + 7200, // Valid for 2 hours for secure session
 })
 
+// Store the delegation for validation during edit operations
 await store.set(delegation)
 
-// Collaborator can invoke the capability to edit
+// Collaborator can now edit the specific document
+// This invocation serves as proof of authorization for the edit
 const invocation = await DocEditCap.invoke({
-  iss: collaborator,
-  sub: alice,
+  iss: collaborator, // Collaborator is performing the edit
+  sub: owner,        // Owner's system processes the edit
   args: {
-    allowedSections: ["introduction", "methodology"],
-    expiry: "2026-12-31T23:59:59Z"
+    docId: 'doc-12345'  // Specific document to edit
   },
-  store,
-  exp: nowInSeconds + 300,
+  store,             // Store containing the delegation proof
+  exp: nowInSeconds + 300, // Edit session expires in 5 minutes
 })
 ```
 

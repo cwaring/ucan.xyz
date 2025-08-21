@@ -12,12 +12,9 @@ This page contains practical examples of using UCAN for various authorization sc
 
 > **Implementation Note**: UCAN libraries for different languages may be at different specification versions. Always refer to your chosen library's documentation for the exact API and supported features.
 
-## Example 1: File System Access
+## File System Access
 
-### Scenario
-Alice wants to give Bob temporary read access to a specific file.
-
-### Implementation using iso-ucan
+This example demonstrates how to delegate file read permissions using UCANs.
 
 ```javascript
 import { Capability } from 'iso-ucan/capability'
@@ -26,44 +23,50 @@ import { MemoryDriver } from 'iso-kv/drivers/memory'
 import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
 import { z } from 'zod'
 
-// Set up store for delegation management
+// Initialize delegation store for tracking capability chains
+// In production, this might be backed by a database or persistent storage
 const store = new Store(new MemoryDriver())
 
-// Define the file read capability
+// Define file read capability with path validation schema
+// The schema ensures all invocations include a valid file path
 const FileReadCap = Capability.from({
   schema: z.object({
-    path: z.string(),
+    path: z.string(),  // Required: file path to read
   }),
-  cmd: '/file/read',
+  cmd: '/file/read',   // UCAN v1 command identifier
 })
 
-// Generate keypairs for Alice and Bob
-const alice = await EdDSASigner.generate()
-const bob = await EdDSASigner.generate()
+// Create cryptographic identities for resource owner and accessor
+// In a real system, these would be persistent identity keypairs
+const alice = await EdDSASigner.generate()  // Resource owner
+const bob = await EdDSASigner.generate()    // Requesting access
 
 const nowInSeconds = Math.floor(Date.now() / 1000)
 
-// Alice delegates file read capability to Bob
+// Alice grants Bob permission to read files
+// This delegation can be stored, transmitted, or embedded in applications
 const delegation = await FileReadCap.delegate({
-  iss: alice,
-  aud: bob,
-  sub: alice,
-  pol: [],
-  exp: nowInSeconds + 3600,
+  iss: alice,    // Alice issues this capability
+  aud: bob,      // Bob is authorized to use it
+  sub: alice,    // Alice's resources are the subject
+  pol: [],      // No additional policy constraints
+  exp: nowInSeconds + 3600, // Expires in 1 hour for security
 })
 
-// Store the delegation for later verification
+// Store delegation to enable later invocation validation
+// The store enables automatic delegation chain resolution
 await store.set(delegation)
 
-// Bob can now invoke the capability to read the file
+// Bob exercises the delegated capability to read a specific file
+// This creates a cryptographically verifiable access request
 const invocation = await FileReadCap.invoke({
-  iss: bob,
-  sub: alice,
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice's system will process the request
   args: {
-    path: '/documents/report.pdf'
+    path: '/documents/report.pdf'  // Specific file Bob wants to read
   },
-  store,
-  exp: nowInSeconds + 300,
+  store,         // Store containing the delegation proof
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
 })
 ```
 
