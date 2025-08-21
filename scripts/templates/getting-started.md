@@ -146,15 +146,13 @@ const delegation = await FileReadCap.delegate({
 await store.set(delegation)
 
 // Bob can verify and use the delegation by creating an invocation
-  const readFile = await invoke({
-    issuer: aliceSession,
-    audience: serviceSession.did(),
-    capability: {
-      can: '/file/read',
-      with: 'https://example.com/files/report.pdf',
-    },
-    proofs: [delegation],
-  })
+const invocation = await FileReadCap.invoke({
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice is the resource owner
+  args: {},      // No additional arguments needed
+  store,         // Store containing the delegation chain
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
+})
 ```
 
 ### 2. API Access

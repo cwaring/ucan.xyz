@@ -30,7 +30,7 @@ import { z } from 'zod'
 const store = new Store(new MemoryDriver())
 
 // Define the file read capability
-const FileRead = Capability.from({
+const FileReadCap = Capability.from({
   schema: z.object({
     path: z.string(),
   }),
