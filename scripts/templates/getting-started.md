@@ -124,7 +124,7 @@ const store = new Store(new MemoryDriver())
 // Define the file read capability
 const FileReadCap = Capability.from({
   schema: z.never(),
-  cmd: 'file:///alice/documents/report.pdf#read',
+  cmd: '/file/read',
 })
 
 // Generate keypairs for Alice and Bob
@@ -146,13 +146,15 @@ const delegation = await FileReadCap.delegate({
 await store.set(delegation)
 
 // Bob can verify and use the delegation by creating an invocation
-const invocation = await FileReadCap.invoke({
-  iss: bob,      // Bob is invoking the capability
-  sub: alice,    // Alice is the resource owner
-  args: {},      // No additional arguments needed
-  store,         // Store containing the delegation chain
-  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
-})
+  const readFile = await invoke({
+    issuer: aliceSession,
+    audience: serviceSession.did(),
+    capability: {
+      can: '/file/read',
+      with: 'https://example.com/files/report.pdf',
+    },
+    proofs: [delegation],
+  })
 ```
 
 ### 2. API Access
@@ -173,7 +175,7 @@ const ApiReadCap = Capability.from({
     }),
     scope: z.string()
   }),
-  cmd: 'https://service.com/api/users#read',
+  cmd: '/api/users/read',
 })
 
 const service = await EdDSASigner.generate()
@@ -221,7 +223,7 @@ const DocEditCap = Capability.from({
     allowedSections: z.array(z.string()),
     expiry: z.string()
   }),
-  cmd: 'doc://alice/project-proposal#edit',
+  cmd: '/document/edit',
 })
 
 const alice = await EdDSASigner.generate()

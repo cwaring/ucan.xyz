@@ -30,9 +30,11 @@ import { z } from 'zod'
 const store = new Store(new MemoryDriver())
 
 // Define the file read capability
-const FileReadCap = Capability.from({
-  schema: z.never(),
-  cmd: 'file:///alice/documents/report.pdf#read',
+const FileRead = Capability.from({
+  schema: z.object({
+    path: z.string(),
+  }),
+  cmd: '/file/read',
 })
 
 // Generate keypairs for Alice and Bob
@@ -88,7 +90,7 @@ const ApiReadCap = Capability.from({
       reset_time: z.string()
     })
   }),
-  cmd: 'https://service.example.com/api/users#read',
+  cmd: '/api/users/read',
 })
 
 // Generate keypairs for service and client
@@ -244,13 +246,13 @@ UCANs in `iso-ucan` are handled as structured objects that can be serialized for
    // Good: Specific resource and capability
    const FileReadCap = Capability.from({
      schema: z.never(),
-     cmd: 'file:///alice/documents/report.pdf#read',
+     cmd: '/file/read',
    })
    
    // Avoid: Overly broad permissions  
    const AllFilesCap = Capability.from({
      schema: z.never(),
-     cmd: 'file:///alice/*#*',
+     cmd: '/file/*',
    })
    ```
 
