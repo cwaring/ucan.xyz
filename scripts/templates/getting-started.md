@@ -6,28 +6,41 @@ sidebar:
   order: 1
 ---
 
-This guide provides a gentle introduction to UCAN (User Controlled Authorization Network) and its core concepts.
+This guide provides a quick introduction to UCAN (User Controlled Authorization Network) and walks you through building your first UCAN-enabled application.
 
-> **Note**: The code examples in this guide use the TypeScript UCAN library (`@ucans/ucans`) for illustration. Different UCAN libraries may have different APIs and be at different specification versions. Always refer to your chosen library's documentation for exact API details.
+> **Implementation Note**: This guide uses the JavaScript UCAN library (`iso-ucan`) for code examples. Different UCAN libraries may have varying APIs and support different specification versions. Always refer to your chosen library's documentation for exact implementation details.
 
 ## What is UCAN?
 
-UCAN is a **trustless**, **secure**, **local-first**, **user-originated** authorization scheme that lets you:
+UCAN is a **decentralized authorization system** that enables secure, offline-capable delegation of permissions without requiring centralized servers or sharing cryptographic keys.
 
-- **Delegate authority** without sharing cryptographic keys
-- **Work offline** with full authorization capabilities
-- **Scale authorization** across distributed systems
-- **Maintain user control** over their data and permissions
+### Core Benefits
 
-## Key Concepts
+- 🔑 **No shared secrets** - Delegate authority without sharing private keys
+- 🌐 **Offline-first** - Work without internet connectivity or central servers  
+- 🔗 **Chainable** - Create delegation chains across multiple parties
+- 🛡️ **Cryptographically secure** - Built on proven public-key cryptography
+- ⚡ **Locally verifiable** - No network calls needed for authorization
 
-### 1. Capabilities vs Permissions
+### How UCAN Differs from Traditional Auth
 
-Traditional systems use **Access Control Lists (ACLs)** - a list of who can do what:
+| Traditional Auth (OAuth, etc.) | UCAN |
+|--------------------------------|------|
+| Centralized authorization server | Decentralized, peer-to-peer |
+| Online verification required | Offline verification possible |
+| Shared secrets or tokens | Public-key cryptography |
+| Revocation requires server | Revocation via cryptographic proofs |
+
+## Core Concepts
+
+### Capabilities vs Permissions
+
+**Traditional Access Control Lists (ACLs)** define who can do what:
 ```
-Alice can read file.txt
-Bob can write file.txt
-Charlie can read file.txt
+Users Table:
+- Alice: can read file.txt, write file.txt
+- Bob: can read file.txt  
+- Charlie: can read file.txt, delete file.txt
 ```
 
 UCAN uses **capabilities** - tokens that grant specific abilities:
@@ -36,23 +49,36 @@ Token A grants "read file.txt"
 Token B grants "write file.txt"
 ```
 
-### 2. Delegation
+### Delegation Chains
 
-With UCAN, you can delegate authority to others without sharing your keys:
+UCAN enables secure delegation without key sharing:
+
+```mermaid
+graph TD
+    A[Alice Root Authority] -->|delegates read| B[Bob Capability]
+    B -->|delegates read| C[Charlie Capability] 
+    C -->|exercises capability| D[File System Grants Access]
+```
+
+Each delegation:
+- ✅ Is cryptographically signed by the delegator
+- ✅ Can be verified independently 
+- ✅ Can include additional restrictions (attenuation)
+- ✅ Has built-in expiration
+
+### Verification Without Servers
 
 ```mermaid
 graph LR
-    A[Alice] -->|delegates read permission| B[Bob]
-    B -->|delegates read permission| C[Charlie]
-    C -->|can now read file.txt| D[File System]
+    A[Charlie's Request] --> B[Local Verification]
+    B --> C{Valid Chain?}
+    C -->|Yes| D[Grant Access]
+    C -->|No| E[Deny Access]
+    
+    F[Alice's Public Key] --> B
+    G[Bob's Delegation] --> B
+    H[Charlie's Delegation] --> B
 ```
-
-### 3. Verification
-
-Each UCAN can be verified independently:
-- **Cryptographic signatures** prove authenticity
-- **Certificate chains** show delegation path
-- **No central authority** needed for verification
 
 ## Core Specifications
 
@@ -86,84 +112,163 @@ How to revoke capabilities after they've been issued.
 
 ### 1. File System Access
 ```javascript
-// Using TypeScript UCAN library
-import * as ucans from "@ucans/ucans"
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-// Alice creates a keypair and delegates read access to Bob
-const aliceKeypair = await ucans.EdKeypair.create()
-const bobDid = "did:key:z6Mk3..." // Bob's DID
+// Set up store for delegation management
+// This store will track all delegations and resolve delegation chains
+const store = new Store(new MemoryDriver())
 
-const delegation = await ucans.build({
-  audience: bobDid,
-  issuer: aliceKeypair,
-  capabilities: [{
-    with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-    can: { namespace: "fs", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 3600 // 1 hour
-});
+// Define the file read capability with schema validation
+// The schema ensures that invocations include a valid file path
+const FileReadCap = Capability.from({
+  schema: z.object({
+    path: z.string(),
+  }),
+  cmd: '/file/read',  // Command identifier following UCAN v1 spec
+})
 
-// Encode the UCAN for transport
-const token = ucans.encode(delegation);
+// Generate keypairs for Alice (resource owner) and Bob (delegatee)
+// In production, these would be long-lived identity keypairs
+const alice = await EdDSASigner.generate()
+const bob = await EdDSASigner.generate()
 
-// Bob can verify and use the delegation
-const result = await ucans.verify(token, {
-  audience: bobDid,
-  isRevoked: async ucan => false,
-  requiredCapabilities: [{
-    capability: {
-      with: { scheme: "file", hierPart: "///alice/documents/report.pdf" },
-      can: { namespace: "fs", segments: ["read"] }
-    },
-    rootIssuer: aliceKeypair.did()
-  }]
-});
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Alice creates a delegation to Bob for file read access
+// This grants Bob the authority to read files on Alice's behalf
+const delegation = await FileReadCap.delegate({
+  iss: alice,    // Alice issues this delegation
+  aud: bob,      // Bob is the audience (recipient)
+  sub: alice,    // Alice is the subject (resource owner)
+  pol: [],      // No additional policy constraints
+  exp: nowInSeconds + 3600, // Expires in 1 hour for security
+})
+
+// Store the delegation for later lookup during invocation
+// The store enables automatic delegation chain resolution
+await store.set(delegation)
+
+// Bob can now invoke this capability to read a specific file
+// The invocation proves Bob's authority and specifies the action
+const invocation = await FileReadCap.invoke({
+  iss: bob,      // Bob is invoking the capability
+  sub: alice,    // Alice's system will execute the action
+  args: {
+    path: '/documents/report.pdf'  // Specific file to read
+  },
+  store,         // Store containing the delegation proof
+  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
+})
 ```
 
-### 2. API Access
+### 2. API Access Control
 ```javascript
-// Service owner delegates API access using TypeScript library
-import * as ucans from "@ucans/ucans"
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const serviceKeypair = await ucans.EdKeypair.create()
-const userDid = "did:key:z6MkUser..." // User's DID
+// Initialize store for managing delegations
+const store = new Store(new MemoryDriver())
 
-const apiAccess = await ucans.build({
-  audience: userDid,
-  issuer: serviceKeypair,
-  capabilities: [{
-    with: { scheme: "https", hierPart: "//service.com/api/users" },
-    can: { namespace: "api", segments: ["read"] }
-  }],
-  lifetimeInSeconds: 86400, // 24 hours
-  facts: [{
-    rateLimit: { requests_per_hour: 100 },
-    scope: "public" // only public data
-  }]
-});
+// Define API read capability with endpoint validation
+// Schema ensures the endpoint parameter is a valid string
+const ApiReadCap = Capability.from({
+  schema: z.object({
+    endpoint: z.string(),
+  }),
+  cmd: '/api/read',  // Command for API read operations
+})
+
+// Create keypairs for service owner and client application
+// Service owns the API, client needs read access to specific endpoints
+const service = await EdDSASigner.generate()
+const client = await EdDSASigner.generate()
+
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Service grants client permission to read from API endpoints
+// This could be part of an OAuth-like flow with UCAN tokens
+const delegation = await ApiReadCap.delegate({
+  iss: service,  // Service issues the delegation
+  aud: client,   // Client receives the capability
+  sub: service,  // Service owns the API resources
+  pol: [],      // No additional constraints
+  exp: nowInSeconds + 86400, // Valid for 24 hours
+})
+
+// Store delegation to enable invocation validation
+await store.set(delegation)
+
+// Client invokes the capability to access a specific API endpoint
+// This acts as an authorization proof for the API request
+const invocation = await ApiReadCap.invoke({
+  iss: client,   // Client is making the request
+  sub: service,  // Service will process the request
+  args: {
+    endpoint: '/users/profile'  // Specific API endpoint to access
+  },
+  store,         // Store with delegation proof
+  exp: nowInSeconds + 300, // Request expires in 5 minutes
+})
 ```
 
-### 3. Collaborative Documents
+### 3. Document Collaboration
 ```javascript
-// Alice shares edit access to document using TypeScript library
-import * as ucans from "@ucans/ucans"
+import { Capability } from 'iso-ucan/capability'
+import { Store } from 'iso-ucan/store'
+import { MemoryDriver } from 'iso-kv/drivers/memory'
+import { EdDSASigner } from 'iso-signatures/signers/eddsa.js'
+import { z } from 'zod'
 
-const aliceKeypair = await ucans.EdKeypair.create()
-const collaboratorDid = "did:key:z6MkCollab..." // Collaborator's DID
+// Set up store for delegation chain management
+const store = new Store(new MemoryDriver())
 
-const editAccess = await ucans.build({
-  audience: collaboratorDid,
-  issuer: aliceKeypair,
-  capabilities: [{
-    with: { scheme: "doc", hierPart: "//alice/project-proposal" },
-    can: { namespace: "doc", segments: ["edit"] }
-  }],
-  lifetimeInSeconds: 604800, // 1 week
-  facts: [{
-    allowedSections: ["comments", "suggestions"], // limited sections
-    expiry: "2025-12-31T23:59:59Z" // explicit expiry date
-  }]
-});
+// Define document edit capability with document ID validation
+// Schema requires a valid document identifier for all operations
+const DocEditCap = Capability.from({
+  schema: z.object({
+    docId: z.string(),
+  }),
+  cmd: '/doc/edit',  // Command for document editing operations
+})
+
+// Generate keypairs for document owner and collaborator
+// Owner controls document permissions, collaborator needs edit access
+const owner = await EdDSASigner.generate()
+const collaborator = await EdDSASigner.generate()
+
+const nowInSeconds = Math.floor(Date.now() / 1000)
+
+// Owner delegates document editing rights to collaborator
+// This enables secure document sharing without password sharing
+const delegation = await DocEditCap.delegate({
+  iss: owner,        // Document owner issues delegation
+  aud: collaborator, // Collaborator receives edit permission
+  sub: owner,        // Owner maintains document ownership
+  pol: [],          // No additional policy restrictions
+  exp: nowInSeconds + 7200, // Valid for 2 hours for secure session
+})
+
+// Store the delegation for validation during edit operations
+await store.set(delegation)
+
+// Collaborator can now edit the specific document
+// This invocation serves as proof of authorization for the edit
+const invocation = await DocEditCap.invoke({
+  iss: collaborator, // Collaborator is performing the edit
+  sub: owner,        // Owner's system processes the edit
+  args: {
+    docId: 'doc-12345'  // Specific document to edit
+  },
+  store,             // Store containing the delegation proof
+  exp: nowInSeconds + 300, // Edit session expires in 5 minutes
+})
 ```
 
 ## Next Steps
@@ -176,11 +281,11 @@ const editAccess = await ucans.build({
 ## Additional Resources
 
 - [UCAN Website](https://ucan.xyz)
-- [GitHub Repository](https://github.com/ucan-wg/spec)
-- [Implementation Libraries](https://github.com/ucan-wg)
-  - **JavaScript/TypeScript**: [`@ucans/ucans`](https://github.com/ucan-wg/ts-ucan) (NPM: `ucans`)
-  - **Rust**: [`ucan`](https://github.com/ucan-wg/rs-ucan)
-  - **Go**: [`go-ucan`](https://github.com/ucan-wg/go-ucan)
+- [UCAN GitHub Working Group](https://github.com/ucan-wg/)
+- [Implementation Libraries](/libraries/)
+  - **JavaScript**: [`iso-ucan`](/libraries/javascript/) (NPM: `iso-ucan`)
+  - **Rust**: [`ucan`](/libraries/rust/)
+  - **Go**: [`go-ucan`](/libraries/go/)
 
 ## Questions?
 
