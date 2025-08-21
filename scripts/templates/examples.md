@@ -8,9 +8,9 @@ sidebar:
 
 This page contains practical examples of using UCAN for various authorization scenarios.
 
-> **Note**: These examples show the conceptual structure and high-level API patterns. Actual implementations may vary depending on the UCAN library you're using. Refer to the specific library documentation for exact API details.
+> **Note**: These examples use the v1.0.0-rc.1 UCAN specification and the `iso-ucan` JavaScript library. The examples show the current API patterns as of the latest specification version.
 
-> **Version Note**: Different UCAN library implementations are at different stages of the specification. JavaScript (`iso-ucan`) implements the latest specification, Rust (`ucan`) implements v0.10.0-canary, and Go (`go-ucan`) implements v1.0.0-rc.1. API patterns and payload structures may differ between versions.
+> **Implementation Note**: UCAN libraries for different languages may be at different specification versions. Always refer to your chosen library's documentation for the exact API and supported features.
 
 ## Example 1: File System Access
 
@@ -45,11 +45,11 @@ const nowInSeconds = Math.floor(Date.now() / 1000)
 
 // Alice delegates file read capability to Bob
 const delegation = await FileReadCap.delegate({
-  iss: alice,    // Alice issues the delegation
-  aud: bob,      // Bob is the audience who receives the capability
-  sub: alice,    // Alice is the subject (resource owner)
-  pol: [],      // No additional policies
-  exp: nowInSeconds + 3600, // Expires in 1 hour
+  iss: alice,
+  aud: bob,
+  sub: alice,
+  pol: [],
+  exp: nowInSeconds + 3600,
 })
 
 // Store the delegation for later verification
@@ -57,11 +57,13 @@ await store.set(delegation)
 
 // Bob can now invoke the capability to read the file
 const invocation = await FileReadCap.invoke({
-  iss: bob,      // Bob is invoking the capability
-  sub: alice,    // Alice is the resource owner
-  args: {},      // No additional arguments for this capability
-  store,         // Store containing the delegation chain
-  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
+  iss: bob,
+  sub: alice,
+  args: {
+    path: '/documents/report.pdf'
+  },
+  store,
+  exp: nowInSeconds + 300,
 })
 ```
 
@@ -101,27 +103,27 @@ const nowInSeconds = Math.floor(Date.now() / 1000)
 
 // Service delegates API access to client with rate limiting
 const delegation = await ApiReadCap.delegate({
-  iss: service,  // Service issues the delegation
-  aud: client,   // Client receives the capability
-  sub: service,  // Service owns the API resource
-  pol: [],      // No additional policies
-  exp: nowInSeconds + 86400, // Expires in 24 hours
+  iss: service,
+  aud: client,
+  sub: service,
+  pol: [],
+  exp: nowInSeconds + 86400,
 })
 
 await store.set(delegation)
 
 // Client can invoke the capability with rate limiting parameters
 const invocation = await ApiReadCap.invoke({
-  iss: client,   // Client is invoking the capability
-  sub: service,  // Service is the resource owner
+  iss: client,
+  sub: service,
   args: {
     rate_limit: { 
       requests_per_hour: 100, 
       reset_time: "hourly" 
     }
   },
-  store,         // Store containing the delegation chain
-  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
+  store,
+  exp: nowInSeconds + 300,
 })
 ```
 

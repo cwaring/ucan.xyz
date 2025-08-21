@@ -123,7 +123,9 @@ const store = new Store(new MemoryDriver())
 
 // Define the file read capability
 const FileReadCap = Capability.from({
-  schema: z.never(),
+  schema: z.object({
+    path: z.string(),
+  }),
   cmd: '/file/read',
 })
 
@@ -135,11 +137,11 @@ const nowInSeconds = Math.floor(Date.now() / 1000)
 
 // Alice delegates read access to Bob
 const delegation = await FileReadCap.delegate({
-  iss: alice,    // Alice issues the delegation
-  aud: bob,      // Bob receives the capability
-  sub: alice,    // Alice owns the resource
-  pol: [],      // No additional policies
-  exp: nowInSeconds + 3600 // Expires in 1 hour
+  iss: alice,
+  aud: bob,
+  sub: alice,
+  pol: [],
+  exp: nowInSeconds + 3600
 })
 
 // Store the delegation for later use
@@ -147,11 +149,13 @@ await store.set(delegation)
 
 // Bob can verify and use the delegation by creating an invocation
 const invocation = await FileReadCap.invoke({
-  iss: bob,      // Bob is invoking the capability
-  sub: alice,    // Alice is the resource owner
-  args: {},      // No additional arguments needed
-  store,         // Store containing the delegation chain
-  exp: nowInSeconds + 300, // Invocation expires in 5 minutes
+  iss: bob,
+  sub: alice,
+  args: {
+    path: '/documents/report.pdf'
+  },
+  store,
+  exp: nowInSeconds + 300,
 })
 ```
 
@@ -183,11 +187,11 @@ const nowInSeconds = Math.floor(Date.now() / 1000)
 
 // Service delegates API access to user
 const delegation = await ApiReadCap.delegate({
-  iss: service,  // Service issues the delegation
-  aud: user,     // User receives the capability
-  sub: service,  // Service owns the API
-  pol: [],      // No additional policies
-  exp: nowInSeconds + 86400, // Expires in 24 hours
+  iss: service,
+  aud: user,
+  sub: service,
+  pol: [],
+  exp: nowInSeconds + 86400,
 })
 
 await store.set(delegation)
@@ -231,11 +235,11 @@ const nowInSeconds = Math.floor(Date.now() / 1000)
 
 // Alice shares edit access to document
 const delegation = await DocEditCap.delegate({
-  iss: alice,        // Alice issues the delegation
-  aud: collaborator, // Collaborator receives the capability
-  sub: alice,        // Alice owns the document
-  pol: [],          // No additional policies
-  exp: nowInSeconds + 604800, // Expires in 1 week
+  iss: alice,
+  aud: collaborator,
+  sub: alice,
+  pol: [],
+  exp: nowInSeconds + 604800,
 })
 
 await store.set(delegation)
