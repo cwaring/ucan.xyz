@@ -16,7 +16,7 @@
       }
     },
     {
-      "label": "Sub Specifications",
+      "label": "Core Specifications",
       "items": [
         {
           "label": "Delegation",
@@ -33,10 +33,6 @@
         {
           "label": "Revocation",
           "slug": "revocation"
-        },
-        {
-          "label": "Container",
-          "slug": "container"
         }
       ]
     },
@@ -46,6 +42,10 @@
         {
           "label": "Variable Signature",
           "slug": "varsig"
+        },
+        {
+          "label": "Container",
+          "slug": "container"
         }
       ]
     },
