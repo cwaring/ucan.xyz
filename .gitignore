@@ -5,6 +5,7 @@ dist/
 
 # generated documentation
 src/content/docs/
+sidebar-config.json
 
 # dependencies
 node_modules/

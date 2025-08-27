@@ -109,13 +109,12 @@ export const PROCESSING_CONFIG = {
         autogenerate: { directory: 'guides' },
       },
       {
-        label: 'Sub Specifications',
+        label: 'Core Specifications',
         items: [
           { label: 'Delegation', slug: 'delegation' },
           { label: 'Invocation', slug: 'invocation' },
           { label: 'Promise', slug: 'promise' },
           { label: 'Revocation', slug: 'revocation' },
-          { label: 'Container', slug: 'container' }, 
         ]
         ,
       },
@@ -123,6 +122,7 @@ export const PROCESSING_CONFIG = {
         label: 'References',
         items: [
           { label: 'Variable Signature', slug: 'varsig' },
+          { label: 'Container', slug: 'container' },
         ],
       },
       {
