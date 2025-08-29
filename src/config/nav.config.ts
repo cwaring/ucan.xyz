@@ -10,6 +10,7 @@ export const documentationLinks = [
 
 export const communityLinks = [
   { href: "https://github.com/ucan-wg", label: "GitHub" },
+  { href: "https://discord.gg/zSfgeHhKxA", label: "Discord" },
   { href: "/about/", label: "About" },
 ];
 

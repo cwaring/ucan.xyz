@@ -165,9 +165,3 @@ The documentation is automatically pulled from these repositories:
 - **Mermaid**: Diagram rendering with theme support
 - **astro-icon**: Icon system with Lucide icons
 - **robots.txt**: SEO configuration to prevent indexing during development
-
-## 👀 Want to learn more?
-
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.bu## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
