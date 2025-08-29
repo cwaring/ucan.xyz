@@ -28,6 +28,9 @@ export default defineConfig({
       }),
       starlight({
           title: 'UCAN',
+          customCss: [
+            '/src/styles/sl-custom.css'
+          ],
           logo: {
               light: '/src/assets/logo.png',
               dark: '/src/assets/logo.png',
@@ -61,7 +64,8 @@ export default defineConfig({
               },
           ],
           social: [
-              { icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg' }
+              { icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg' },
+              { icon: 'discord', label: 'Discord', href: 'https://discord.gg/zSfgeHhKxA' }
           ],
           sidebar: sidebarConfig.sidebar,
           plugins: [
