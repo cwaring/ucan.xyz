@@ -17,9 +17,9 @@
   "dependencies": {
     "@astrojs/starlight": "^0.35.2",
     "@astrojs/vue": "^5.1.0",
-    "@iconify-json/lucide": "^1.2.64",
+    "@iconify-json/lucide": "^1.2.65",
     "@tailwindcss/vite": "^4.1.12",
-    "astro": "^5.13.4",
+    "astro": "^5.13.5",
     "astro-icon": "^1.1.5",
     "astro-mermaid": "^1.0.4",
     "astro-robots-txt": "^1.0.0",
