@@ -11,5 +11,11 @@
 }
 .site-title span {
   font-weight: bold;
-  color: white;
+}
+
+html[data-theme='dark'] .site-title span {
+  color: #f0f0f0;
+}
+html[data-theme='light'] .site-title span {
+  color: #1a1a1a;
 }
