@@ -1,145 +1,199 @@
-# UCAN Documentation Processing Script
+# UCAN.xyz Documentation Processing System
 
-This script processes UCAN specification documents from GitHub repositories and converts them into a structured documentation website using Astro Starlight.
+This documentation describes the automated system that processes UCAN specification documents from GitHub repositories and converts them into a unified documentation website using Astro Starlight.
 
-## Features
+## Overview
 
-- **GitHub Integration**: Fetches README.md files directly from GitHub repositories
-- **Automatic Processing**: Converts GitHub-hosted markdown files into Starlight-compatible documentation
-- **Clean Slate**: Automatically clears existing documentation before processing to ensure fresh output
-- **Proper Ordering**: Processes specs in dependency order to ensure correct cross-references
-- **Link Resolution**: Automatically converts cross-references between specifications
-- **Schema Integration**: Processes IPLD schema files and creates dedicated schema documentation
-- **Sidebar Generation**: Auto-generates sidebar configuration for proper navigation
-- **Frontmatter Generation**: Adds appropriate frontmatter with titles and descriptions
-- **Metadata Cleanup**: Removes editor/author sections that aren't needed in docs
-- **Library Documentation**: Includes UCAN implementation libraries across multiple languages
-- **Mermaid Diagrams**: Supports Mermaid diagrams for visualizing concepts
-- **Git Integration**: Generated documentation is gitignored to avoid committing processed files
+The UCAN.xyz website automatically aggregates documentation from multiple repositories in the UCAN ecosystem, providing a single source of truth for UCAN specifications, implementations, and guides. The system fetches content directly from GitHub, processes it for web consumption, and generates a cohesive documentation experience.
+
+## Key Features
+
+- **GitHub Integration**: Fetches README.md and IPLD schema files directly from GitHub repositories
+- **Automated Processing**: Converts GitHub-hosted markdown into Starlight-compatible documentation
+- **Clean Slate Processing**: Automatically clears existing documentation before processing to ensure fresh output
+- **Dependency-Aware Ordering**: Processes specifications in logical order to ensure correct cross-references
+- **Intelligent Link Resolution**: Automatically converts cross-references between specifications
+- **Schema Integration**: Processes IPLD schema files and creates dedicated schema documentation pages
+- **Dynamic Sidebar Generation**: Auto-generates navigation structure based on processed content
+- **Frontmatter Generation**: Adds appropriate frontmatter with titles, descriptions, and edit URLs
+- **Content Sanitization**: Removes unnecessary sections (editors, authors) and standardizes formatting
+- **Multi-Language Library Support**: Includes UCAN implementations across JavaScript, Rust, Go, and more
+- **Mermaid Diagram Support**: Renders interactive diagrams for visualizing UCAN concepts
+- **SEO Optimization**: Generates meta tags and structured content for search engines
 
 ## Usage
 
 ### Quick Start
 
 ```bash
-# Process all documentation
-npm run process-docs
+# Install dependencies
+pnpm install
+
+# Process all documentation from GitHub
+pnpm process-docs
+
+# Format and validate content
+pnpm content-format
 
 # Start the development server
-npm run dev
+pnpm dev
+```
+
+### Production Build
+
+```bash
+# Full build process (includes documentation processing)
+pnpm build
+
+# Preview the built site
+pnpm preview
 ```
 
 ### Manual Processing
 
 ```bash
-# Run the script directly
+# Run documentation processing directly
 node scripts/process-docs.js
+
+# Run content formatting directly  
+node scripts/content-format.js
 ```
 
-## Directory Structure
+## Site Architecture
 
-The script processes GitHub repositories and creates the following structure:
+The website is structured as follows:
 
+### Main Pages (Astro)
 ```
-GitHub Sources                    → Generated Documentation
-├── ucan-wg/spec/README.md       → /src/content/docs/specification/index.md
-├── ucan-wg/delegation/README.md → /src/content/docs/delegation/index.md
-├── ucan-wg/delegation/delegation.ipldsch → /src/content/docs/delegation/schema.md
-├── ucan-wg/invocation/README.md → /src/content/docs/invocation/index.md
-├── ucan-wg/invocation/invocation.ipldsch → /src/content/docs/invocation/schema.md
-├── ucan-wg/revocation/README.md → /src/content/docs/revocation/index.md
-├── ucan-wg/revocation/revocation.ipldsch → /src/content/docs/revocation/schema.md
-├── ucan-wg/promise/README.md    → /src/content/docs/promise/index.md
-├── ucan-wg/container/Readme.md  → /src/content/docs/container/index.md
-├── ChainAgnostic/varsig/README.md → /src/content/docs/varsig/index.md
-├── hugomrdias/iso-repo/packages/iso-ucan/readme.md    → /src/content/docs/libraries/javascript/index.md
-├── ucan-wg/rs-ucan/README.md    → /src/content/docs/libraries/rust/index.md
-├── ucan-wg/go-ucan/Readme.md    → /src/content/docs/libraries/go/index.md
-├── fission-suite/fission/hs-ucan/README.md → /src/content/docs/libraries/haskell/index.md
-├── ipld/js-dag-ucan/README.md   → /src/content/docs/libraries/js-dag-ucan/index.md
-└── storacha/ucanto/Readme.md    → /src/content/docs/libraries/ucanto/index.md
+src/pages/
+├── index.astro           # Homepage with UCAN overview and features
+├── about.astro           # About UCAN and the working group  
+├── libraries.astro       # Library showcase and comparison
+├── getting-started.astro # Interactive getting started guide
+└── inspector.astro       # UCAN token inspector tool
 ```
 
-## Processing Order
+### Documentation Structure (Starlight)
+```
+src/content/docs/                    # Auto-generated from GitHub repositories
+├── specification/
+│   └── index.md                     # Main UCAN specification
+├── guides/
+│   ├── getting-started.md           # Tutorial and quick start guide
+│   └── examples.md                  # Code examples and use cases
+├── Core Specifications/
+│   ├── delegation/
+│   │   ├── index.md                 # UCAN Delegation specification
+│   │   └── schema.md                # IPLD schema documentation
+│   ├── invocation/
+│   │   ├── index.md                 # UCAN Invocation specification  
+│   │   └── schema.md                # IPLD schema documentation
+│   ├── promise/
+│   │   └── index.md                 # UCAN Promise specification
+│   └── revocation/
+│       ├── index.md                 # UCAN Revocation specification
+│       └── schema.md                # IPLD schema documentation
+├── References/
+│   ├── varsig/
+│   │   └── index.md                 # Variable Signature specification
+│   └── container/
+│       └── index.md                 # Container format specification
+└── Libraries/
+    ├── javascript/
+    │   └── index.md                 # JavaScript/TypeScript implementations
+    ├── rust/
+    │   └── index.md                 # Rust implementation
+    └── go/
+        └── index.md                 # Go implementation
+```
 
-The script processes specifications in dependency order:
+## Repository Sources
 
-1. **specification** - Main UCAN specification (foundation)
-2. **delegation** - UCAN Delegation (depends on main spec)
-3. **invocation** - UCAN Invocation (depends on delegation)
-4. **promise** - UCAN Promise (referenced by others)
-5. **revocation** - UCAN Revocation (depends on delegation & invocation)
-6. **varsig** - Variable signature spec (used by others)
-7. **container** - Container format (transport layer)
-8. **libraries/javascript** - JavaScript implementation
-9. **libraries/rust** - Rust implementation
-10. **libraries/go** - Go implementation
-11. **libraries/haskell** - Haskell implementation
-12. **libraries/js-dag-ucan** - UCAN IPLD (JavaScript)
-13. **libraries/ucanto** - UCAN-RPC (JavaScript)
-
-## GitHub Source Repositories
-
-The script fetches documentation from these repositories:
+The documentation system automatically fetches content from these GitHub repositories:
 
 ### Core Specifications
-- **ucan-wg/spec** - Main UCAN specification
-- **ucan-wg/delegation** - UCAN Delegation
-- **ucan-wg/invocation** - UCAN Invocation
-- **ucan-wg/promise** - UCAN Promise
-- **ucan-wg/revocation** - UCAN Revocation
-- **ucan-wg/container** - Container format
-- **ChainAgnostic/varsig** - Variable signature
+- **[ucan-wg/spec](https://github.com/ucan-wg/spec)** → Introduction (Main UCAN specification)
+- **[ucan-wg/delegation](https://github.com/ucan-wg/delegation)** → Delegation spec + IPLD schema
+- **[ucan-wg/invocation](https://github.com/ucan-wg/invocation)** → Invocation spec + IPLD schema
+- **[ucan-wg/promise](https://github.com/ucan-wg/promise)** → Promise specification
+- **[ucan-wg/revocation](https://github.com/ucan-wg/revocation)** → Revocation spec + IPLD schema
 
-### Libraries
-- **hugomrdias/iso-repo** - JavaScript implementation
-- **ucan-wg/rs-ucan** - Rust implementation
-- **ucan-wg/go-ucan** - Go implementation
-- **fission-suite/fission** - Haskell implementation
-- **ipld/js-dag-ucan** - UCAN IPLD (JavaScript)
-- **storacha/ucanto** - UCAN-RPC (JavaScript)
+### Reference Specifications  
+- **[ChainAgnostic/varsig](https://github.com/ChainAgnostic/varsig)** → Variable signature specification
+- **[ucan-wg/container](https://github.com/ucan-wg/container)** → Container format specification
 
-## Link Processing
+### Implementation Libraries
+- **[hugomrdias/iso-repo](https://github.com/hugomrdias/iso-repo)** → JavaScript/TypeScript implementation (`packages/iso-ucan/`)
+- **[ucan-wg/rs-ucan](https://github.com/ucan-wg/rs-ucan)** → Rust implementation
+- **[ucan-wg/go-ucan](https://github.com/ucan-wg/go-ucan)** → Go implementation
 
-The script automatically handles:
+## Processing Workflow
+
+The documentation processing happens in this sequence:
+
+1. **specification** - Main UCAN specification (foundation for all others)
+2. **delegation** - UCAN Delegation (extends main specification)
+3. **invocation** - UCAN Invocation (builds on delegation concepts)
+4. **promise** - UCAN Promise (referenced by invocation and revocation)
+5. **revocation** - UCAN Revocation (depends on delegation and invocation)
+6. **varsig** - Variable signature specification (used by UCAN implementations)
+7. **container** - Container format (transport layer specification)
+8. **libraries/javascript** - JavaScript/TypeScript implementation documentation
+9. **libraries/rust** - Rust implementation documentation
+10. **libraries/go** - Go implementation documentation
+
+This order ensures that cross-references between specifications are resolved correctly during link processing.
+
+## Link Processing and Cross-References
+
+The system intelligently handles various types of links found in the source documentation:
 
 ### Cross-Specification Links
+Automatically converts references between UCAN specifications:
 - `[UCAN Delegation]` → `[UCAN Delegation](/delegation/)`
 - `[UCAN Invocation]` → `[UCAN Invocation](/invocation/)`
 - `[UCAN]` → `[UCAN](/specification/)`
 - `[delegation]` → `[delegation](/delegation/)`
 
 ### Reference-Style Links
+Converts GitHub repository links to internal documentation links:
 - `[UCAN]: https://github.com/ucan-wg/spec` → `[UCAN]: /specification/`
 - `[UCAN Delegation]: https://github.com/ucan-wg/delegation` → `[UCAN Delegation]: /delegation/`
 
-### Internal Section Links
-- `[Subject]: #subject` → `[Subject]: #subject` (preserved)
+### Section Links
+Preserves internal document navigation:
+- `[Subject]: #subject` → `[Subject]: #subject` (unchanged)
 
-### GitHub External Links
-- Repository links are preserved as external links
+### External Links
+Maintains links to external resources:
+- Repository links to GitHub remain as external links
 - NPM package links are preserved as external links
 - Crate.io links are preserved as external links
 
 ## Configuration
 
-The script can be configured by editing `scripts/config.js`:
+The processing system is configured through `scripts/config.js`:
 
 ```javascript
 export const PROCESSING_CONFIG = {
+  // Repository sources and their documentation paths
   specs: [
     { 
       name: 'specification', 
       title: 'UCAN Specification',
       githubUrl: 'https://raw.githubusercontent.com/ucan-wg/spec/main/README.md',
-      schemaUrl: null
+      schemaUrl: null // No schema file for main spec
     },
-    // ... more specs and libraries
+    { 
+      name: 'delegation', 
+      title: 'UCAN Delegation',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/delegation/main/README.md',
+      schemaUrl: 'https://raw.githubusercontent.com/ucan-wg/delegation/main/delegation.ipldsch'
+    },
+    // ... more specifications
   ],
-  linkMappings: {
-    '[UCAN]': '/specification/',
-    // ... more mappings
-  },
+
+  // Auto-generated sidebar configuration
   sidebarConfig: {
     sidebar: [
       {
@@ -149,98 +203,157 @@ export const PROCESSING_CONFIG = {
         ],
       },
       {
-        label: 'Libraries',
-        items: [
-          { label: 'TypeScript', slug: 'libraries/typescript' },
-          { label: 'Rust', slug: 'libraries/rust' },
-          // ... more libraries
-        ],
+        label: 'Guides',
+        autogenerate: { directory: 'guides' },
       },
+      // ... more sections
     ],
   },
-  // ... other options
+
+  // Processing options
+  options: {
+    processSchemas: true,           // Process IPLD schema files
+    createBackup: false,            // Don't backup existing files
+    updateLandingPage: true,        // Update homepage with processed content
+    removeTitleFromBody: true,      // Remove title duplication
+    maxDescriptionLength: 160,      // Max meta description length
+  }
 };
 ```
 
-## Generated Files
+### Adding New Repositories
 
-The script generates:
+To add a new repository to the documentation:
 
-1. **Processed Documentation**: Markdown files in `/src/content/docs/`
-   - Core specifications (delegation, invocation, etc.)
-   - Library implementations (JavaScript, Rust, Go, etc.)
-   - Generated guides and examples
-2. **Schema Documentation**: IPLD schema files converted to markdown
-3. **Sidebar Configuration**: JSON file with navigation structure including Libraries section
-4. **Updated Landing Page**: Enhanced homepage with UCAN overview and library cards
-5. **Mermaid Diagrams**: Interactive diagrams for visualizing UCAN concepts
+1. Add an entry to the `specs` array in `scripts/config.js`
+2. Include the GitHub raw URL for the README file
+3. Optionally include a schema URL for IPLD schemas
+4. Update the sidebar configuration if needed
+5. Run `pnpm process-docs` to fetch and process the new content
+
+## Generated Content
+
+The processing system generates several types of content:
+
+### 1. Processed Documentation Files
+- **Location**: `/src/content/docs/`
+- **Format**: Markdown files with Starlight-compatible frontmatter
+- **Content**: Core specifications, library documentation, and guides
+- **Features**: Cross-linked references, sanitized content, proper metadata
+
+### 2. IPLD Schema Documentation  
+- **Location**: `/src/content/docs/*/schema.md`
+- **Source**: `.ipldsch` files from specification repositories
+- **Format**: Formatted schema definitions with syntax highlighting
+
+### 3. Navigation Configuration
+- **File**: `sidebar-config.json`
+- **Purpose**: Auto-generated sidebar structure for Starlight
+- **Content**: Hierarchical navigation reflecting the documentation structure
+
+### 4. Enhanced Frontmatter
+Each processed document includes:
+```yaml
+---
+title: "Specification Title"
+description: "Auto-extracted description from content"
+version: "1.0.0-rc.1"  # Extracted from badges or headers
+editUrl: "https://github.com/org/repo/blob/main/README.md"
+---
+```
+
+## Technical Implementation
+
+### Script Architecture
+
+The documentation processing system consists of several key scripts:
+
+- **`scripts/process-docs.js`**: Main processing script with GitHub integration and content transformation
+- **`scripts/content-format.js`**: Content formatting, validation, and cleanup utilities  
+- **`scripts/config.js`**: Configuration file defining repository sources and processing rules
+- **`scripts/link-processing.js`**: Link resolution and cross-reference handling utilities
+- **`scripts/verify-links.js`**: Link validation and broken link detection
+
+### Astro Integration
+
+The website uses several Astro integrations for enhanced functionality:
+
+- **Starlight**: Documentation framework with built-in search, navigation, and responsive design
+- **Vue 3**: Interactive components for the homepage and enhanced user experiences
+- **Mermaid**: Diagram rendering with automatic theme adaptation (light/dark modes)
+- **astro-icon**: Comprehensive icon system using Lucide icons
+- **Tailwind CSS**: Utility-first CSS framework for custom styling
+- **robots.txt**: SEO configuration for search engine optimization
+
+### Content Processing Features
+
+- **Automatic Frontmatter Generation**: Extracts titles, descriptions, and metadata from content
+- **Version Detection**: Identifies version information from badges and headers
+- **Cross-Reference Resolution**: Intelligently links between related specifications
+- **Content Sanitization**: Removes unnecessary sections and standardizes formatting
+- **Schema Transformation**: Converts IPLD schemas to readable documentation format
+- **Edit URL Generation**: Creates links back to source repositories for contribution
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **GitHub Rate Limits**: If you hit GitHub API limits, wait a few minutes before retrying
-2. **Missing Schema Files**: Some specs don't have IPLD schema files - this is normal
-3. **404 Errors**: Some repositories may have moved or renamed their README files
-4. **Syntax Highlighting Warnings**: IPLD schema syntax highlighting may not be available
-5. **Link Resolution**: If links aren't working, check the `linkMappings` configuration
+1. **GitHub Rate Limits**: If you encounter rate limiting, wait a few minutes before retrying the process
+2. **Missing Schema Files**: Some specifications don't include IPLD schema files - this is expected behavior
+3. **404 Errors**: Repositories may have moved or renamed their README files - update URLs in `scripts/config.js`
+4. **Build Failures**: Ensure all dependencies are installed with `pnpm install` before running processing scripts
 
 ### Repository Changes
 
-If a repository moves or changes structure:
-1. Update the `githubUrl` in `scripts/config.js`
-2. Check if the README filename changed (README.md vs Readme.md)
-3. Update the organization name if the repo moved
+When source repositories change:
 
-### Re-running Processing
+1. **Moved Repositories**: Update the `githubUrl` in `scripts/config.js` with the new location
+2. **Filename Changes**: Check for case differences (README.md vs Readme.md) and update accordingly
+3. **Organization Changes**: Update the GitHub organization/owner name in repository URLs
+4. **Branch Changes**: Ensure the branch reference in GitHub URLs is correct (usually `main`)
 
-The script is safe to run multiple times - it will automatically clear the existing documentation directory and regenerate everything from scratch. This ensures you always get a clean, up-to-date version of the documentation.
+### Updating Content
 
-### Development Server
+The processing system is designed to be run multiple times safely:
 
-After processing, start the development server:
+1. **Clean Processing**: Each run clears existing documentation and regenerates from scratch
+2. **Incremental Updates**: Run `pnpm process-docs` to refresh only the documentation content  
+3. **Full Rebuild**: Run `pnpm build` for complete site regeneration including documentation processing
+4. **Development Mode**: Use `pnpm dev` after processing to see changes immediately
+
+### Development Workflow
 
 ```bash
-npm run dev
+# Recommended development workflow
+pnpm install           # Install dependencies
+pnpm process-docs      # Fetch latest documentation
+pnpm content-format    # Format and validate content
+pnpm dev              # Start development server at localhost:4321
 ```
 
-The site will be available at `http://localhost:4321`
+## Maintenance and Updates
 
-## Script Architecture
+### Regular Maintenance Tasks
 
-- **`scripts/process-docs.js`**: Main processing script with GitHub integration
-- **`scripts/config.js`**: Configuration file with GitHub URLs and library definitions
-- **`sidebar-config.json`**: Generated sidebar configuration (auto-updated)
-- **`astro.config.mjs`**: Astro configuration with Mermaid support
+1. **Update Dependencies**: Keep Astro, Starlight, and other dependencies current
+2. **Monitor Source Repositories**: Watch for changes in UCAN specification repositories
+3. **Link Validation**: Periodically check for broken external links
+4. **Performance Monitoring**: Ensure the site builds and loads efficiently
 
-## Development Features
+### Adding New Content Types
 
-### Astro Starlight Integration
-- **Responsive documentation** with dark/light theme support
-- **Search functionality** across all content
-- **Navigation breadcrumbs** and previous/next links
-- **Mobile-friendly** responsive design
+To extend the system with new content types:
 
-### Mermaid Diagram Support
-- **Interactive diagrams** using `astro-mermaid` integration
-- **Theme-aware rendering** that adapts to light/dark modes
-- **Performance optimized** with client-side rendering
+1. Add new repository configurations to `scripts/config.js`
+2. Update sidebar configuration for new navigation sections  
+3. Modify link processing rules if needed for new cross-references
+4. Test processing and verify content renders correctly
 
-### Content Processing
-- **Automatic frontmatter generation** with titles and descriptions
-- **Version extraction** from various markdown patterns
-- **Cross-reference resolution** between specifications
-- **GitHub link preservation** for external resources
+### SEO and Optimization
 
-## Future Enhancements
+The site includes several SEO optimizations:
 
-Potential improvements:
-
-1. **Incremental Processing**: Only process changed files based on GitHub commit SHAs
-2. **Custom Syntax Highlighting**: Add support for IPLD schema syntax
-3. **Link Validation**: Verify all internal links are valid during processing
-4. **Image Processing**: Handle images from GitHub repositories
-5. **Cross-Reference Index**: Generate index of cross-references between specs
-6. **Automated Updates**: GitHub Actions to update docs when specs change
-7. **Library Statistics**: Fetch and display GitHub stars, downloads, etc.
-8. **Version Management**: Support multiple versions of specifications
+- **Meta Tags**: Auto-generated descriptions and titles
+- **Structured Data**: Proper heading hierarchy and semantic markup
+- **robots.txt**: Configured to prevent indexing during development
+- **Performance**: Optimized images and efficient asset loading
