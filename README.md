@@ -1,30 +1,4 @@
-# UCAN.xyz - Specification Website
-
-- **UCAN Specification**: Check out the [main UCAN spec](https://github.com/ucan-wg/spec) to understand the core concepts
-- **UCAN Working Group**: Visit the [UCAN Working Group](https://github.com/ucan-wg) for all related repositories
-- **Starlight Documentation**: Read [Starlight's docs](https://starlight.astro.build/) for framework-specific guidance
-- **Astro Documentation**: Explore [the Astro documentation](https://docs.astro.build) for advanced configuration
-- **Discord Community**: Join the [UCAN Discord](https://discord.gg/zSfgeHhKxA) for community discussions
-
-## 🔄 Updating Documentation
-
-The documentation is automatically synchronized with the source repositories. To update:
-
-1. **Automatic Updates**: The build process (`pnpm build`) automatically fetches the latest content
-2. **Manual Refresh**: Run `pnpm process-docs` to refresh all documentation immediately
-3. **Configuration**: Edit `scripts/config.js` to add new repositories or modify processing rules
-
-## 📝 Contributing
-
-To contribute to the documentation:
-
-1. **Specification Changes**: Submit changes to the relevant repository (e.g., [ucan-wg/spec](https://github.com/ucan-wg/spec))
-2. **Website Changes**: Submit PRs to this repository for website improvements
-3. **New Libraries**: Add new library repositories to `scripts/config.js`
-
-## 📄 License
-
-This project follows the licensing of the UCAN specifications and implementations it documents.)
+# UCAN.xyz - Documentation Website
 
 The official documentation website for the User-Controlled Authorization Network (UCAN) specification and ecosystem. This website automatically aggregates and processes documentation from multiple UCAN Working Group repositories to provide a unified documentation experience.
 
@@ -98,7 +72,7 @@ All commands are run from the root of the project, from a terminal:
 
 ## 📚 Documentation Processing
 
-The site uses automated scripts to fetch and process documentation from GitHub repositories:
+The site uses automated scripts to fetch and process documentation from GitHub repositories. For detailed information about the processing system, see [DOCUMENTATION.md](./DOCUMENTATION.md).
 
 ### Processing Workflow
 1. **`pnpm process-docs`** - Fetches README files from UCAN GitHub repositories
@@ -165,3 +139,34 @@ The documentation is automatically pulled from these repositories:
 - **Mermaid**: Diagram rendering with theme support
 - **astro-icon**: Icon system with Lucide icons
 - **robots.txt**: SEO configuration to prevent indexing during development
+
+## 👀 Want to learn more?
+
+- **Processing System**: Check out [DOCUMENTATION.md](./DOCUMENTATION.md) for detailed information about the automated documentation processing system
+- **UCAN Specification**: Read the [main UCAN spec](https://github.com/ucan-wg/spec) to understand the core concepts
+- **UCAN Working Group**: Visit the [UCAN Working Group](https://github.com/ucan-wg) for all related repositories
+- **Starlight Documentation**: Read [Starlight's docs](https://starlight.astro.build/) for framework-specific guidance
+- **Astro Documentation**: Explore [the Astro documentation](https://docs.astro.build) for advanced configuration
+- **Discord Community**: Join the [UCAN Discord](https://discord.gg/zSfgeHhKxA) for community discussions
+
+## 🔄 Updating Documentation
+
+The documentation is automatically synchronized with the source repositories. To update:
+
+1. **Automatic Updates**: The build process (`pnpm build`) automatically fetches the latest content
+2. **Manual Refresh**: Run `pnpm process-docs` to refresh all documentation immediately
+3. **Configuration**: Edit `scripts/config.js` to add new repositories or modify processing rules
+
+For detailed information about configuring and troubleshooting the processing system, see [DOCUMENTATION.md](./DOCUMENTATION.md).
+
+## 📝 Contributing
+
+To contribute to the documentation:
+
+1. **Specification Changes**: Submit changes to the relevant repository (e.g., [ucan-wg/spec](https://github.com/ucan-wg/spec))
+2. **Website Changes**: Submit PRs to this repository for website improvements
+3. **New Libraries**: Add new library repositories to `scripts/config.js`
+
+## 📄 License
+
+This project follows the licensing of the UCAN specifications and implementations it documents.
