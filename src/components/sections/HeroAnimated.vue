@@ -34,7 +34,7 @@
     </div>
 
     <div
-      class="hidden md:flex justify-center relative overflow-hidden pt-8 lg:pt-8 animate-fade-in-up"
+      class="hidden w-full md:flex justify-center relative overflow-hidden pt-8 lg:pt-8 animate-fade-in-up"
       style="animation-delay: 0.3s"
     >
       <UcanBenefitsIllustration />
