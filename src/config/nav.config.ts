@@ -27,6 +27,6 @@ export const actionLinks: {
   icon: string;
   variant: ButtonVariant;
 }[] = [
-  { href: "https://github.com/ucan-wg", label: "Star on GitHub", icon: "lucide:star", variant: "secondary" },
+  { href: "https://github.com/ucan-wg", label: "Follow on GitHub", icon: "lucide:github", variant: "secondary" },
   { href: "/specification/", label: "Read Spec", icon: "lucide:book", variant: "default" },
 ];
