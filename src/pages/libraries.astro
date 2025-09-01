@@ -136,25 +136,25 @@ import { buttonVariants } from "../components/ui/button"
                 </div>
             </div>
 
-            <!-- Swift (Community) -->
-            <div class="bg-card rounded-lg p-6 border border-border">
+            <!-- Swift (In Development) -->
+            <div class="bg-card rounded-lg p-6 border border-border opacity-75">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
                         <Icon name="lucide:smartphone" class="w-6 h-6 text-purple-500" />
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold">Swift</h3>
-                        <p class="text-sm text-muted-foreground">Community maintained</p>
+                        <p class="text-sm text-muted-foreground">In Development</p>
                     </div>
                 </div>
                 <p class="text-muted-foreground mb-4">
-                    UCAN implementation for iOS and macOS applications.
+                    Swift implementation is currently in development. Follow our progress on GitHub.
                 </p>
                 <div class="flex gap-2">
-                    <a href="#" class={buttonVariants({ variant: "outline", size: "sm" })}>
-                        <Icon class="size-4 mr-2" name="lucide:external-link" />
-                        View Project
-                    </a>
+                    <button disabled class={buttonVariants({ variant: "default", size: "sm" })}>
+                        <Icon class="size-4 mr-2" name="lucide:clock" />
+                        In Development
+                    </button>
                 </div>
             </div>
         </div>
