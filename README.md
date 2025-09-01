@@ -10,6 +10,7 @@ UCAN.xyz is a comprehensive documentation website built with Astro Starlight tha
 - **Automated Processing**: Scripts that fetch, process, and format documentation from GitHub
 - **Interactive Features**: Custom Vue components, Mermaid diagrams, and responsive design
 - **Library Documentation**: Comprehensive coverage of UCAN implementations across languages
+- **Implementation Guide**: Step-by-step guide for building UCAN libraries in any language
 - **SEO Optimized**: Configured for search engines with proper meta tags and structured content
 
 ## 🏗️ Architecture
@@ -46,6 +47,7 @@ The website consists of several key components:
 │   │   ├── Variable Signature # VarSig specification
 │   │   └── Container         # Container format specification
 │   └── Libraries
+│       ├── Implementation    # UCAN Library Implementation Guide
 │       ├── JavaScript        # JavaScript/TypeScript implementations
 │       ├── Rust             # Rust implementation
 │       └── Go               # Go implementation
@@ -104,6 +106,7 @@ The documentation is automatically pulled from these repositories:
 - **Frontmatter Generation**: Adds titles, descriptions, and edit links
 - **Content Sanitization**: Removes editor/author sections and formats content
 - **Sidebar Generation**: Auto-updates navigation based on processed content
+- **Implementation Guide**: Includes comprehensive UCAN v1.0 library development guide
 
 ## 🛠️ Development
 

@@ -18,6 +18,7 @@ The UCAN.xyz website automatically aggregates documentation from multiple reposi
 - **Frontmatter Generation**: Adds appropriate frontmatter with titles, descriptions, and edit URLs
 - **Content Sanitization**: Removes unnecessary sections (editors, authors) and standardizes formatting
 - **Multi-Language Library Support**: Includes UCAN implementations across JavaScript, Rust, Go, and more
+- **Implementation Guide**: Comprehensive guide for building UCAN v1.0 libraries from scratch
 - **Mermaid Diagram Support**: Renders interactive diagrams for visualizing UCAN concepts
 - **SEO Optimization**: Generates meta tags and structured content for search engines
 
@@ -99,6 +100,7 @@ src/content/docs/                    # Auto-generated from GitHub repositories
 │   └── container/
 │       └── index.md                 # Container format specification
 └── Libraries/
+    ├── implementation.md            # UCAN Library Implementation Guide (v1.0)
     ├── javascript/
     │   └── index.md                 # JavaScript/TypeScript implementations
     ├── rust/
@@ -127,6 +129,9 @@ The documentation system automatically fetches content from these GitHub reposit
 - **[ucan-wg/rs-ucan](https://github.com/ucan-wg/rs-ucan)** → Rust implementation
 - **[ucan-wg/go-ucan](https://github.com/ucan-wg/go-ucan)** → Go implementation
 
+### Static Implementation Guides
+- **`scripts/templates/libraries/implementation.md`** → UCAN Library Implementation Guide (manually maintained, reflects UCAN v1.0.0-rc.1 specification)
+
 ## Processing Workflow
 
 The documentation processing happens in this sequence:
@@ -138,9 +143,10 @@ The documentation processing happens in this sequence:
 5. **revocation** - UCAN Revocation (depends on delegation and invocation)
 6. **varsig** - Variable signature specification (used by UCAN implementations)
 7. **container** - Container format (transport layer specification)
-8. **libraries/javascript** - JavaScript/TypeScript implementation documentation
-9. **libraries/rust** - Rust implementation documentation
-10. **libraries/go** - Go implementation documentation
+8. **libraries/implementation** - UCAN Library Implementation Guide (comprehensive v1.0 guide)
+9. **libraries/javascript** - JavaScript/TypeScript implementation documentation
+10. **libraries/rust** - Rust implementation documentation
+11. **libraries/go** - Go implementation documentation
 
 This order ensures that cross-references between specifications are resolved correctly during link processing.
 
@@ -246,12 +252,18 @@ The processing system generates several types of content:
 - **Source**: `.ipldsch` files from specification repositories
 - **Format**: Formatted schema definitions with syntax highlighting
 
-### 3. Navigation Configuration
+### 3. Implementation Guide
+- **Location**: `/src/content/docs/libraries/implementation.md`
+- **Source**: `scripts/templates/libraries/implementation.md` (manually maintained)
+- **Content**: Comprehensive guide for implementing UCAN v1.0 libraries
+- **Features**: Language-agnostic guidance, v1.0 envelope format, policy language implementation
+
+### 4. Navigation Configuration
 - **File**: `sidebar-config.json`
 - **Purpose**: Auto-generated sidebar structure for Starlight
 - **Content**: Hierarchical navigation reflecting the documentation structure
 
-### 4. Enhanced Frontmatter
+### 5. Enhanced Frontmatter
 Each processed document includes:
 ```yaml
 ---
@@ -293,6 +305,7 @@ The website uses several Astro integrations for enhanced functionality:
 - **Content Sanitization**: Removes unnecessary sections and standardizes formatting
 - **Schema Transformation**: Converts IPLD schemas to readable documentation format
 - **Edit URL Generation**: Creates links back to source repositories for contribution
+- **Static Template Processing**: Copies manually maintained guides (like Implementation Guide) to documentation structure
 
 ## Troubleshooting
 
@@ -339,6 +352,17 @@ pnpm dev              # Start development server at localhost:4321
 2. **Monitor Source Repositories**: Watch for changes in UCAN specification repositories
 3. **Link Validation**: Periodically check for broken external links
 4. **Performance Monitoring**: Ensure the site builds and loads efficiently
+5. **Implementation Guide Updates**: Keep the implementation guide current with UCAN specification changes
+
+### Implementation Guide Maintenance
+
+The Implementation Guide (`scripts/templates/libraries/implementation.md`) requires manual maintenance:
+
+1. **Specification Updates**: When UCAN specifications change, review and update the guide accordingly
+2. **Version Tracking**: Update version references (currently v1.0.0-rc.1) when new versions are released
+3. **Code Examples**: Verify example code remains accurate with specification changes
+4. **Language Support**: Add new language-specific guidance as implementations emerge
+5. **Best Practices**: Update security and performance recommendations based on community feedback
 
 ### Adding New Content Types
 
