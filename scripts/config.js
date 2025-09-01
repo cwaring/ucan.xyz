@@ -131,6 +131,7 @@ export const PROCESSING_CONFIG = {
           { label: 'JavaScript', slug: 'libraries/javascript' },
           { label: 'Rust', slug: 'libraries/rust' },
           { label: 'Go', slug: 'libraries/go' },
+          { label: 'Implementation', slug: 'libraries/implementation' }
         ],
       },
     ],

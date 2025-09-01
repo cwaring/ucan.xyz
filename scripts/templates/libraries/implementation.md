@@ -1,29 +1,38 @@
 ---
 title: "UCAN Library Implementation Guide"
 description: "A comprehensive guide for implementing UCAN libraries in different programming languages"
-sidebar:
-  label: "Implementation Guide"
-  order: 1
 ---
 
-This guide provides detailed instructions and best practices for implementing UCAN (User Controlled Authorization Network) libraries in various programming languages.
+This guide provides detailed instructions and best practices for implementing UCAN (User Controlled Authorization Network) libraries in various programming languages based on the UCAN v1.0.0-rc.1 specification.
 
-> **Note**: This is a living document that will be expanded as more implementation patterns emerge across different languages and ecosystems.
+> **Important**: This guide reflects the UCAN v1.0.0-rc.1 specification. UCAN v1.0 introduces significant changes from earlier versions, including a new envelope format and restructured payload fields. Always refer to the latest specifications for implementation details.
 
 ## Overview
 
 Creating a UCAN library involves implementing the core UCAN specification while following language-specific conventions and best practices. This guide will help you build a robust, interoperable UCAN implementation.
 
+### Major Changes in UCAN v1.0
+
+UCAN v1.0 introduces significant changes from earlier versions:
+
+- **Envelope Format**: Replaces JWT-based tokens with UCAN-specific envelope format
+- **Type Tags**: Each UCAN type has a specific tag (e.g., `ucan/dlg@1.0.0-rc.1` for delegations)
+- **Structured Capabilities**: Capabilities are now structured with subject, command, and policy
+- **Policy Language**: Introduces a comprehensive policy language for expressing constraints
+- **Separate Specifications**: Delegation, Invocation, Promise, and Revocation are separate specs
+- **IPLD/CBOR Encoding**: Uses IPLD and CBOR instead of JSON for better efficiency
+
 ### What You'll Build
 
 A complete UCAN library should provide:
 
-- ✅ **Token Creation** - Generate UCAN tokens with proper signatures
-- ✅ **Token Validation** - Verify token signatures and capability chains
-- ✅ **Capability Management** - Handle resource permissions and delegations
-- ✅ **Cryptographic Operations** - Support for EdDSA, ECDSA, and RSA signatures
-- ✅ **Serialization** - JWT encoding/decoding with proper headers
-- ✅ **Chain Validation** - Verify delegation chains and authority
+- ✅ **Delegation Creation** - Generate UCAN delegation tokens with proper envelope format
+- ✅ **Delegation Validation** - Verify delegation signatures and capability chains  
+- ✅ **Invocation Creation** - Create invocation tokens to exercise delegated capabilities
+- ✅ **Capability Management** - Handle capability parsing, validation, and policy checking
+- ✅ **Cryptographic Operations** - Support for signature algorithms (EdDSA, ECDSA, RSA)
+- ✅ **Envelope Handling** - UCAN envelope encoding/decoding with proper type tags
+- ✅ **Chain Validation** - Verify delegation chains and authority propagation
 
 ## Getting Started
 
@@ -32,35 +41,51 @@ A complete UCAN library should provide:
 Before implementing a UCAN library, ensure you have:
 
 1. **Cryptographic Library** - Access to EdDSA, ECDSA, or RSA signature algorithms
-2. **JWT Support** - JSON Web Token encoding/decoding capabilities
-3. **Base64 Encoding** - URL-safe base64 encoding/decoding
-4. **JSON Handling** - Robust JSON parsing and serialization
+2. **UCAN Envelope Support** - Ability to handle UCAN envelope format (not traditional JWT)
+3. **IPLD/CBOR Support** - For encoding/decoding UCAN envelopes and payloads
+4. **Base64 Encoding** - URL-safe base64 encoding/decoding for envelope serialization
+5. **JSON Handling** - Robust JSON parsing for policy language and metadata
 
 ### Core Components
 
 Every UCAN implementation needs these essential components:
 
-#### 1. UCAN Token Structure
+#### 1. UCAN Envelope Structure
+
+UCAN v1.0 uses an envelope format rather than traditional JWT. Each UCAN type has its own envelope structure:
 
 ```
-// Pseudocode representation
-UCANToken {
-  header: {
-    alg: string,     // Signature algorithm (EdDSA, ES256, RS256)
-    typ: "JWT",      // Always "JWT"
-    ucv: string      // UCAN version (e.g., "0.10.0")
+// UCAN Delegation Envelope
+UCANDelegation {
+  envelope: {
+    tag: "ucan/dlg@1.0.0-rc.1",  // Type tag for delegation
+    // envelope-specific fields
   },
   payload: {
-    iss: string,     // Issuer DID
-    aud: string,     // Audience DID
-    exp: number,     // Expiration timestamp
-    nbf?: number,    // Not before timestamp
-    nnc?: string,    // Nonce
-    fct: object[],   // Facts
-    att: object[],   // Attenuations (capabilities)
-    prf: string[]    // Proof chain (parent UCANs)
+    iss: DID,        // Issuer DID
+    aud: DID,        // Audience DID  
+    sub: DID | null, // Subject DID (delegation chain principal)
+    cmd: String,     // Command to eventually invoke
+    pol: Policy,     // Policy constraints (UCAN Policy Language)
+    nonce: Bytes,    // Cryptographic nonce
+    meta?: Object,   // Optional metadata (not delegated)
+    nbf?: Integer,   // Not before timestamp (optional)
+    exp: Integer | null // Expiration timestamp (required)
   },
-  signature: string  // Cryptographic signature
+  signature: Bytes   // Cryptographic signature
+}
+
+// UCAN Invocation Envelope  
+UCANInvocation {
+  envelope: {
+    tag: "ucan/inv@1.0.0-rc.1",  // Type tag for invocation
+    // envelope-specific fields
+  },
+  payload: {
+    // Invocation-specific payload structure
+    // (see UCAN Invocation specification)
+  },
+  signature: Bytes
 }
 ```
 
@@ -72,13 +97,23 @@ Implement support for Decentralized Identifiers (DIDs):
 - **did:web** - Web-based DID resolution
 - **Custom DID methods** - Extensible for future methods
 
-#### 3. Capability System
+#### 3. UCAN Policy Language
 
-Handle UCAN capabilities with proper semantics:
+UCAN v1.0 uses a sophisticated policy language for expressing capability constraints:
 
-- **Resource URIs** - Unique resource identifiers
-- **Ability Sets** - Permitted actions on resources
-- **Delegation Rules** - How capabilities can be further delegated
+```
+// Policy examples
+Policy = [
+  ["==", ".status", "draft"],                    // Equality check
+  [">=", ".size", 1024],                        // Numeric comparison  
+  ["like", ".email", "*@example.com"],          // Glob pattern matching
+  ["all", ".reviewers", ["like", ".email", "*@corp.com"]], // Quantification
+  ["and", [                                     // Logical conjunction
+    ["!=", ".type", "sensitive"],
+    ["or", [["==", ".dept", "eng"], ["==", ".dept", "design"]]]
+  ]]
+]
+```
 
 ## Implementation Steps
 
@@ -107,24 +142,27 @@ ucan-library/
 └── docs/
 ```
 
-### Step 2: Implement Core Token Operations
+### Step 2: Implement Core UCAN Operations
 
-Start with basic token operations:
+Start with basic UCAN operations following the v1.0 specification:
 
-1. **Token Creation**
-   - Generate UCAN tokens with proper headers
-   - Sign tokens with provided private keys
-   - Handle capability delegations
+1. **Delegation Creation**
+   - Generate UCAN delegation envelopes with proper type tags
+   - Implement delegation payload structure with required fields
+   - Sign delegations with issuer private keys
+   - Handle capability delegation chains
 
-2. **Token Parsing**
-   - Decode JWT tokens
-   - Validate token structure
-   - Extract capabilities and metadata
+2. **Envelope Parsing**
+   - Decode UCAN envelopes (not JWT format)
+   - Validate envelope structure and type tags
+   - Extract capabilities and policy constraints
+   - Parse delegation chains and proof references
 
-3. **Token Validation**
-   - Verify cryptographic signatures
-   - Check expiration and validity periods
-   - Validate capability chains
+3. **Delegation Validation**
+   - Verify cryptographic signatures using envelope format
+   - Check expiration and validity periods (nbf/exp)
+   - Validate capability chains and authority delegation
+   - Evaluate policy constraints using UCAN Policy Language
 
 ### Step 3: Add Cryptographic Support
 
@@ -135,13 +173,16 @@ Implement robust cryptographic operations:
 - **Signature Verification** - Validate existing signatures
 - **DID Resolution** - Resolve public keys from DIDs
 
-### Step 4: Capability Handling
+### Step 4: Policy Language Implementation
 
-Build comprehensive capability management:
+Build comprehensive policy evaluation:
 
-- **Capability Parsing** - Extract resources and abilities
-- **Delegation Validation** - Ensure proper capability delegation
-- **Attenuation Rules** - Handle capability restrictions
+- **Policy Parsing** - Parse UCAN Policy Language expressions
+- **Selector Resolution** - Implement JSONPath-like selectors (e.g., ".field.subfield")
+- **Comparison Operators** - Support ==, !=, <, <=, >, >=, like
+- **Logical Connectives** - Implement and, or, not operations
+- **Quantifiers** - Handle all/any quantification over collections
+- **Glob Matching** - Support wildcard patterns for string matching
 
 ### Step 5: Testing & Validation
 
@@ -180,77 +221,105 @@ Ensure your implementation is robust:
 
 ### JavaScript/TypeScript
 
-- Use existing JWT libraries (jose, jsonwebtoken)
-- Leverage Web Crypto API for browser compatibility
-- Provide both CommonJS and ES modules
+- Use IPLD/CBOR libraries for envelope encoding (e.g., @ipld/dag-cbor)
+- Leverage existing cryptographic libraries (noble-ed25519, noble-secp256k1)
+- Implement UCAN Policy Language evaluation
+- Support both browser and Node.js environments
 
 ### Rust
 
-- Use serde for JSON serialization
-- Leverage ring or rustcrypto for cryptography
-- Implement zero-copy parsing where possible
+- Use serde for serialization with CBOR support (serde_cbor)
+- Leverage libipld for IPLD handling
+- Use ring or rustcrypto for cryptographic operations
+- Implement zero-copy parsing where possible for performance
 
 ### Go
 
-- Use standard crypto packages
-- Follow Go conventions for error handling
-- Provide clean, idiomatic interfaces
+- Use CBOR libraries for envelope encoding (github.com/fxamacker/cbor)
+- Follow Go conventions for error handling and interfaces
+- Implement clean, idiomatic UCAN envelope parsing
+- Support concurrent validation where appropriate
 
 ### Python
 
+- Use cbor2 for CBOR encoding/decoding
 - Use cryptography library for crypto operations
-- Follow PEP 8 style guidelines
-- Provide both sync and async APIs
+- Implement async support for Policy Language evaluation
+- Follow PEP 8 style guidelines and type hints
 
 ### Swift
 
 - Use CryptoKit for cryptographic operations
-- Follow Swift API design guidelines
-- Support both iOS and macOS platforms
+- Implement CBOR encoding/decoding for envelopes
+- Follow Swift API design guidelines for UCAN types
+- Support both iOS and macOS platforms with proper error handling
 
 ## Testing Your Implementation
 
 ### Interoperability Testing
 
-Test your implementation against other UCAN libraries:
+Test your implementation against other UCAN v1.0 libraries:
 
-1. **Token Exchange** - Create tokens in one library, validate in another
-2. **Capability Delegation** - Test delegation chains across implementations
-3. **Signature Compatibility** - Ensure signature algorithms work correctly
+1. **Envelope Exchange** - Create envelopes in one library, validate in another
+2. **Delegation Chains** - Test delegation chains across implementations  
+3. **Policy Evaluation** - Ensure consistent policy language evaluation
+4. **Signature Compatibility** - Verify signature algorithms work correctly
+5. **Type Tag Handling** - Test proper envelope type tag recognition
 
 ### Specification Compliance
 
-Verify your implementation follows the UCAN specification:
+Verify your implementation follows the UCAN v1.0.0-rc.1 specification:
 
-- ✅ **Token Format** - Proper JWT structure and claims
-- ✅ **Signature Algorithms** - Support required algorithms
-- ✅ **Capability Semantics** - Correct capability handling
-- ✅ **Delegation Rules** - Proper authority delegation
+- ✅ **Envelope Format** - Proper UCAN envelope structure with type tags
+- ✅ **Delegation Payload** - Correct delegation payload fields (iss, aud, sub, cmd, pol, etc.)
+- ✅ **Policy Language** - Full UCAN Policy Language support
+- ✅ **Signature Algorithms** - Support required cryptographic algorithms
+- ✅ **Type Tags** - Proper envelope type tags (ucan/dlg@1.0.0-rc.1, etc.)
+- ✅ **Chain Validation** - Verify delegation chains and capability propagation
 
 ## Example Implementation
 
-Here's a basic example of creating and validating a UCAN token:
+Here's a basic example of creating and validating a UCAN delegation:
 
 ```pseudocode
-// Create a new UCAN token
-token = UCANBuilder.new()
+// Create a new UCAN delegation
+delegation = UCANDelegation.builder()
+  .envelope_tag("ucan/dlg@1.0.0-rc.1")
   .issuer(issuerDID)
-  .audience(audienceDID)
+  .audience(audienceDID)  
+  .subject(subjectDID)
+  .command("/blog/post/create")
+  .policy([
+    ["==", ".status", "draft"],
+    ["like", ".author", "*@example.com"]
+  ])
   .expiration(futureTimestamp)
-  .capability(resource: "https://example.com/photos/*", ability: "read")
+  .nonce(randomBytes(32))
   .sign(privateKey)
 
-// Validate the token
+// Validate the delegation
 validation = UCANValidator.new()
-  .validateSignature(token)
-  .validateExpiration(token)
-  .validateCapabilities(token, requiredCapability)
+  .validateEnvelope(delegation)
+  .validateSignature(delegation) 
+  .validateExpiration(delegation)
+  .validatePolicy(delegation, invocationArgs)
 
 if validation.isValid() {
-  // Token is valid, proceed with operation
+  // Delegation is valid, can be used for invocation
 } else {
   // Handle validation errors
 }
+
+// Create an invocation using the delegation
+invocation = UCANInvocation.builder()
+  .envelope_tag("ucan/inv@1.0.0-rc.1")
+  .capability(delegation)
+  .arguments({
+    "status": "draft",
+    "author": "alice@example.com",
+    "title": "New Blog Post"
+  })
+  .sign(audiencePrivateKey)
 ```
 
 ## Community & Support
@@ -273,13 +342,14 @@ Help improve this guide:
 
 ## Next Steps
 
-1. **Choose Your Language** - Select the programming language for your implementation
-2. **Set Up Development Environment** - Install required dependencies
-3. **Study Existing Implementations** - Review reference implementations
-4. **Start with Core Features** - Begin with basic token operations
-5. **Test Thoroughly** - Ensure compatibility and security
-6. **Share with Community** - Contribute your implementation back
+1. **Study the v1.0 Specifications** - Read the UCAN Delegation and Invocation specifications thoroughly
+2. **Choose Your Language** - Select the programming language for your implementation
+3. **Set Up IPLD/CBOR Support** - Install required dependencies for envelope handling
+4. **Implement Envelope Parsing** - Start with basic envelope encoding/decoding
+5. **Add Policy Language Support** - Implement the UCAN Policy Language evaluator
+6. **Test Against Reference Implementations** - Ensure compatibility and correctness
+7. **Contribute to the Ecosystem** - Share your implementation with the UCAN community
 
 ---
 
-*This guide is a work in progress. For the latest updates and community contributions, visit our [GitHub repository](https://github.com/ucan-wg).*
+*This guide reflects the UCAN v1.0.0-rc.1 specification. For the latest updates and community contributions, visit the [UCAN Working Group](https://github.com/ucan-wg) repositories.*
