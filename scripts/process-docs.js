@@ -254,25 +254,36 @@ async function generateSidebarConfig() {
 
 // Landing page update function removed as it's no longer needed
 
-async function createGuides() {
-  console.log('Creating guides...');
+async function copyTemplateDirectory(templateDir, targetDir) {
+  const entries = await fs.readdir(templateDir, { withFileTypes: true });
   
-  // Read template files
-  const gettingStartedTemplate = path.join(__dirname, 'templates', 'getting-started.md');
-  const examplesTemplate = path.join(__dirname, 'templates', 'examples.md');
-  
-  const gettingStartedContent = await fs.readFile(gettingStartedTemplate, 'utf8');
-  const examplesContent = await fs.readFile(examplesTemplate, 'utf8');
+  for (const entry of entries) {
+    const templatePath = path.join(templateDir, entry.name);
+    const targetPath = path.join(targetDir, entry.name);
+    
+    if (entry.isDirectory()) {
+      // Create directory if it doesn't exist
+      await fs.mkdir(targetPath, { recursive: true });
+      // Recursively copy subdirectory
+      await copyTemplateDirectory(templatePath, targetPath);
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      // Copy markdown files
+      const content = await fs.readFile(templatePath, 'utf8');
+      await fs.writeFile(targetPath, content);
+      console.log(`  ✓ Created ${path.relative(docsDir, targetPath)}`);
+    }
+  }
+}
 
-  // Write guide files
-  const gettingStartedPath = path.join(docsDir, 'guides', 'getting-started.md');
-  const examplesPath = path.join(docsDir, 'guides', 'examples.md');
+async function createTemplateContent() {
+  console.log('📝 Creating content from templates...');
   
-  await fs.writeFile(gettingStartedPath, gettingStartedContent);
-  await fs.writeFile(examplesPath, examplesContent);
+  const templatesDir = path.join(__dirname, 'templates');
   
-  console.log('  ✓ Created getting-started.md');
-  console.log('  ✓ Created examples.md');
+  // Copy the entire template directory structure to the docs directory
+  await copyTemplateDirectory(templatesDir, docsDir);
+  
+  console.log('  ✅ All template content created successfully');
 }
 
 async function main() {
@@ -282,7 +293,7 @@ async function main() {
     await clearDocsDirectory();
     await processSpecs();
     await generateSidebarConfig();
-    await createGuides();
+    await createTemplateContent();
     
     console.log('\n✅ Documentation processing complete!');
     console.log('\nNext steps:');
