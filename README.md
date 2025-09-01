@@ -1,4 +1,6 @@
-# UCAN.xyz - Documentation Website
+[![UCAN.xyz](https://github.com/user-attachments/assets/823b0d64-1d4d-494d-8e53-ae8b83612ece)](https://ucan.xyz)
+
+# UCAN.xyz
 
 The official documentation website for the User-Controlled Authorization Network (UCAN) specification and ecosystem. This website automatically aggregates and processes documentation from multiple UCAN Working Group repositories to provide a unified documentation experience.
 
