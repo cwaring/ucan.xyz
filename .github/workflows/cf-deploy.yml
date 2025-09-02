@@ -18,9 +18,10 @@ env:
   PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME || github.event.repository.name }}
 
 jobs:
+  # Build and deploy the application to Cloudflare Pages
   build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 5 # Prevent hanging builds
+    timeout-minutes: 5
 
     permissions:
       contents: read
@@ -33,11 +34,13 @@ jobs:
       deploy_success: ${{ steps.deploy.outcome == 'success' }}
 
     steps:
+      # Checkout repository
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
+      # Setup package manager
       - name: Setup pnpm
         run: corepack enable pnpm
 
@@ -47,6 +50,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: "pnpm"
 
+      # Install dependencies and build
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
@@ -55,22 +59,28 @@ jobs:
         env:
           NODE_ENV: production
 
+      # Deploy to Cloudflare Pages
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
         id: deploy
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # enable this if you want to deploy with github environments
-          # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: "v4"
           packageManager: "pnpm"
-          command: pages deploy ./dist --commit-hash=${{ github.sha }} --branch=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }} --project-name=${{ env.PROJECT_NAME }}
+          command: >
+            pages deploy ./dist
+            --commit-hash=${{ github.sha }}
+            --branch=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+            --project-name=${{ env.PROJECT_NAME }}
+            --commit-dirty=true
 
+  # Comment on pull requests with deployment status
   pr-comment:
     needs: build-and-deploy
     if: github.event_name == 'pull_request' && always()
     runs-on: ubuntu-latest
+
     permissions:
       pull-requests: write
 
@@ -78,6 +88,7 @@ jobs:
       - name: Comment on PR
         uses: thollander/actions-comment-pull-request@v3
         with:
+          comment-tag: cloudflare-deploy-status
           message: |
             ## ${{ needs.build-and-deploy.outputs.deploy_success == 'true' && '🚀' || '❌' }} Deployed ${{ github.head_ref }} to Cloudflare Pages
 
@@ -88,4 +99,3 @@ jobs:
             | 🕒 Last updated | `${{ github.event.pull_request.updated_at }}` |
             | 🔗 SHA | [`${{ github.event.pull_request.head.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }}) |
             | 📸 Last snapshot | ${{ needs.build-and-deploy.outputs.deployment_url && format('[{0}]({0})', needs.build-and-deploy.outputs.deployment_url) || 'Not available' }} |
-          comment-tag: cloudflare-deploy-status
