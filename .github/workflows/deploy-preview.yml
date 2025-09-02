@@ -18,6 +18,9 @@ jobs:
       environment: "preview"
       branch_name: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
     secrets: inherit
+    permissions:
+      contents: read
+      deployments: write
 
   # Comment on pull requests with deployment status
   pr-comment:

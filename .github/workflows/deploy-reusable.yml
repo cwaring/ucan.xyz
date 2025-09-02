@@ -31,10 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    permissions:
-      contents: read
-      deployments: write
-
     outputs:
       deployment_url: ${{ steps.deploy.outputs.deployment-url }}
       branch_preview_url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
