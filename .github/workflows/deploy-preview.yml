@@ -1,0 +1,45 @@
+name: Deploy to Cloudflare (Preview)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+# Cancel in-progress runs for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Build and deploy using reusable workflow
+  build-and-deploy:
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: "preview"
+      branch_name: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+    secrets: inherit
+
+  # Comment on pull requests with deployment status
+  pr-comment:
+    needs: build-and-deploy
+    if: github.event_name == 'pull_request' && always()
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment on PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: cloudflare-deploy-status
+          message: |
+            ## ${{ needs.build-and-deploy.outputs.deploy_success == 'true' && '🚀' || '❌' }} Deployed ${{ github.head_ref }} to Cloudflare Pages
+
+            | Description | URL/Info |
+            | --- | --- |
+            | 📝 Status | ${{ needs.build-and-deploy.outputs.deploy_success == 'true' && '✅ Success' || '❌ Failed' }} |
+            | 🌿 Branch URL | ${{ needs.build-and-deploy.outputs.branch_preview_url && format('[{0}]({0})', needs.build-and-deploy.outputs.branch_preview_url) || 'Not available' }} |
+            | 🕒 Last updated | `${{ github.event.pull_request.updated_at }}` |
+            | 🔗 SHA | [`${{ github.event.pull_request.head.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }}) |
+            | 📸 Last snapshot | ${{ needs.build-and-deploy.outputs.deployment_url && format('[{0}]({0})', needs.build-and-deploy.outputs.deployment_url) || 'Not available' }} |

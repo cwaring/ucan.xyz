@@ -1,0 +1,20 @@
+name: Deploy to Cloudflare (Production)
+
+on:
+  push:
+    branches:
+      - main
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Build and deploy using reusable workflow
+  build-and-deploy:
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: "production"
+      branch_name: ${{ github.ref_name }}
+    secrets: inherit
