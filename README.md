@@ -1,4 +1,4 @@
-[![UCAN.xyz](https://github.com/user-attachments/assets/823b0d64-1d4d-494d-8e53-ae8b83612ece)](https://ucan.xyz)
+[![UCAN.xyz](https://repository-images.githubusercontent.com/1018732895/03266f7d-d715-4c9f-ac7b-f52f860dbfab)](https://ucan.xyz)
 
 # UCAN.xyz
 
