@@ -1,0 +1,7 @@
+# Prevent search engines from indexing Cloudflare Pages default domain
+https://:projectname.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+# Prevent search engines from indexing Cloudflare Pages branch/preview deployments
+https://:branchname.:projectname.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
