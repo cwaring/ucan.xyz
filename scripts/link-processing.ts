@@ -3,7 +3,8 @@
  * 
  */
 
-import { PROCESSING_CONFIG, type SpecConfig } from '../src/config/content-processing.config.js';
+import PROCESSING_CONFIG from '../src/config/content-processing.config.js';
+import type { SpecConfig } from './types/processing.types.js';
 
 interface UrlMapping {
   from: string;

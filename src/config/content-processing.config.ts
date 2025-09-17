@@ -1,63 +1,8 @@
-// Configuration for the UCAN documentation processing script
+// Configuration for the UCAN documentation processing
 
-export interface SpecConfig {
-  name: string;
-  title: string;
-  githubUrl: string;
-  schemaUrl: string | null;
-}
+import { defineProcessingConfig } from '../../scripts/types/processing.types.js';
 
-export interface SidebarItem {
-  label: string;
-  slug?: string;
-  items?: SidebarItem[];
-  autogenerate?: { directory: string };
-}
-
-export interface SidebarConfig {
-  sidebar: SidebarItem[];
-}
-
-export interface ProcessingOptions {
-  /** Whether to process IPLD schema files */
-  processSchemas: boolean;
-  /** Whether to create a backup of existing files */
-  createBackup: boolean;
-  /** Whether to remove the title from markdown body to avoid duplication with frontmatter */
-  removeTitleFromBody: boolean;
-  /** Maximum description length for frontmatter */
-  maxDescriptionLength: number;
-}
-
-export interface ProcessingConfig {
-  specs: SpecConfig[];
-  sectionsToRemove: string[];
-  sidebarConfig: SidebarConfig;
-  options: ProcessingOptions;
-}
-
-/**
- * Convert a GitHub raw URL to an edit URL
- * @param rawUrl - The raw GitHub URL
- * @returns The corresponding edit URL
- */
-export function convertToEditUrl(rawUrl: string): string | null {
-  if (!rawUrl || typeof rawUrl !== 'string') {
-    return null;
-  }
-  
-  // Match pattern: https://raw.githubusercontent.com/owner/repo/branch/path
-  const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.+)$/);
-  
-  if (match) {
-    const [, owner, repo, branch, filepath] = match;
-    return `https://github.com/${owner}/${repo}/blob/${branch}/${filepath}`;
-  }
-  
-  return null;
-}
-
-export const PROCESSING_CONFIG: ProcessingConfig = {
+export default defineProcessingConfig({
   // Specifications to process - fetched directly from GitHub
   specs: [
     { 
@@ -186,4 +131,4 @@ export const PROCESSING_CONFIG: ProcessingConfig = {
     // Maximum description length for frontmatter
     maxDescriptionLength: 160,
   }
-};
+});
