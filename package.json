@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "version": "1.0.0-beta.2",
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.17.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -29,7 +29,7 @@
     "class-variance-authority": "^0.7.1",
     "lucide-vue-next": "^0.544.0",
     "mermaid": "^11.11.0",
-    "sharp": "^0.34.3",
+    "sharp": "^0.34.4",
     "starlight-llms-txt": "^0.6.0",
     "tailwindcss": "^4.1.13",
     "vue": "^3.5.21"
