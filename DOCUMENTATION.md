@@ -1,8 +1,6 @@
 # UCAN.xyz Documentation Processing System
 
-This documentation describes the automated system that processes UCAN specification documents from GitHub repositories and converts th## Configuration
-
-The processing system is configured through `src/config/content-processing.config.ts`:into a unified documentation website using Astro Starlight.
+This documentation describes the automated system that processes UCAN specification documents from GitHub repositories and converts them into a unified documentation website using Astro Starlight.
 
 ## Overview
 
@@ -185,8 +183,10 @@ Maintains links to external resources:
 
 The documentation processing system is configured through `src/config/content-processing.config.ts`:
 
-```javascript
-export const PROCESSING_CONFIG = {
+```typescript
+import { defineProcessingConfig } from '../../scripts/types/processing.types.js';
+
+export default defineProcessingConfig({
   // Repository sources and their documentation paths
   specs: [
     { 
@@ -282,13 +282,21 @@ editUrl: "https://github.com/org/repo/blob/main/README.md"
 
 ### Script Architecture
 
-The documentation processing system consists of several key scripts:
+The documentation processing system consists of several key scripts with modular organization:
 
+**Core Scripts:**
 - **`scripts/process-docs.ts`**: Main processing script with GitHub integration and content transformation
 - **`scripts/content-format.ts`**: Content formatting, validation, and cleanup utilities  
-- **`src/config/content-processing.config.ts`**: Configuration file defining repository sources and processing rules
 - **`scripts/link-processing.ts`**: Link resolution and cross-reference handling utilities
 - **`scripts/verify-links.ts`**: Link validation and broken link detection
+
+**Configuration & Types:**
+- **`src/config/content-processing.config.ts`**: Main configuration file using `defineProcessingConfig` helper
+- **`scripts/types/processing.types.ts`**: Interface definitions and helper functions
+- **`scripts/utils/github.utils.ts`**: GitHub-related utility functions
+
+**Static Templates:**
+- **`scripts/templates/`**: Manually maintained content templates (guides, library documentation)
 
 ### Astro Integration
 

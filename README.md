@@ -1,19 +1,6 @@
-[![UCAN.xyz](https://repository-images.githubusercontent.com/1018732895/03266f7d-d715-4c9f-ac7b-f52f860dbfab)](htt### Project Structure
-```
-.
-├── public/                    # Static assets (favicons, images)
-├── scripts/                   # Documentation processing scripts (TypeScript)
-│   ├── process-docs.ts        # Main GitHub fetching and processing
-│   ├── content-format.ts      # Content formatting and validation
-│   ├── link-processing.ts    # Link resolution utilities
-│   └── verify-links.ts       # Link validation utilities
-├── src/
-│   ├── assets/               # Images and media assets
-│   ├── components/           # Astro and Vue components
-│   │   ├── sections/         # Homepage sections (Hero, Features, etc.)
-│   │   └── ui/              # Reusable UI components
-│   ├── config/              # Configuration files
-│   │   └── content-processing.config.ts # Repository URLs and processing config# UCAN.xyz
+[![UCAN.xyz](https://repository-images.githubusercontent.com/1018732895/03266f7d-d715-4c9f-ac7b-f52f860dbfab)](https://ucan.xyz)
+
+# UCAN.xyz
 
 The official documentation website for the User-Controlled Authorization Network (UCAN) specification and ecosystem. This website automatically aggregates and processes documentation from multiple UCAN Working Group repositories to provide a unified documentation experience.
 
@@ -130,8 +117,13 @@ The documentation is automatically pulled from these repositories:
 .
 ├── public/                    # Static assets (favicons, images)
 ├── scripts/                   # Documentation processing scripts
-│   ├── process-docs.ts        # Main GitHub fetching and processing
-│   ├── content-format.ts      # Content formatting and validation
+│   ├── types/                # Interface definitions
+│   │   └── processing.types.ts
+│   ├── utils/                # Utility functions
+│   │   └── github.utils.ts
+│   ├── templates/            # Static content templates
+│   ├── process-docs.ts       # Main GitHub fetching and processing
+│   ├── content-format.ts     # Content formatting and validation
 │   ├── link-processing.ts    # Link resolution utilities
 │   └── verify-links.ts       # Link validation utilities
 ├── src/
@@ -140,7 +132,10 @@ The documentation is automatically pulled from these repositories:
 │   │   ├── sections/         # Homepage sections (Hero, Features, etc.)
 │   │   └── ui/              # Reusable UI components
 │   ├── config/              # Configuration files
-│   │   └── content-processing.config.ts # Repository URLs and processing config
+│   │   ├── content-processing.config.ts # Repository URLs and processing config
+│   │   ├── head.config.ts    # Site head configuration
+│   │   ├── nav.config.ts     # Navigation configuration
+│   │   └── site.config.ts    # General site configuration
 │   ├── content/
 │   │   └── docs/            # Generated documentation (auto-generated)
 │   ├── layouts/             # Astro layout components
@@ -174,7 +169,7 @@ The documentation is automatically synchronized with the source repositories. To
 
 1. **Automatic Updates**: The build process (`pnpm build`) automatically fetches the latest content
 2. **Manual Refresh**: Run `pnpm process-docs` to refresh all documentation immediately
-3. **Configuration**: Edit `scripts/config.js` to add new repositories or modify processing rules
+3. **Configuration**: Edit `src/config/content-processing.config.ts` to add new repositories or modify processing rules
 
 For detailed information about configuring and troubleshooting the processing system, see [DOCUMENTATION.md](./DOCUMENTATION.md).
 
@@ -184,7 +179,7 @@ To contribute to the documentation:
 
 1. **Specification Changes**: Submit changes to the relevant repository (e.g., [ucan-wg/spec](https://github.com/ucan-wg/spec))
 2. **Website Changes**: Submit PRs to this repository for website improvements
-3. **New Libraries**: Add new library repositories to `scripts/config.js`
+3. **New Libraries**: Add new library repositories to `src/config/content-processing.config.ts`
 
 ## 📄 License
 
