@@ -61,6 +61,7 @@ jobs:
         run: pnpm build
         env:
           NODE_ENV: production
+          DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
 
       # Deploy to Cloudflare Pages
       - name: Deploy to Cloudflare Pages

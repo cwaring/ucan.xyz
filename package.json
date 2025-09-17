@@ -17,6 +17,7 @@
     "release": "bumpp"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.4",
     "@astrojs/starlight": "^0.35.3",
     "@astrojs/vue": "^5.1.1",
     "@iconify-json/lucide": "^1.2.68",
