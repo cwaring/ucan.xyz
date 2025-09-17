@@ -111,18 +111,26 @@ function getEnhancedMeta(siteURL: string): HeadConfig[] {
 }
 
 /**
- * Environment-specific meta tags (robots noindex for non-production)
+ * Environment-specific meta tags (robots control based on environment)
  */
 function getEnvironmentMeta(isProduction: boolean): HeadConfig[] {
   const config: HeadConfig[] = [];
   
-  // Only allow indexing in production
-  if (!isProduction) {
+  // Explicitly set indexing permissions based on environment
+  if (isProduction) {
     config.push({
       tag: 'meta',
       attrs: {
         name: 'robots',
-        content: 'noindex, nofollow'
+        content: 'index, follow'
+      }
+    });
+  } else {
+    config.push({
+      tag: 'meta',
+      attrs: {
+        name: 'robots',
+        content: 'noindex, nofollow, noimageindex, nosnippet, noarchive'
       }
     });
   }
