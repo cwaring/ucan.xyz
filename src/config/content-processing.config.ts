@@ -1,11 +1,47 @@
 // Configuration for the UCAN documentation processing script
 
+export interface SpecConfig {
+  name: string;
+  title: string;
+  githubUrl: string;
+  schemaUrl: string | null;
+}
+
+export interface SidebarItem {
+  label: string;
+  slug?: string;
+  items?: SidebarItem[];
+  autogenerate?: { directory: string };
+}
+
+export interface SidebarConfig {
+  sidebar: SidebarItem[];
+}
+
+export interface ProcessingOptions {
+  /** Whether to process IPLD schema files */
+  processSchemas: boolean;
+  /** Whether to create a backup of existing files */
+  createBackup: boolean;
+  /** Whether to remove the title from markdown body to avoid duplication with frontmatter */
+  removeTitleFromBody: boolean;
+  /** Maximum description length for frontmatter */
+  maxDescriptionLength: number;
+}
+
+export interface ProcessingConfig {
+  specs: SpecConfig[];
+  sectionsToRemove: string[];
+  sidebarConfig: SidebarConfig;
+  options: ProcessingOptions;
+}
+
 /**
  * Convert a GitHub raw URL to an edit URL
- * @param {string} rawUrl - The raw GitHub URL
- * @returns {string} - The corresponding edit URL
+ * @param rawUrl - The raw GitHub URL
+ * @returns The corresponding edit URL
  */
-export function convertToEditUrl(rawUrl) {
+export function convertToEditUrl(rawUrl: string): string | null {
   if (!rawUrl || typeof rawUrl !== 'string') {
     return null;
   }
@@ -21,7 +57,7 @@ export function convertToEditUrl(rawUrl) {
   return null;
 }
 
-export const PROCESSING_CONFIG = {
+export const PROCESSING_CONFIG: ProcessingConfig = {
   // Specifications to process - fetched directly from GitHub
   specs: [
     { 
@@ -115,8 +151,7 @@ export const PROCESSING_CONFIG = {
           { label: 'Invocation', slug: 'invocation' },
           { label: 'Promise', slug: 'promise' },
           { label: 'Revocation', slug: 'revocation' },
-        ]
-        ,
+        ],
       },
       {
         label: 'References',
@@ -144,9 +179,6 @@ export const PROCESSING_CONFIG = {
     
     // Whether to create a backup of existing files
     createBackup: false,
-    
-    // Whether to update the landing page
-    updateLandingPage: true,
     
     // Whether to remove the title from markdown body to avoid duplication with frontmatter
     removeTitleFromBody: true,

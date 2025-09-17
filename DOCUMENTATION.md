@@ -1,6 +1,8 @@
 # UCAN.xyz Documentation Processing System
 
-This documentation describes the automated system that processes UCAN specification documents from GitHub repositories and converts them into a unified documentation website using Astro Starlight.
+This documentation describes the automated system that processes UCAN specification documents from GitHub repositories and converts th## Configuration
+
+The processing system is configured through `src/config/content-processing.config.ts`:into a unified documentation website using Astro Starlight.
 
 ## Overview
 
@@ -54,10 +56,13 @@ pnpm preview
 
 ```bash
 # Run documentation processing directly
-node scripts/process-docs.js
+pnpm process-docs
 
 # Run content formatting directly  
-node scripts/content-format.js
+pnpm content-format
+
+# Verify links
+pnpm verify-links
 ```
 
 ## Site Architecture
@@ -178,7 +183,7 @@ Maintains links to external resources:
 
 ## Configuration
 
-The processing system is configured through `scripts/config.js`:
+The documentation processing system is configured through `src/config/content-processing.config.ts`:
 
 ```javascript
 export const PROCESSING_CONFIG = {
@@ -220,7 +225,6 @@ export const PROCESSING_CONFIG = {
   options: {
     processSchemas: true,           // Process IPLD schema files
     createBackup: false,            // Don't backup existing files
-    updateLandingPage: true,        // Update homepage with processed content
     removeTitleFromBody: true,      // Remove title duplication
     maxDescriptionLength: 160,      // Max meta description length
   }
@@ -231,7 +235,7 @@ export const PROCESSING_CONFIG = {
 
 To add a new repository to the documentation:
 
-1. Add an entry to the `specs` array in `scripts/config.js`
+1. Add an entry to the `specs` array in `src/config/content-processing.config.ts`
 2. Include the GitHub raw URL for the README file
 3. Optionally include a schema URL for IPLD schemas
 4. Update the sidebar configuration if needed
@@ -280,11 +284,11 @@ editUrl: "https://github.com/org/repo/blob/main/README.md"
 
 The documentation processing system consists of several key scripts:
 
-- **`scripts/process-docs.js`**: Main processing script with GitHub integration and content transformation
-- **`scripts/content-format.js`**: Content formatting, validation, and cleanup utilities  
-- **`scripts/config.js`**: Configuration file defining repository sources and processing rules
-- **`scripts/link-processing.js`**: Link resolution and cross-reference handling utilities
-- **`scripts/verify-links.js`**: Link validation and broken link detection
+- **`scripts/process-docs.ts`**: Main processing script with GitHub integration and content transformation
+- **`scripts/content-format.ts`**: Content formatting, validation, and cleanup utilities  
+- **`src/config/content-processing.config.ts`**: Configuration file defining repository sources and processing rules
+- **`scripts/link-processing.ts`**: Link resolution and cross-reference handling utilities
+- **`scripts/verify-links.ts`**: Link validation and broken link detection
 
 ### Astro Integration
 
@@ -313,14 +317,14 @@ The website uses several Astro integrations for enhanced functionality:
 
 1. **GitHub Rate Limits**: If you encounter rate limiting, wait a few minutes before retrying the process
 2. **Missing Schema Files**: Some specifications don't include IPLD schema files - this is expected behavior
-3. **404 Errors**: Repositories may have moved or renamed their README files - update URLs in `scripts/config.js`
+3. **404 Errors**: Repositories may have moved or renamed their README files - update URLs in `src/config/content-processing.config.ts`
 4. **Build Failures**: Ensure all dependencies are installed with `pnpm install` before running processing scripts
 
 ### Repository Changes
 
 When source repositories change:
 
-1. **Moved Repositories**: Update the `githubUrl` in `scripts/config.js` with the new location
+1. **Moved Repositories**: Update the `githubUrl` in `src/config/content-processing.config.ts` with the new location
 2. **Filename Changes**: Check for case differences (README.md vs Readme.md) and update accordingly
 3. **Organization Changes**: Update the GitHub organization/owner name in repository URLs
 4. **Branch Changes**: Ensure the branch reference in GitHub URLs is correct (usually `main`)
@@ -368,7 +372,7 @@ The Implementation Guide (`scripts/templates/libraries/implementation.md`) requi
 
 To extend the system with new content types:
 
-1. Add new repository configurations to `scripts/config.js`
+1. Add new repository configurations to `src/config/content-processing.config.ts`
 2. Update sidebar configuration for new navigation sections  
 3. Modify link processing rules if needed for new cross-references
 4. Test processing and verify content renders correctly

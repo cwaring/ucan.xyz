@@ -1,6 +1,19 @@
-[![UCAN.xyz](https://repository-images.githubusercontent.com/1018732895/03266f7d-d715-4c9f-ac7b-f52f860dbfab)](https://ucan.xyz)
-
-# UCAN.xyz
+[![UCAN.xyz](https://repository-images.githubusercontent.com/1018732895/03266f7d-d715-4c9f-ac7b-f52f860dbfab)](htt### Project Structure
+```
+.
+├── public/                    # Static assets (favicons, images)
+├── scripts/                   # Documentation processing scripts (TypeScript)
+│   ├── process-docs.ts        # Main GitHub fetching and processing
+│   ├── content-format.ts      # Content formatting and validation
+│   ├── link-processing.ts    # Link resolution utilities
+│   └── verify-links.ts       # Link validation utilities
+├── src/
+│   ├── assets/               # Images and media assets
+│   ├── components/           # Astro and Vue components
+│   │   ├── sections/         # Homepage sections (Hero, Features, etc.)
+│   │   └── ui/              # Reusable UI components
+│   ├── config/              # Configuration files
+│   │   └── content-processing.config.ts # Repository URLs and processing config# UCAN.xyz
 
 The official documentation website for the User-Controlled Authorization Network (UCAN) specification and ecosystem. This website automatically aggregates and processes documentation from multiple UCAN Working Group repositories to provide a unified documentation experience.
 
@@ -117,16 +130,17 @@ The documentation is automatically pulled from these repositories:
 .
 ├── public/                    # Static assets (favicons, images)
 ├── scripts/                   # Documentation processing scripts
-│   ├── process-docs.js        # Main GitHub fetching and processing
-│   ├── content-format.js      # Content formatting and validation
-│   ├── config.js             # Repository URLs and processing config
-│   ├── link-processing.js    # Link resolution utilities
-│   └── verify-links.js       # Link validation utilities
+│   ├── process-docs.ts        # Main GitHub fetching and processing
+│   ├── content-format.ts      # Content formatting and validation
+│   ├── link-processing.ts    # Link resolution utilities
+│   └── verify-links.ts       # Link validation utilities
 ├── src/
 │   ├── assets/               # Images and media assets
 │   ├── components/           # Astro and Vue components
 │   │   ├── sections/         # Homepage sections (Hero, Features, etc.)
 │   │   └── ui/              # Reusable UI components
+│   ├── config/              # Configuration files
+│   │   └── content-processing.config.ts # Repository URLs and processing config
 │   ├── content/
 │   │   └── docs/            # Generated documentation (auto-generated)
 │   ├── layouts/             # Astro layout components

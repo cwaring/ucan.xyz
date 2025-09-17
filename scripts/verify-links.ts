@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 import fs from 'fs/promises';
 import path from 'path';
@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const docsDir = path.resolve(__dirname, '..', 'src', 'content', 'docs');
 
-async function verifyLinks() {
+async function verifyLinks(): Promise<void> {
   console.log('🔍 Verifying link processing...');
   
   const specFile = path.join(docsDir, 'specification', 'index.md');
@@ -52,7 +52,8 @@ async function verifyLinks() {
     console.log('\n✅ Link verification complete!');
     
   } catch (error) {
-    console.error('❌ Error during verification:', error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('❌ Error during verification:', errorMessage);
   }
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 import fs from 'fs/promises';
 import path from 'path';
@@ -12,9 +12,15 @@ const contentDir = path.resolve(rootDir, 'src', 'content');
 console.log('🔍 UCAN Content Format');
 console.log('============================\n');
 
+interface ProcessResult {
+  issues: string[];
+  fixes: string[];
+  changed: boolean;
+}
+
 // Find all markdown files in content directory only
-async function findMarkdownFiles(dir) {
-  const files = [];
+async function findMarkdownFiles(dir: string): Promise<string[]> {
+  const files: string[] = [];
   try {
     const items = await fs.readdir(dir, { withFileTypes: true });
     for (const item of items) {
@@ -32,7 +38,7 @@ async function findMarkdownFiles(dir) {
 }
 
 // Check and fix a single file
-async function processFile(filePath, dryRun = false) {
+async function processFile(filePath: string, dryRun = false): Promise<ProcessResult> {
   let content = await fs.readFile(filePath, 'utf-8');
   const original = content;
   const issues = [];
@@ -90,7 +96,7 @@ async function processFile(filePath, dryRun = false) {
 }
 
 // Main function
-async function main() {
+async function main(): Promise<void> {
   const dryRun = process.argv.includes('--dry-run');
   
   if (dryRun) {
@@ -123,7 +129,8 @@ async function main() {
       }
       
     } catch (error) {
-      console.log(`❌ Error processing ${relativePath}: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.log(`❌ Error processing ${relativePath}: ${errorMessage}`);
     }
   }
 
@@ -136,7 +143,7 @@ async function main() {
 
   if (dryRun && totalIssues > 0) {
     console.log('\n🔧 To fix these issues, run:');
-    console.log('   node scripts/simple-review.js');
+    console.log('   tsx scripts/content-format.ts');
   }
 }
 

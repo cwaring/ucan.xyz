@@ -1,9 +1,9 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PROCESSING_CONFIG, convertToEditUrl } from './config.js';
+import { PROCESSING_CONFIG, convertToEditUrl, type SpecConfig } from '../src/config/content-processing.config.js';
 import { standardizeUCANLinks } from './link-processing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -12,10 +12,10 @@ const docsDir = path.resolve(rootDir, 'src', 'content', 'docs');
 
 /**
  * Sanitizes text by removing Markdown formatting and HTML tags
- * @param {string} text - Text to be sanitized
- * @return {string} - Sanitized text
+ * @param text - Text to be sanitized
+ * @returns Sanitized text
  */
-function sanitizeText(text) {
+function sanitizeText(text: string): string {
   return text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove markdown links but keep link text
     .replace(/\[\!\[.*?\]\(.*?\)\]\(.*?\)/g, '') // Remove image links
@@ -28,7 +28,7 @@ function sanitizeText(text) {
     .trim();
 }
 
-async function fetchFromGitHub(url) {
+async function fetchFromGitHub(url: string): Promise<string> {
   try {
     console.log(`  📥 Fetching from GitHub: ${url}`);
     const response = await fetch(url);
@@ -41,12 +41,13 @@ async function fetchFromGitHub(url) {
     console.log(`  ✅ Successfully fetched (${content.length} bytes)`);
     return content;
   } catch (error) {
-    console.error(`  ❌ Failed to fetch from ${url}:`, error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`  ❌ Failed to fetch from ${url}:`, errorMessage);
     throw error;
   }
 }
 
-async function processSpecs() {
+async function processSpecs(): Promise<void> {
   console.log('📋 Processing specifications from GitHub...');
   
   // Create directory structure
@@ -78,20 +79,22 @@ async function processSpecs() {
           
           const schemaTargetPath = path.join(docsDir, spec.name, 'schema.md');
           await fs.writeFile(schemaTargetPath, processedSchema);
-          console.log(`  � Created schema documentation for ${spec.name}`);
+          console.log(`  📄 Created schema documentation for ${spec.name}`);
         } catch (error) {
-          console.warn(`  ⚠️  Could not fetch schema for ${spec.name}:`, error.message);
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.warn(`  ⚠️  Could not fetch schema for ${spec.name}:`, errorMessage);
         }
       }
       
       console.log(`  ✅ Processed ${spec.name}`);
     } catch (error) {
-      console.error(`  ❌ Error processing ${spec.name}:`, error.message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ❌ Error processing ${spec.name}:`, errorMessage);
     }
   }
 }
 
-async function processMarkdown(content, specName = '', githubUrl = null) {
+async function processMarkdown(content: string, specName = '', githubUrl: string | null = null): Promise<string> {
   let processed = content;
   
   // Extract title from first h1
@@ -169,7 +172,7 @@ description: "${description}"`;
   }
   
   // Add editUrl if githubUrl is provided
-  const editUrl = convertToEditUrl(githubUrl);
+  const editUrl = githubUrl ? convertToEditUrl(githubUrl) : null;
   if (editUrl) {
     frontmatter += `\neditUrl: "${editUrl}"`;
   }
@@ -191,7 +194,7 @@ description: "${description}"`;
   return frontmatter + processed;
 }
 
-async function processIPLDSchema(schemaContent, specName) {
+async function processIPLDSchema(schemaContent: string, specName: string): Promise<string> {
   const frontmatter = `---
 title: "${specName} Schema"
 description: "IPLD schema definition for ${specName}"
@@ -237,12 +240,13 @@ async function clearDocsDirectory() {
       console.log('  ✓ No existing documentation to clear');
     }
   } catch (error) {
-    console.error('❌ Error clearing docs directory:', error.message);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('❌ Error clearing docs directory:', errorMessage);
     throw error;
   }
 }
 
-async function generateSidebarConfig() {
+async function generateSidebarConfig(): Promise<void> {
   // Use the sidebar configuration from config.js
   const sidebarConfig = PROCESSING_CONFIG.sidebarConfig;
   
@@ -254,7 +258,7 @@ async function generateSidebarConfig() {
 
 // Landing page update function removed as it's no longer needed
 
-async function copyTemplateDirectory(templateDir, targetDir) {
+async function copyTemplateDirectory(templateDir: string, targetDir: string): Promise<void> {
   const entries = await fs.readdir(templateDir, { withFileTypes: true });
   
   for (const entry of entries) {
@@ -286,7 +290,7 @@ async function createTemplateContent() {
   console.log('  ✅ All template content created successfully');
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
     console.log('🚀 Starting UCAN documentation processing...');
     
