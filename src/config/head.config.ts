@@ -19,8 +19,13 @@ export interface HeadContentOptions {
 
 /**
  * Creates a meta tag configuration
+ * Returns null if content is empty to avoid creating invalid tags
  */
-function createMeta(name: string, content: string): HeadConfig {
+function createMeta(name: string, content: string): HeadConfig | null {
+  if (!content || content.trim() === '') {
+    return null;
+  }
+  
   return {
     tag: 'meta',
     attrs: { name, content }
@@ -29,8 +34,13 @@ function createMeta(name: string, content: string): HeadConfig {
 
 /**
  * Creates an OpenGraph meta tag configuration
+ * Returns null if content is empty to avoid creating invalid tags
  */
-function createOgMeta(property: string, content: string): HeadConfig {
+function createOgMeta(property: string, content: string): HeadConfig | null {
+  if (!content || content.trim() === '') {
+    return null;
+  }
+  
   return {
     tag: 'meta',
     attrs: { property, content }
@@ -51,7 +61,7 @@ function createLink(rel: string, href: string, attrs: Record<string, string> = {
  * Enhanced meta tags and links shared by all pages
  */
 function getEnhancedMeta(): HeadConfig[] {
-  return [
+  const metaTags: (HeadConfig | null)[] = [
     // Favicons
     createLink('icon', '/favicon.svg', { type: 'image/svg+xml' }),
     createLink('icon', '/favicon-32x32.png', { type: 'image/png', sizes: '32x32' }),
@@ -62,6 +72,9 @@ function getEnhancedMeta(): HeadConfig[] {
     // Theme
     createMeta('theme-color', '#ffffff')
   ];
+  
+  // Filter out null values
+  return metaTags.filter((tag): tag is HeadConfig => tag !== null);
 }
 
 /**
@@ -72,7 +85,10 @@ function getEnvironmentMeta(isProduction: boolean): HeadConfig[] {
     ? 'index, follow' 
     : 'noindex, nofollow, noimageindex, nosnippet, noarchive';
     
-  return [createMeta('robots', robotsContent)];
+  const metaTags: (HeadConfig | null)[] = [createMeta('robots', robotsContent)];
+  
+  // Filter out null values
+  return metaTags.filter((tag): tag is HeadConfig => tag !== null);
 }
 
 /**
@@ -87,7 +103,7 @@ function getCustomPageMeta(options: HeadContentOptions, config: SiteConfig): Hea
 
   const fullImageURL = `${config.siteURL}${imageURL}`;
 
-  return [
+  const metaTags: (HeadConfig | null)[] = [
     // Basic meta
     { tag: 'meta', attrs: { charset: 'UTF-8' } },
     createMeta('description', description),
@@ -98,7 +114,7 @@ function getCustomPageMeta(options: HeadContentOptions, config: SiteConfig): Hea
     createOgMeta('og:title', title),
     createOgMeta('og:description', description),
     createOgMeta('og:image', fullImageURL),
-    createOgMeta('og:url', config.siteURL),
+    ...(config.siteURL ? [createOgMeta('og:url', config.siteURL)] : []),
     createOgMeta('og:type', 'website'),
 
     // Twitter Card
@@ -110,6 +126,9 @@ function getCustomPageMeta(options: HeadContentOptions, config: SiteConfig): Hea
     // Canonical link
     ...(config.siteURL ? [createLink('canonical', config.siteURL)] : [])
   ];
+
+  // Filter out null values
+  return metaTags.filter((tag): tag is HeadConfig => tag !== null);
 }
 
 /**
