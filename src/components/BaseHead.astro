@@ -13,12 +13,10 @@ const { title, description, image } = Astro.props;
 
 // Get the complete shared head configuration including base tags
 // Will use defaults from siteConfig if title/description not provided
-const baseHeadConfig = getBaseHeadConfig({
+const baseHeadConfig = getBaseHeadConfig(siteConfig, {
   title: title || siteConfig.title,
   description: description || siteConfig.description,
   imageURL: image || siteConfig.defaultImage,
-  siteURL: siteConfig.siteURL,
-  isProduction: siteConfig.isProduction
 });
 ---
 
@@ -26,7 +24,7 @@ const baseHeadConfig = getBaseHeadConfig({
 {baseHeadConfig.map((headItem) => {
   const TagName = headItem.tag;
   return (
-    <TagName {...headItem.attrs} set:html={headItem.content} />
+    <TagName {...headItem.attrs} />
   );
 })}
 

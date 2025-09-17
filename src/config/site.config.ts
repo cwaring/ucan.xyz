@@ -16,14 +16,13 @@ export function isProductionEnvironment(): boolean {
 
 // Validate that siteURL is set in production
 function getSiteURL(): string {
-  const siteURL = process.env.SITE_URL || process.env.URL;
+  const siteURL = process.env.SITE_URL;
   const isProduction = isProductionEnvironment();
   
   if (isProduction && !siteURL) {
     throw new Error('SITE_URL or URL environment variable must be set in production');
   }
   
-  // Return empty string when not set (for development)
   return siteURL || '';
 }
 

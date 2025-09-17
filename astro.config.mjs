@@ -13,7 +13,8 @@ import { siteConfig } from './src/config/site.config.js';
 
 // https://astro.build/config
 export default defineConfig({
-  site: siteConfig.siteURL,
+  // Only set site if we have a valid URL (not empty string)
+  ...(siteConfig.siteURL && { site: siteConfig.siteURL }),
 
   integrations: [
     robotsTxt({
@@ -41,7 +42,7 @@ export default defineConfig({
       favicon: '/favicon.ico',
       head: [
         // Use Starlight-specific head configuration that includes base tags without conflicts
-        ...getStarlightHeadConfig(),
+        ...getStarlightHeadConfig(siteConfig),
       ],
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/ucan-wg' },
@@ -49,7 +50,8 @@ export default defineConfig({
       ],
       sidebar: sidebarConfig.sidebar,
       plugins: [
-        starlightLLMsTxt()
+        // Depends on siteURL being set
+        ...(siteConfig.siteURL ? [starlightLLMsTxt()] : [])
       ],
     }),
     vue(),

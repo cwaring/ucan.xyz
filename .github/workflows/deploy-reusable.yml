@@ -25,7 +25,7 @@ on:
 env:
   NODE_VERSION: "22"
   PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME || github.event.repository.name }}
-  SITE_URL: ${{ vars.SITE_URL }}
+  SITE_URL: ${{ vars.SITE_URL || '' }}
 
 jobs:
   build-and-deploy:
@@ -63,7 +63,7 @@ jobs:
         env:
           NODE_ENV: production
           DEPLOYMENT_ENVIRONMENT: ${{ inputs.environment }}
-          SITE_URL: ${{ inputs.environment == 'production' && env.SITE_URL || '' }}
+          SITE_URL: ${{ env.SITE_URL }}
 
       # Deploy to Cloudflare Pages
       - name: Deploy to Cloudflare Pages
