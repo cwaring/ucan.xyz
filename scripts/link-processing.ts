@@ -3,14 +3,20 @@
  * 
  */
 
-import { PROCESSING_CONFIG } from './config.js';
+import PROCESSING_CONFIG from '../src/config/content-processing.config.js';
+import type { SpecConfig } from './types/processing.types.js';
+
+interface UrlMapping {
+  from: string;
+  to: string;
+}
 
 /**
  * Convert a raw GitHub URL to a repository URL
- * @param {string} rawUrl - The raw GitHub URL (e.g., https://raw.githubusercontent.com/owner/repo/branch/file)
- * @returns {string} - The repository URL (e.g., https://github.com/owner/repo)
+ * @param rawUrl - The raw GitHub URL (e.g., https://raw.githubusercontent.com/owner/repo/branch/file)
+ * @returns The repository URL (e.g., https://github.com/owner/repo)
  */
-function convertRawUrlToRepoUrl(rawUrl) {
+function convertRawUrlToRepoUrl(rawUrl: string): string | null {
   // Match pattern: https://raw.githubusercontent.com/owner/repo/branch/path
   const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/[^\/]+\/.+$/);
   
@@ -24,11 +30,11 @@ function convertRawUrlToRepoUrl(rawUrl) {
 
 /**
  * Generate URL mappings from PROCESSING_CONFIG specs
- * @param {Array} specs - Array of spec configurations from PROCESSING_CONFIG
- * @returns {Array} - Array of URL mappings
+ * @param specs - Array of spec configurations from PROCESSING_CONFIG
+ * @returns Array of URL mappings
  */
-export function generateUrlMappings(specs) {
-  const mappings = [];
+export function generateUrlMappings(specs: SpecConfig[]): UrlMapping[] {
+  const mappings: UrlMapping[] = [];
   
   specs.forEach(spec => {
     if (spec.githubUrl) {
@@ -54,17 +60,17 @@ const URL_MAPPINGS = generateUrlMappings(PROCESSING_CONFIG.specs);
 /**
  * Escape special regex characters
  */
-function escapeRegex(string) {
+function escapeRegex(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
  * Apply URL transformations to content
- * @param {string} content - The content to process
- * @param {Array} [urlMappings] - Optional custom URL mappings, defaults to URL_MAPPINGS
- * @returns {string} - The processed content with transformed URLs
+ * @param content - The content to process
+ * @param urlMappings - Optional custom URL mappings, defaults to URL_MAPPINGS
+ * @returns The processed content with transformed URLs
  */
-export function standardizeUCANLinks(content, urlMappings = URL_MAPPINGS) {
+export function standardizeUCANLinks(content: string, urlMappings: UrlMapping[] = URL_MAPPINGS): string {
   let processed = content;
   
   // Apply each URL mapping
@@ -80,13 +86,13 @@ export function standardizeUCANLinks(content, urlMappings = URL_MAPPINGS) {
       
       // Replace in direct links with optional hash: [text](url#hash) -> [text](local-url#hash)
       const linkPattern = new RegExp(`\\[([^\\]]+)\\]\\(${escapedUrl}(#[^)]*)?\\)`, 'g');
-      processed = processed.replace(linkPattern, (match, linkText, hash) => {
+      processed = processed.replace(linkPattern, (match: string, linkText: string, hash?: string) => {
         return `[${linkText}](${to}${hash || ''})`;
       });
       
       // Replace in reference definitions with optional hash: [label]: url#hash -> [label]: local-url#hash
       const refPattern = new RegExp(`^(\\s*\\[[^\\]]+\\]):\\s*${escapedUrl}(#[^\\s]*)?\\s*$`, 'gm');
-      processed = processed.replace(refPattern, (match, label, hash) => {
+      processed = processed.replace(refPattern, (match: string, label: string, hash?: string) => {
         return `${label}: ${to}${hash || ''}`;
       });
     });
@@ -97,11 +103,11 @@ export function standardizeUCANLinks(content, urlMappings = URL_MAPPINGS) {
 
 /**
  * Check for UCAN link issues in content (for dry-run analysis)
- * @param {string} content - The content to analyze
- * @returns {Array} - Array of issue descriptions
+ * @param content - The content to analyze
+ * @returns Array of issue descriptions
  */
-export function checkUCANLinkIssues(content) {
-  const issues = [];
+export function checkUCANLinkIssues(content: string): string[] {
+  const issues: string[] = [];
   
   // Check for GitHub URLs that should be converted to local links
   URL_MAPPINGS.forEach(({ from, to }) => {

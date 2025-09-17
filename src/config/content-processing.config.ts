@@ -1,27 +1,8 @@
-// Configuration for the UCAN documentation processing script
+// Configuration for the UCAN documentation processing
 
-/**
- * Convert a GitHub raw URL to an edit URL
- * @param {string} rawUrl - The raw GitHub URL
- * @returns {string} - The corresponding edit URL
- */
-export function convertToEditUrl(rawUrl) {
-  if (!rawUrl || typeof rawUrl !== 'string') {
-    return null;
-  }
-  
-  // Match pattern: https://raw.githubusercontent.com/owner/repo/branch/path
-  const match = rawUrl.match(/^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/(.+)$/);
-  
-  if (match) {
-    const [, owner, repo, branch, filepath] = match;
-    return `https://github.com/${owner}/${repo}/blob/${branch}/${filepath}`;
-  }
-  
-  return null;
-}
+import { defineProcessingConfig } from '../../scripts/types/processing.types.js';
 
-export const PROCESSING_CONFIG = {
+export default defineProcessingConfig({
   // Specifications to process - fetched directly from GitHub
   specs: [
     { 
@@ -115,8 +96,7 @@ export const PROCESSING_CONFIG = {
           { label: 'Invocation', slug: 'invocation' },
           { label: 'Promise', slug: 'promise' },
           { label: 'Revocation', slug: 'revocation' },
-        ]
-        ,
+        ],
       },
       {
         label: 'References',
@@ -145,13 +125,10 @@ export const PROCESSING_CONFIG = {
     // Whether to create a backup of existing files
     createBackup: false,
     
-    // Whether to update the landing page
-    updateLandingPage: true,
-    
     // Whether to remove the title from markdown body to avoid duplication with frontmatter
     removeTitleFromBody: true,
     
     // Maximum description length for frontmatter
     maxDescriptionLength: 160,
   }
-};
+});
