@@ -69,11 +69,12 @@ export default defineProcessingConfig({
   ],
 
   // Sections to remove from processed documents
+  // Format: 'headerDepth sectionName' (e.g., '## Editors', '### Metadata')
   sectionsToRemove: [
-    'Editors',
-    'Authors', 
-    'Dependencies',
-    'Language'
+    '## Editors',
+    '## Authors', 
+    '## Dependencies',
+    '## Language'
   ],
 
   // Sidebar configuration

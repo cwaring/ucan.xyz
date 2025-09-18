@@ -188,10 +188,17 @@ description: "${description}"`;
   processed = processed.replace(/\[([^\]]+)\]:\s*#([a-zA-Z0-9-]+)/g, '[$1]: #$2');
   
   // Remove metadata sections that aren't needed in docs
-  processed = processed.replace(/## Editors\s*\n[\s\S]*?(?=\n## [^E]|\n# [^E]|$)/g, '');
-  processed = processed.replace(/## Authors\s*\n[\s\S]*?(?=\n## [^A]|\n# [^A]|$)/g, '');
-  processed = processed.replace(/## Dependencies\s*\n[\s\S]*?(?=\n## [^D]|\n# [^D]|$)/g, '');
-  processed = processed.replace(/## Language\s*\n[\s\S]*?(?=\n## [^L]|\n# [^L]|$)/g, '');
+  for (const section of PROCESSING_CONFIG.sectionsToRemove) {
+    // Parse header depth and section name from format like '## Editors'
+    const spaceIndex = section.indexOf(' ');
+    if (spaceIndex === -1) continue; // Skip malformed entries
+    
+    const headerDepth = section.substring(0, spaceIndex);
+    const sectionName = section.substring(spaceIndex + 1);
+    
+    const regex = new RegExp(`${headerDepth} ${sectionName}\\s*\\n[\\s\\S]*?(?=\\n${headerDepth} |\\n# |$)`, 'g');
+    processed = processed.replace(regex, '');
+  }
   
   return frontmatter + processed;
 }
