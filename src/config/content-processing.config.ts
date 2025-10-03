@@ -26,7 +26,7 @@ export default defineProcessingConfig({
     { 
       name: 'promise', 
       title: 'UCAN Promise',
-      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/promise/main/README.md',
+      githubUrl: 'https://raw.githubusercontent.com/ucan-wg/promise/refs/heads/v1-rc1/README.md',
       schemaUrl: null // No schema file yet
     },
     { 
@@ -95,7 +95,7 @@ export default defineProcessingConfig({
         items: [
           { label: 'Delegation', slug: 'delegation' },
           { label: 'Invocation', slug: 'invocation' },
-          { label: 'Promise', slug: 'promise' },
+          { label: 'Promise', slug: 'promise', badge: 'draft' },
           { label: 'Revocation', slug: 'revocation' },
         ],
       },
