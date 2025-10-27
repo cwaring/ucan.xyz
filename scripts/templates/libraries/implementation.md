@@ -240,20 +240,6 @@ Ensure your implementation is robust:
 - Implement clean, idiomatic UCAN envelope parsing
 - Support concurrent validation where appropriate
 
-### Python
-
-- Use cbor2 for CBOR encoding/decoding
-- Use cryptography library for crypto operations
-- Implement async support for Policy Language evaluation
-- Follow PEP 8 style guidelines and type hints
-
-### Swift
-
-- Use CryptoKit for cryptographic operations
-- Implement CBOR encoding/decoding for envelopes
-- Follow Swift API design guidelines for UCAN types
-- Support both iOS and macOS platforms with proper error handling
-
 ## Testing Your Implementation
 
 ### Interoperability Testing
