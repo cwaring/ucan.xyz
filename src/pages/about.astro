@@ -7,35 +7,35 @@ import BaseLayout from "../layouts/BaseLayout.astro"
         <h1 class="text-4xl font-bold mb-8">About UCAN</h1>
 
         <p class="mb-6 text-muted-foreground">
-            User Controlled Authorization Network (UCAN) is a capability-based authorization system that enables users to delegate permissions without requiring a centralized authority. UCAN puts control back in the hands of users while maintaining the highest levels of security and privacy.
+            User Controlled Authorization Network (UCAN) is a trustless, secure, local-first, user-originated authorization scheme. It enables users to delegate permissions without requiring a centralized authority, putting control back in the hands of users while providing cryptographically verifiable, delegable, and openly extensible capabilities.
         </p>
         
         <h2 class="text-3xl font-semibold mt-10 mb-4">The Vision Behind UCAN</h2>
         <p class="mb-6 text-muted-foreground">
-            UCAN was built with the belief that authorization systems should empower users without compromising privacy or requiring trust in central authorities. UCAN's decentralized approach ensures that users maintain complete control over their permissions and data, no matter the connectivity status or network conditions.
+            UCAN was built with the belief that authorization systems should empower users without compromising privacy or requiring trust in central authorities. UCAN's approach ensures that users maintain complete control over their permissions and data through public-key verifiable, delegable authority chains — no matter the connectivity status or network conditions.
         </p>
         
         <h3 class="text-2xl font-semibold mt-8 mb-4">Core Principles of UCAN</h3>
         <p class="mb-4 text-muted-foreground"><strong>User Control:</strong> Users maintain complete control over their authorizations. All permissions are user-originated and can be revoked at any time.</p>
         <p class="mb-4 text-muted-foreground"><strong>Cryptographic Security:</strong> All authorizations are cryptographically signed and verifiable, ensuring that permissions cannot be forged or tampered with.</p>
-        <p class="mb-4 text-muted-foreground"><strong>Decentralized:</strong> No central authority is required for authorization verification. The system operates in a completely distributed manner.</p>
-        <p class="mb-4 text-muted-foreground"><strong>Offline-First:</strong> UCAN works without an internet connection, enabling authorization even in disconnected environments.</p>
-        <p class="mb-4 text-muted-foreground"><strong>Composable:</strong> UCANs can be chained and combined to create complex authorization flows while maintaining security guarantees.</p>
+        <p class="mb-4 text-muted-foreground"><strong>Decentralized:</strong> No central authority is required for authorization verification. The system operates in a completely distributed manner with partition tolerance.</p>
+        <p class="mb-4 text-muted-foreground"><strong>Local-First:</strong> UCANs are self-validating and work without an internet connection, enabling authorization even in disconnected or eventually consistent environments.</p>
+        <p class="mb-4 text-muted-foreground"><strong>Composable:</strong> UCANs can be delegated and attenuated to create complex authorization flows while maintaining security guarantees through cryptographic proof chains.</p>
         
         <h2 class="text-3xl font-semibold mt-10 mb-4">Technical Foundation</h2>
         <p class="mb-4 text-muted-foreground">
             UCAN leverages proven cryptographic primitives and standards to ensure maximum security and interoperability:
         </p>
         <ul class="list-disc pl-6 mb-6 text-muted-foreground">
-            <li class="mb-2"><strong>JSON Web Tokens (JWT):</strong> UCAN builds on the widely-adopted JWT standard for maximum compatibility.</li>
-            <li class="mb-2"><strong>Decentralized Identifiers (DIDs):</strong> Uses DIDs for identity management and key resolution.</li>
-            <li class="mb-2"><strong>Public Key Cryptography:</strong> All authorizations are signed using industry-standard cryptographic algorithms.</li>
-            <li class="mb-2"><strong>Capability-Based Security:</strong> Implements the principle of least authority (PoLA) for precise permission control.</li>
+            <li class="mb-2"><strong>DAG-CBOR Encoding:</strong> UCAN tokens are encoded using DAG-CBOR for efficient, content-addressed serialization.</li>
+            <li class="mb-2"><strong>Decentralized Identifiers (DIDs):</strong> Uses DIDs for identity management and key resolution, enabling unambiguous principal identification.</li>
+            <li class="mb-2"><strong>Public Key Cryptography:</strong> All authorizations are cryptographically signed and verifiable using industry-standard algorithms.</li>
+            <li class="mb-2"><strong>Capability-Based Security:</strong> Implements the principle of least authority (PoLA) for precise permission control through delegable certificate capabilities.</li>
         </ul>
         
         <h2 class="text-3xl font-semibold mt-10 mb-4">Standards Compliance</h2>
         <p class="mb-6 text-muted-foreground">
-            UCAN is designed to be standards-compliant and interoperable with existing web technologies. It builds on established protocols and can be integrated into any system that supports JWT and standard HTTP mechanisms.
+            UCAN is designed to be standards-compliant and interoperable with existing web and distributed systems technologies. It builds on established protocols including CBOR, DIDs, and content-addressed data structures, and can be integrated into traditional cloud systems as well as peer-to-peer architectures.
         </p>
         
         <h2 class="text-3xl font-semibold mt-10 mb-4">The UCAN Working Group</h2>
@@ -45,16 +45,6 @@ import BaseLayout from "../layouts/BaseLayout.astro"
         <p class="mb-6 text-muted-foreground">
             We welcome contributions from the community and are committed to making UCAN the standard for decentralized authorization. If you're interested in contributing or have questions, please visit our GitHub repository or join our community discussions.
         </p>
-        
-        <h2 class="text-3xl font-semibold mt-10 mb-4">Future Development</h2>
-        <p class="mb-4 text-muted-foreground">
-            The UCAN specification continues to evolve based on real-world usage and community feedback. Our roadmap includes:
-        </p>
-        <ul class="list-disc pl-6 mb-6 text-muted-foreground">
-            <li class="mb-2">Additional programming language implementations</li>
-            <li class="mb-2">Integration with emerging web standards</li>
-            <li class="mb-2">Performance optimizations for high-throughput applications</li>
-        </ul>
-        
+
     </div>
 </BaseLayout>
