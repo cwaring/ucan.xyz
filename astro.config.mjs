@@ -39,7 +39,7 @@ export default defineConfig({
         dark: '/src/assets/logo.png',
       },
       description: siteConfig.description,
-      favicon: '/favicon.ico',
+      favicon: '/favicon.svg',
       head: [
         // Use Starlight-specific head configuration that includes base tags without conflicts
         ...getStarlightHeadConfig(siteConfig),
