@@ -12,22 +12,23 @@ This guide provides a quick introduction to UCAN (User Controlled Authorization 
 
 ## What is UCAN?
 
-UCAN is a **decentralized authorization system** that enables secure, offline-capable delegation of permissions without requiring centralized servers or sharing cryptographic keys.
+UCAN is a **trustless, secure, local-first, user-originated authorization scheme** that enables secure delegation of permissions without requiring centralized servers or sharing cryptographic keys.
 
 ### Core Benefits
 
 - 🔑 **No shared secrets** - Delegate authority without sharing private keys
-- 🌐 **Offline-first** - Work without internet connectivity or central servers  
+- 🌐 **Local-first** - Work without internet connectivity or central servers
 - 🔗 **Chainable** - Create delegation chains across multiple parties
 - 🛡️ **Cryptographically secure** - Built on proven public-key cryptography
 - ⚡ **Locally verifiable** - No network calls needed for authorization
+- 🔓 **Trustless** - No need to trust central authorities
 
 ### How UCAN Differs from Traditional Auth
 
 | Traditional Auth (OAuth, etc.) | UCAN |
 |--------------------------------|------|
 | Centralized authorization server | Decentralized, peer-to-peer |
-| Online verification required | Offline verification possible |
+| Online verification required | Local verification possible |
 | Shared secrets or tokens | Public-key cryptography |
 | Revocation requires server | Revocation via cryptographic proofs |
 
@@ -83,30 +84,30 @@ graph LR
 ## Core Specifications
 
 ### [UCAN Delegation](/delegation/)
-The foundation of UCAN - how to create and delegate capabilities.
+The foundation of UCAN - how to create and delegate capabilities. Delegation provides a way to "transfer authority without transferring cryptographic keys".
 
 **Key features:**
-- Cryptographically verifiable
-- Hierarchical authority
-- Expiration times
-- Policy language for conditions
+- Cryptographically verifiable container
+- Batched capabilities with hierarchical authority
+- Expiration times (`exp`) and optional "not before" (`nbf`)
+- Policy language for fine-grained conditions
 
 ### [UCAN Invocation](/invocation/)
-How to execute the capabilities you've been delegated.
+How to exercise the capabilities you've been delegated. An invocation expresses the intention to execute delegated capabilities.
 
 **Key features:**
-- Clear intention to act
-- Proof of authorization
+- Clear intention to act (command to perform)
+- Proof of authorization via delegation chain
 - Execution receipts
-- Causal relationships
+- Causal relationships between invocations
 
 ### [UCAN Revocation](/revocation/)
 How to revoke capabilities after they've been issued.
 
 **Key features:**
-- Manual invalidation
+- Manual invalidation of delegations
 - Revocation chains
-- Last resort security
+- Last resort security mechanism
 
 ## Common Use Cases
 
@@ -292,10 +293,10 @@ const invocation = await DocEditCap.invoke({
 Common questions about UCAN:
 
 **Q: How is UCAN different from OAuth?**
-A: OAuth requires online authorization servers. UCAN works offline and doesn't need central authorities.
+A: OAuth requires online authorization servers. UCAN is local-first and doesn't need central authorities - verification happens locally using cryptographic proofs.
 
 **Q: Can I revoke a UCAN after issuing it?**
-A: Yes, through the [UCAN Revocation](/revocation/) mechanism, though this requires the revocation message to be delivered.
+A: Yes, through the [UCAN Revocation](/revocation/) mechanism. Note that revocation requires the revocation message to be delivered to relevant parties, as UCAN is designed for partition tolerance.
 
 **Q: Are UCANs secure?**
 A: UCANs use public-key cryptography and are designed with security best practices. However, they require proper implementation and key management.
