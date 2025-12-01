@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import PROCESSING_CONFIG from '../src/config/content-processing.config.js';
-import { convertToEditUrl } from './utils/github.utils.js';
+import { convertToEditUrl, convertToRepoUrl } from './utils/github.utils.js';
 import { standardizeUCANLinks } from './link-processing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -62,14 +62,17 @@ async function processSpecs(): Promise<void> {
   
   // Process each spec
   for (const spec of PROCESSING_CONFIG.specs) {
-    const targetPath = path.join(docsDir, spec.name, 'index.md');
+    // Use .mdx extension for library pages (they use component imports)
+    const isLibrary = spec.name.startsWith('libraries/');
+    const extension = isLibrary ? 'index.mdx' : 'index.md';
+    const targetPath = path.join(docsDir, spec.name, extension);
     
     try {
       console.log(`\n🔄 Processing ${spec.name}...`);
       
       // Fetch and process main README.md
       const content = await fetchFromGitHub(spec.githubUrl);
-      const processedContent = await processMarkdown(content, spec.title, spec.githubUrl);
+      const processedContent = await processMarkdown(content, spec.name, spec.title, spec.githubUrl);
       await fs.writeFile(targetPath, processedContent);
       
       // Process IPLD schema if available
@@ -95,12 +98,15 @@ async function processSpecs(): Promise<void> {
   }
 }
 
-async function processMarkdown(content: string, specName = '', githubUrl: string | null = null): Promise<string> {
+async function processMarkdown(content: string, specName = '', specTitle = '', githubUrl: string | null = null): Promise<string> {
   let processed = content;
+  
+  // Determine if output will be MDX (for library pages)
+  const isMdx = specName.startsWith('libraries/');
   
   // Extract title from first h1
   const titleMatch = content.match(/^# (.+)$/m);
-  const title = titleMatch ? titleMatch[1] : specName;
+  const title = titleMatch ? titleMatch[1] : specTitle;
   
   // Extract version number from various patterns
   let version = null;
@@ -179,6 +185,27 @@ description: "${description}"`;
   }
   
   frontmatter += `\n---\n\n`;
+
+  // For library pages, add a prominent GitHub repository link component
+  if (isMdx && githubUrl) {
+    const repoUrl = convertToRepoUrl(githubUrl);
+    if (repoUrl) {
+      const repoName = repoUrl.replace('https://github.com/', '');
+      frontmatter += `import GitHubRepo from '@/components/GitHubRepo.astro';
+
+<GitHubRepo repo="${repoName}" />\n\n`;
+    }
+  }
+
+  // For MDX files, sanitize HTML for MDX compatibility
+  if (isMdx) {
+    // Convert </img> closing tags to self-closing <img ... />
+    processed = processed.replace(/<img([^>]*)><\/img>/g, '<img$1 />');
+    // Convert HTML comments to MDX comments
+    processed = processed.replace(/<!--([\s\S]*?)-->/g, '{/* $1 */}');
+    // Convert void elements to self-closing (img, br, hr, input that end with > but not />)
+    processed = processed.replace(/<(img|br|hr|input)(\s[^>]*)?(?<!\/)>/g, '<$1$2 />');
+  }
   
   // Process cross-references using shared link processing module
   processed = standardizeUCANLinks(processed);
