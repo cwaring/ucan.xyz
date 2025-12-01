@@ -18,7 +18,7 @@ import { buttonVariants } from "../components/ui/button"
                 What is UCAN?
             </h2>
             <p class="text-muted-foreground">
-                UCAN is a capability-based authorization system that enables users to delegate permissions without requiring a centralized authority. It's built on cryptographic tokens and allows for decentralized, secure, and fine-grained access control.
+                UCAN is a trustless, secure, local-first, user-originated authorization scheme. It provides public-key verifiable, delegable, and openly extensible capabilities without requiring centralized servers or sharing cryptographic keys.
             </p>
         </div>
 
@@ -41,7 +41,7 @@ import { buttonVariants } from "../components/ui/button"
                     Delegation
                 </h3>
                 <p class="text-muted-foreground">
-                    Users can delegate their capabilities to others, creating a chain of authorization. Delegations can include constraints like time limits and reduced scope.
+                    Delegation provides a way to "transfer authority without transferring cryptographic keys". Users can delegate capabilities to others with constraints like time limits, reduced scope, and policy conditions.
                 </p>
             </div>
 
@@ -51,7 +51,7 @@ import { buttonVariants } from "../components/ui/button"
                     Invocation
                 </h3>
                 <p class="text-muted-foreground">
-                    To use a capability, you create an invocation that references the UCAN token and specifies the exact action you want to perform.
+                    An invocation expresses the intention to execute a delegated capability. It contains all the authority needed to perform a task, plus the command to actually do it.
                 </p>
             </div>
         </div>
@@ -79,17 +79,27 @@ import { buttonVariants } from "../components/ui/button"
                     Create Your First UCAN
                 </h3>
                 <p class="text-muted-foreground mb-4">
-                    Start by creating a root UCAN that grants yourself the capabilities you need for your application.
+                    Define a capability schema and delegate it to another identity.
                 </p>
-                <div class="bg-background/50 rounded p-4 text-sm font-mono">
-                    <div class="text-muted-foreground">// Example in JavaScript</div>
+                <div class="bg-background/50 rounded p-4 text-sm font-mono overflow-x-auto">
+                    <div class="text-muted-foreground">// Define a capability with a command and schema</div>
                     <div><span class="text-green-400">import</span> {"{"} Capability {"}"} <span class="text-green-400">from</span> <span class="text-orange-400">"iso-ucan/capability"</span></div>
+                    <div><span class="text-green-400">import</span> {"{"} EdDSASigner {"}"} <span class="text-green-400">from</span> <span class="text-orange-400">"iso-signatures/signers/eddsa.js"</span></div>
+                    <div><span class="text-green-400">import</span> {"{"} z {"}"} <span class="text-green-400">from</span> <span class="text-orange-400">"zod"</span></div>
                     <br/>
-                    <div><span class="text-green-400">const</span> delegation = <span class="text-green-400">await</span> MyCap.delegate({"{"}</div>
-                    <div>&nbsp;&nbsp;iss: myKeypair,</div>
-                    <div>&nbsp;&nbsp;aud: targetDID,</div>
-                    <div>&nbsp;&nbsp;sub: myKeypair,</div>
-                    <div>&nbsp;&nbsp;pol: [],</div>
+                    <div><span class="text-green-400">const</span> FileCap = Capability.from({"{"}</div>
+                    <div>&nbsp;&nbsp;schema: z.object({"{"} path: z.string() {"}"}),</div>
+                    <div>&nbsp;&nbsp;cmd: <span class="text-orange-400">"/file/read"</span></div>
+                    <div>{"})"}</div>
+                    <br/>
+                    <div><span class="text-green-400">const</span> alice = <span class="text-green-400">await</span> EdDSASigner.generate()</div>
+                    <div><span class="text-green-400">const</span> bob = <span class="text-green-400">await</span> EdDSASigner.generate()</div>
+                    <br/>
+                    <div><span class="text-green-400">const</span> delegation = <span class="text-green-400">await</span> FileCap.delegate({"{"}</div>
+                    <div>&nbsp;&nbsp;iss: alice,&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted-foreground">// issuer</span></div>
+                    <div>&nbsp;&nbsp;aud: bob,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted-foreground">// audience</span></div>
+                    <div>&nbsp;&nbsp;sub: alice,&nbsp;&nbsp;&nbsp;<span class="text-muted-foreground">// subject (resource owner)</span></div>
+                    <div>&nbsp;&nbsp;pol: [],&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-muted-foreground">// policy constraints</span></div>
                     <div>&nbsp;&nbsp;exp: <span class="text-blue-400">Math.floor(Date.now() / 1000) + 3600</span></div>
                     <div>{"})"}</div>
                 </div>
