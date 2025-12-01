@@ -31,7 +31,7 @@ async function findMarkdownFiles(dir: string): Promise<string[]> {
         files.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch {
     // Skip directories we can't read
   }
   return files;

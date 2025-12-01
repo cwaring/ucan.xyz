@@ -36,7 +36,7 @@
         </div>
       </div>
       
-      <div class="hidden lg:block absolute top-24 left-[22%] w-[800px] h-[40px] bg-primary rounded-full filter blur-3xl opacity-40 animate-fade-in" style="animation-delay: 1s" />
+      <div class="hidden lg:block absolute top-24 left-[22%] w-[800px] h-10 bg-primary rounded-full filter blur-3xl opacity-40 animate-fade-in" style="animation-delay: 1s" />
     </div>
   </section>
 </template>

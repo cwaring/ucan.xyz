@@ -87,13 +87,13 @@ export function standardizeUCANLinks(content: string, urlMappings: UrlMapping[] 
       // Replace in direct links with optional hash: [text](url#hash) -> [text](local-url#hash)
       const linkPattern = new RegExp(`\\[([^\\]]+)\\]\\(${escapedUrl}(#[^)]*)?\\)`, 'g');
       processed = processed.replace(linkPattern, (match: string, linkText: string, hash?: string) => {
-        return `[${linkText}](${to}${hash || ''})`;
+        return `[${linkText}](${to}${hash ?? ''})`;
       });
       
       // Replace in reference definitions with optional hash: [label]: url#hash -> [label]: local-url#hash
       const refPattern = new RegExp(`^(\\s*\\[[^\\]]+\\]):\\s*${escapedUrl}(#[^\\s]*)?\\s*$`, 'gm');
       processed = processed.replace(refPattern, (match: string, label: string, hash?: string) => {
-        return `${label}: ${to}${hash || ''}`;
+        return `${label}: ${to}${hash ?? ''}`;
       });
     });
   });

@@ -23,7 +23,7 @@ function getSiteURL(): string {
     throw new Error('SITE_URL or URL environment variable must be set in production');
   }
   
-  return siteURL || '';
+  return siteURL ?? '';
 }
 
 export const siteConfig: SiteConfig = {

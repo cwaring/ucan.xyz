@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import PROCESSING_CONFIG from '../src/config/content-processing.config.js';
-import type { SpecConfig } from './types/processing.types.js';
 import { convertToEditUrl } from './utils/github.utils.js';
 import { standardizeUCANLinks } from './link-processing.js';
 
