@@ -30,6 +30,6 @@ export const siteConfig: SiteConfig = {
   title: 'UCAN',
   description: 'User-Controlled Authorization Network (UCAN) is a trustless, secure, local-first, user-originated, distributed authorization scheme. This document provides a high-level overview of the UCAN specification and its components.',
   siteURL: getSiteURL(),
-  defaultImage: '/og.png',
+  defaultImage: '/og.webp',
   isProduction: isProductionEnvironment(),
 };
