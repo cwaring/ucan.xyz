@@ -26,9 +26,7 @@
       </a>
       
       <a :href="startUrl" :class="buttonClasses.secondary">
-        <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6-4h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-        </svg>
+        <Zap class="size-4 mr-2" />
         Get Started
       </a>
     </div>
@@ -45,6 +43,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { Zap } from 'lucide-vue-next'
 import { buttonVariants } from "../ui/button"
 import UcanBenefitsIllustration from "../UcanBenefitsIllustration.vue"
 
