@@ -1,5 +1,6 @@
 ---
 import { buttonVariants } from "../ui/button"
+import { Icon } from "astro-icon/components"
 ---
 
 <section class="w-full py-16 md:py-24 bg-card/30">
@@ -13,44 +14,32 @@ import { buttonVariants } from "../ui/button"
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
         <a href="/specification/" class={buttonVariants({ variant: "default", size: "lg" })}>
-          <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
+          <Icon class="size-4 mr-2" name="lucide:book-open" />
           Read Full Spec
         </a>
         <a href="/getting-started/" class={buttonVariants({ variant: "secondary", size: "lg" })}>
-          <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6-4h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-          </svg>
+          <Icon class="size-4 mr-2" name="lucide:zap" />
           Get Started
         </a>
         <a href="/libraries/" class={buttonVariants({ variant: "outline", size: "lg" })}>
-          <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-          </svg>
+          <Icon class="size-4 mr-2" name="lucide:code-xml" />
           Browse Libraries
         </a>
       </div>
 
-      <div class="mt-12 p-6 bg-background/50 rounded-lg border border-border/50">
+            <div class="mt-12 p-6 bg-background/50 rounded-lg border border-border/50">
         <h3 class="text-lg font-semibold mb-4">Available Libraries</h3>
         <div class="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
           <span class="flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-            </svg>
+            <Icon class="w-4 h-4" name="lucide:code-xml" />
             JavaScript
           </span>
           <span class="flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-            </svg>
+            <Icon class="w-4 h-4" name="lucide:code-xml" />
             Rust
           </span>
           <span class="flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-            </svg>
+            <Icon class="w-4 h-4" name="lucide:code-xml" />
             Go
           </span>
         </div>
