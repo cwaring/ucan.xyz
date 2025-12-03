@@ -29,7 +29,7 @@
     "astro-robots-txt": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "lucide-vue-next": "^0.555.0",
-    "mermaid": "^11.12.1",
+    "mermaid": "^11.12.2",
     "sharp": "^0.34.5",
     "starlight-llms-txt": "^0.6.0",
     "tailwindcss": "^4.1.17",
