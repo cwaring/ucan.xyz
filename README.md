@@ -33,3 +33,7 @@ See [DOCUMENTATION.md](./DOCUMENTATION.md) for details on the processing system 
 - [UCAN Specification](https://github.com/ucan-wg/spec)
 - [UCAN Working Group](https://github.com/ucan-wg)
 - [Discord](https://discord.gg/zSfgeHhKxA)
+
+## License
+
+[MIT](./LICENSE.md) © 2025 [Chris Waring](https://github.com/cwaring)
