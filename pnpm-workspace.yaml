@@ -1,6 +1,14 @@
-ignoredBuiltDependencies:
-  - esbuild
+catalogMode: prefer
+
+cleanupUnusedCatalogs: true
+
+ignoreWorkspaceRootCheck: true
+
+shellEmulator: true
+
+trustPolicy: no-downgrade
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - sharp
+  - esbuild
