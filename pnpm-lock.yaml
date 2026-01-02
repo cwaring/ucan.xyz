@@ -8,6 +8,19 @@ importers:
 
   .:
     dependencies:
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      lucide-vue-next:
+        specifier: ^0.562.0
+        version: 0.562.0(vue@3.5.26(typescript@5.9.3))
+      mermaid:
+        specifier: ^11.12.2
+        version: 11.12.2
+      vue:
+        specifier: ^3.5.26
+        version: 3.5.26(typescript@5.9.3)
+    devDependencies:
       '@astrojs/check':
         specifier: ^0.9.6
         version: 0.9.6(prettier@3.7.4)(typescript@5.9.3)
@@ -23,6 +36,12 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.51.0
+        version: 8.51.0(@typescript-eslint/parser@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: ^8.51.0
+        version: 8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       astro:
         specifier: ^5.16.6
         version: 5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -35,34 +54,6 @@ importers:
       astro-robots-txt:
         specifier: ^1.0.0
         version: 1.0.0
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      lucide-vue-next:
-        specifier: ^0.562.0
-        version: 0.562.0(vue@3.5.26(typescript@5.9.3))
-      mermaid:
-        specifier: ^11.12.2
-        version: 11.12.2
-      sharp:
-        specifier: ^0.34.5
-        version: 0.34.5
-      starlight-llms-txt:
-        specifier: ^0.7.0
-        version: 0.7.0(@astrojs/starlight@0.37.1(astro@5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      tailwindcss:
-        specifier: ^4.1.18
-        version: 4.1.18
-      vue:
-        specifier: ^3.5.26
-        version: 3.5.26(typescript@5.9.3)
-    devDependencies:
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.51.0
-        version: 8.51.0(@typescript-eslint/parser@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: ^8.51.0
-        version: 8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       bumpp:
         specifier: ^10.3.2
         version: 10.3.2(magicast@0.5.1)
@@ -78,6 +69,15 @@ importers:
       eslint-plugin-mdx:
         specifier: ^3.6.2
         version: 3.6.2(eslint@9.39.2(jiti@2.6.1))
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
+      starlight-llms-txt:
+        specifier: ^0.7.0
+        version: 0.7.0(@astrojs/starlight@0.37.1(astro@5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      tailwindcss:
+        specifier: ^4.1.18
+        version: 4.1.18
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
