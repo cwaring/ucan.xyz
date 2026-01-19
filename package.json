@@ -2,7 +2,7 @@
   "name": "ucan.xyz",
   "type": "module",
   "private": true,
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.28.1",
   "scripts": {
     "dev": "astro dev",
