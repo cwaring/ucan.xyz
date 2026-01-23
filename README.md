@@ -36,4 +36,4 @@ See [DOCUMENTATION.md](./DOCUMENTATION.md) for details on the processing system 
 
 ## License
 
-[MIT](./LICENSE.md) © 2025 [Chris Waring](https://github.com/cwaring)
+Dual-licensed under [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE) (your choice). Contributions follow the same terms.
