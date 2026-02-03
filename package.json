@@ -26,9 +26,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
-    "@astrojs/starlight": "^0.37.5",
+    "@astrojs/starlight": "^0.37.6",
     "@astrojs/vue": "^5.1.4",
-    "@iconify-json/lucide": "^1.2.87",
+    "@iconify-json/lucide": "^1.2.88",
     "@tailwindcss/vite": "^4.1.18",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
