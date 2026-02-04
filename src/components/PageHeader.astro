@@ -31,9 +31,10 @@ const descriptionSizeClass = isHero
   ? "text-lg lg:text-xl max-w-xl lg:max-w-2xl"
   : "text-base md:text-lg max-w-2xl"
 const actionsSpacingClass = isHero ? "mt-10" : ""
+const baseContainerClass = isHero ? "text-center" : "text-center mb-16"
 ---
 
-<div class="text-center mb-16">
+<div class={baseContainerClass}>
   {iconName && (
     <div
       class={`inline-flex items-center justify-center w-16 h-16 ${iconBgClass} rounded-full mb-6 animate-fade-in-up`}
@@ -68,7 +69,4 @@ const actionsSpacingClass = isHero ? "mt-10" : ""
     </div>
   )}
 
-  <div class="animate-fade-in-up" style={`animation-delay: ${iconName ? "0.35s" : "0.25s"}`}>
-    <slot />
-  </div>
 </div>

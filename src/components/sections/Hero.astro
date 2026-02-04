@@ -8,7 +8,7 @@ const specUrl = "/specification/"
 const startUrl = "/getting-started/"
 ---
 
-<div class="w-full flex-col items-center justify-center flex pt-20 lg:pt-32 relative z-10 px-4 md:px-0">
+<div class="w-full relative z-10 min-h-screen flex flex-col pt-24 lg:pt-32 px-4">
 	<PageHeader
 		variant="hero"
 		title="Zero-Trust Auth, for Apps and AI"
@@ -24,10 +24,12 @@ const startUrl = "/getting-started/"
 			<Icon name="lucide:zap" class="size-4 mr-2" />
 			Get Started
 		</a>
-
-		<div class="hidden w-full md:flex justify-center relative overflow-hidden pt-8 lg:pt-8">
-			<UcanBenefitsIllustration client:load />
-			<div class="absolute inset-0 z-30" />
-		</div>
 	</PageHeader>
+
+	<div class="w-full flex-1 flex items-center justify-center relative overflow-hidden pb-10 lg:pb-16 md:mt-auto">
+		<div class="w-full max-w-xl md:max-w-2xl lg:max-w-3xl">
+			<UcanBenefitsIllustration client:load />
+		</div>
+		<div class="absolute inset-0 z-30" />
+	</div>
 </div>

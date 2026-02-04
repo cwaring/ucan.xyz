@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full h-100 flex items-center justify-center relative overflow-hidden">
+  <div class="w-full aspect-2/1 flex items-center justify-center relative">
     <!-- UCAN Benefits Visualization -->
-    <svg class="w-full h-full" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="w-full h-full" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <defs>
         <!-- Gradient definitions -->
         <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
