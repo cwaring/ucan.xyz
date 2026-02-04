@@ -6,7 +6,7 @@
           <div class="space-y-2 mb-8">
             <div class="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
             <h2 class="text-3xl font-bold tracking-tight sm:text-5xl">Why Choose UCAN</h2>
-            <p class="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+            <p class="max-w-225 text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               UCAN provides powerful authorization capabilities with cryptographic security, offline functionality, and decentralized architecture.
             </p>
           </div>

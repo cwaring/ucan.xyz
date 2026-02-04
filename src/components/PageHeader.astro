@@ -3,21 +3,34 @@ import { Icon } from "astro-icon/components"
 
 interface Props {
   title: string
+  titleHtml?: string
   description?: string
   iconName?: string
   iconBgClass?: string
   iconClass?: string
   iconSizeClass?: string
+  variant?: "default" | "hero"
 }
 
 const {
   title,
+  titleHtml,
   description,
   iconName,
   iconBgClass = "bg-primary/10",
   iconClass = "text-primary",
   iconSizeClass = "w-8 h-8",
+  variant = "default",
 } = Astro.props
+
+const isHero = variant === "hero"
+const titleSizeClass = isHero
+  ? "text-4xl lg:text-6xl mb-3 mt-8 lg:mt-0"
+  : "text-3xl md:text-4xl lg:text-5xl mb-4"
+const descriptionSizeClass = isHero
+  ? "text-lg lg:text-xl max-w-xl lg:max-w-2xl"
+  : "text-base md:text-lg max-w-2xl"
+const actionsSpacingClass = isHero ? "mt-10" : ""
 ---
 
 <div class="text-center mb-16">
@@ -31,15 +44,15 @@ const {
   )}
 
   <h1
-    class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 animate-fade-in-up"
+    class={`font-bold tracking-tight leading-none animate-fade-in-up ${titleSizeClass}`}
     style={`animation-delay: ${iconName ? "0.1s" : "0s"}`}
   >
-    {title}
+    {titleHtml ? <span set:html={titleHtml} /> : title}
   </h1>
 
   {description && (
     <p
-      class="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-6 animate-fade-in-up"
+      class={`text-muted-foreground leading-relaxed mx-auto mb-6 animate-fade-in-up ${descriptionSizeClass}`}
       style={`animation-delay: ${iconName ? "0.2s" : "0.1s"}`}
     >
       {description}
@@ -48,7 +61,7 @@ const {
 
   {Astro.slots.has("actions") && (
     <div
-      class="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up"
+      class={`flex flex-wrap items-center justify-center gap-4 animate-fade-in-up ${actionsSpacingClass}`}
       style={`animation-delay: ${iconName ? "0.3s" : "0.2s"}`}
     >
       <slot name="actions" />

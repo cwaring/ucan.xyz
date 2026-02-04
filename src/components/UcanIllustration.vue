@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[100%] h-[300px] bg-card rounded-lg shadow-2xl flex items-center justify-center relative overflow-hidden border border-border">
+  <div class="w-full h-75 bg-card rounded-lg shadow-2xl flex items-center justify-center relative overflow-hidden border border-border">
     <!-- UCAN Flow Visualization -->
     <svg class="w-full h-full" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>

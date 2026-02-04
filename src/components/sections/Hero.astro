@@ -1,5 +1,33 @@
 ---
-import HeroAnimated from './HeroAnimated.vue'
+import PageHeader from "../PageHeader.astro"
+import { Icon } from "astro-icon/components"
+import { buttonVariants } from "../ui/button"
+import UcanBenefitsIllustration from "../UcanBenefitsIllustration.vue"
+
+const specUrl = "/specification/"
+const startUrl = "/getting-started/"
 ---
 
-<HeroAnimated client:load />
+<div class="w-full flex-col items-center justify-center flex pt-20 lg:pt-32 relative z-10 px-4 md:px-0">
+	<PageHeader
+		variant="hero"
+		title="Zero-Trust Auth, for Apps and AI"
+		titleHtml="Zero-Trust Auth,<br/>for Apps and AI"
+		description="UCAN is a trustless, secure, local-first authorization network that puts users in control of their permissions — no central authority required."
+	>
+		<a slot="actions" href={specUrl} class={buttonVariants({ variant: "default", size: "lg" })}>
+			<Icon name="lucide:book-open" class="size-4 mr-2" />
+			<span class="font-bold">Read Specification</span>
+		</a>
+
+		<a slot="actions" href={startUrl} class={buttonVariants({ variant: "secondary", size: "lg" })}>
+			<Icon name="lucide:zap" class="size-4 mr-2" />
+			Get Started
+		</a>
+
+		<div class="hidden w-full md:flex justify-center relative overflow-hidden pt-8 lg:pt-8">
+			<UcanBenefitsIllustration client:load />
+			<div class="absolute inset-0 z-30" />
+		</div>
+	</PageHeader>
+</div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-[400px] flex items-center justify-center relative overflow-hidden">
+  <div class="w-full h-100 flex items-center justify-center relative overflow-hidden">
     <!-- UCAN Benefits Visualization -->
     <svg class="w-full h-full" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
