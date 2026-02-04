@@ -1,5 +1,54 @@
 ---
-import FeaturesAnimated from './FeaturesAnimated.vue'
+import TileGrid from "./TileGrid.astro"
+
+const features = [
+	{
+		title: "Cryptographic Security",
+		description: "All authorizations are cryptographically signed and verifiable without contacting the issuer, ensuring maximum security.",
+		icon: "lucide:circle-check",
+	},
+	{
+		title: "Decentralized",
+		description: "No central server required for permission verification. Operate completely offline with peer-to-peer authorization.",
+		icon: "lucide:zap",
+	},
+	{
+		title: "Fine-Grained Control",
+		description: "Delegate specific capabilities with custom constraints, time limits, and precise scope control.",
+		icon: "lucide:settings",
+	},
+	{
+		title: "Time-Limited Access",
+		description: "Set expiration times for temporary permissions and automatic revocation when time limits expire.",
+		icon: "lucide:clock",
+	},
+	{
+		title: "Composable",
+		description: "Chain and combine UCANs to create complex authorization flows while maintaining security guarantees.",
+		icon: "lucide:link",
+	},
+	{
+		title: "Revocable",
+		description: "Withdraw access when needed with built-in revocation mechanisms and blacklisting support.",
+		icon: "lucide:refresh-cw",
+	},
+]
 ---
 
-<FeaturesAnimated client:load />
+<section class="w-full mt-32 md:mt-20 lg:mt-0 py-12 md:pb-24 lg:pb-32 xl:pb-48 bg-card/30">
+	<div class="container space-y-12 px-4 md:px-6 max-w-7xl mx-auto">
+		<div class="flex flex-col items-center justify-center space-y-4 text-center">
+			<div class="space-y-2 mb-8">
+				<div class="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Key Features</div>
+				<h2 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">Why Choose UCAN</h2>
+				<p class="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
+					UCAN provides powerful authorization capabilities with cryptographic security, offline functionality, and decentralized architecture.
+				</p>
+			</div>
+		</div>
+
+		<div class="mx-auto max-w-6xl">
+			<TileGrid items={features} animate />
+		</div>
+	</div>
+</section>

@@ -1,77 +1,50 @@
 ---
-import { Icon } from "astro-icon/components"
+import TileGrid from "./TileGrid.astro"
+
+const useCases = [
+  {
+    title: "Decentralized Storage",
+    description: "Authorize access to files and data without centralized servers. Perfect for IPFS, Arweave, and other distributed storage systems.",
+    icon: "lucide:hard-drive",
+  },
+  {
+    title: "API Access Control",
+    description: "Delegate API permissions with rate limiting and scope restrictions. Enable secure third-party integrations.",
+    icon: "lucide:server",
+  },
+  {
+    title: "IoT Device Management",
+    description: "Securely share device control with time-limited access. Perfect for smart home and industrial IoT applications.",
+    icon: "lucide:cpu",
+  },
+  {
+    title: "Content Publishing",
+    description: "Grant publishing rights with content type and duration constraints. Enable collaborative content management.",
+    icon: "lucide:pencil",
+  },
+  {
+    title: "Resource Sharing",
+    description: "Enable peer-to-peer sharing of computational resources, bandwidth, and other digital assets securely.",
+    icon: "lucide:share-2",
+  },
+  {
+    title: "Web3 & DeFi",
+    description: "Secure authorization for decentralized finance applications, NFT marketplaces, and blockchain interactions.",
+    icon: "lucide:circle-dollar-sign",
+  },
+]
 ---
 
-<section class="w-full py-16 md:py-24 bg-background">
+<section class="w-full pt-10 pb-16 md:pt-12 md:pb-24 bg-background">
   <div class="container max-w-7xl mx-auto px-4 md:px-6">
     <div class="text-center mb-16">
       <div class="inline-block rounded-lg bg-muted px-3 py-1 text-sm mb-4">Use Cases</div>
-      <h2 class="text-3xl md:text-5xl font-bold mb-4">Built for Modern Applications</h2>
-      <p class="text-muted-foreground text-lg max-w-3xl mx-auto">
-        UCAN enables secure authorization across a wide range of applications and use cases
+      <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">Built for Modern Applications</h2>
+      <p class="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
+        UCAN enables secure authorization across a wide range of applications and use cases.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:hard-drive" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">Decentralized Storage</h3>
-        <p class="text-muted-foreground">
-          Authorize access to files and data without centralized servers. Perfect for IPFS, Arweave, and other distributed storage systems.
-        </p>
-      </div>
-
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:server" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">API Access Control</h3>
-        <p class="text-muted-foreground">
-          Delegate API permissions with rate limiting and scope restrictions. Enable secure third-party integrations.
-        </p>
-      </div>
-
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:cpu" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">IoT Device Management</h3>
-        <p class="text-muted-foreground">
-          Securely share device control with time-limited access. Perfect for smart home and industrial IoT applications.
-        </p>
-      </div>
-
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:pencil" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">Content Publishing</h3>
-        <p class="text-muted-foreground">
-          Grant publishing rights with content type and duration constraints. Enable collaborative content management.
-        </p>
-      </div>
-
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:share-2" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">Resource Sharing</h3>
-        <p class="text-muted-foreground">
-          Enable peer-to-peer sharing of computational resources, bandwidth, and other digital assets securely.
-        </p>
-      </div>
-
-      <div class="bg-card rounded-lg p-6 card-hover-effect">
-        <div class="feature-icon mb-4">
-          <Icon class="w-6 h-6 text-primary" name="lucide:circle-dollar-sign" />
-        </div>
-        <h3 class="text-xl font-semibold mb-3">Web3 & DeFi</h3>
-        <p class="text-muted-foreground">
-          Secure authorization for decentralized finance applications, NFT marketplaces, and blockchain interactions.
-        </p>
-      </div>
-    </div>
+    <TileGrid items={useCases} />
   </div>
 </section>

@@ -1,0 +1,36 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface TileItem {
+  title: string
+  description: string
+  icon: string
+}
+
+interface Props {
+  items: TileItem[]
+  animate?: boolean
+}
+
+const {
+  items,
+  animate = false,
+} = Astro.props
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {items.map((item, index) => (
+    <div class="bg-card rounded-lg p-6 border border-border/50 card-hover-effect">
+      <div
+        class={animate ? "animate-fade-in-up" : undefined}
+        style={animate ? `animation-delay: ${0.2 + index * 0.1}s` : undefined}
+      >
+        <div class="feature-icon mb-4">
+          <Icon class="w-6 h-6 text-primary" name={item.icon} />
+        </div>
+        <h3 class="text-lg font-semibold">{item.title}</h3>
+        <p class="text-muted-foreground text-sm">{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
