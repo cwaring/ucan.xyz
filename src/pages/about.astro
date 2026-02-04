@@ -1,10 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
+import PageHeader from "../components/PageHeader.astro"
 ---
 
 <BaseLayout title="About UCAN" description="Learn about the User Controlled Authorization Network (UCAN) and its principles.">
     <div class="min-h-screen pt-32 px-8 max-w-4xl mx-auto mb-24">
-        <h1 class="text-4xl font-bold mb-8">About UCAN</h1>
+        <PageHeader
+            title="About UCAN"
+            description="Learn about the User Controlled Authorization Network (UCAN) and its principles."
+        />
 
         <p class="mb-6 text-muted-foreground">
             User Controlled Authorization Network (UCAN) is a trustless, secure, local-first, user-originated authorization scheme. It enables users to delegate permissions without requiring a centralized authority, putting control back in the hands of users while providing cryptographically verifiable, delegable, and openly extensible capabilities.

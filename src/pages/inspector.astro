@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
+import PageHeader from "../components/PageHeader.astro"
 import { Icon } from "astro-icon/components"
 import { buttonVariants } from "../components/ui/button"
 ---
@@ -7,29 +8,19 @@ import { buttonVariants } from "../components/ui/button"
 <BaseLayout title="UCAN Inspector" description="A powerful tool for inspecting, validating, and debugging UCAN tokens.">
     <div class="min-h-screen pt-32 px-8 max-w-4xl mx-auto mb-24">
         <!-- Hero Section -->
-        <div class="text-center mb-16">
-            <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/10 rounded-full mb-8">
-                <Icon name="lucide:search" class="w-12 h-12 text-primary" />
-            </div>
-            
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">
-                UCAN Inspector
-            </h1>
-            
-            <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                A powerful developer tool for inspecting, validating, and debugging UCAN tokens. 
-                Decode capabilities, verify signatures, and explore delegation chains with ease.
-            </p>
-            
-            <a href="https://inspector.ucan.xyz" class={buttonVariants({ variant: "default" })}>
+        <PageHeader
+            title="UCAN Inspector"
+            description="A powerful developer tool for inspecting, validating, and debugging UCAN tokens. Decode capabilities, verify signatures, and explore delegation chains with ease."
+        >
+            <a slot="actions" href="https://inspector.ucan.xyz" class={buttonVariants({ variant: "default" })}>
                 <Icon name="lucide:flask-conical" class="w-5 h-5 mr-2" />
                 Open Inspector
             </a>
-        </div>
+        </PageHeader>
 
         <!-- Features Preview -->
         <div class="mb-16">
-            <h2 class="text-3xl font-semibold mb-8 text-center">Included Features</h2>
+            <h2 class="text-3xl font-semibold mb-8 text-center">Features</h2>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-card rounded-lg p-6 border border-border card-hover-effect">

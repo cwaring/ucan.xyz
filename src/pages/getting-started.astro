@@ -1,16 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
+import PageHeader from "../components/PageHeader.astro"
 import { Icon } from "astro-icon/components"
 import { buttonVariants } from "../components/ui/button"
 ---
 
 <BaseLayout title="Getting Started with UCAN" description="Learn how to implement UCAN authorization in your applications.">
     <div class="min-h-screen pt-32 px-8 max-w-4xl mx-auto mb-24">
-        <h1 class="text-4xl font-bold mb-8">Getting Started with UCAN</h1>
-
-        <p class="mb-6 text-muted-foreground text-lg">
-            This guide will walk you through the basics of implementing UCAN (User Controlled Authorization Network) in your applications.
-        </p>
+        <PageHeader
+            title="Getting Started with UCAN"
+            description="This guide will walk you through the basics of implementing UCAN (User Controlled Authorization Network) in your applications."
+        />
         
         <div class="bg-card/50 rounded-lg p-6 mb-8 border border-border/50">
             <h2 class="text-xl font-semibold mb-3 flex items-center gap-2">

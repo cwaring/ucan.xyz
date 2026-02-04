@@ -1,17 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
+import PageHeader from "../components/PageHeader.astro"
 import { Icon } from "astro-icon/components"
 import { buttonVariants } from "../components/ui/button"
 ---
 
 <BaseLayout title="UCAN Libraries" description="Available UCAN libraries and implementations for different programming languages.">
     <div class="min-h-screen pt-32 px-8 max-w-6xl mx-auto mb-24">
-        <div class="text-center mb-16">
-            <h1 class="text-4xl font-bold mb-6">UCAN Libraries</h1>
-            <p class="text-muted-foreground text-lg max-w-3xl mx-auto">
-                Choose from official and community-maintained libraries to implement UCAN authorization in your applications.
-            </p>
-        </div>
+        <PageHeader
+            title="UCAN Libraries"
+            description="Choose from official and community-maintained libraries to implement UCAN authorization in your applications."
+        />
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- JavaScript -->

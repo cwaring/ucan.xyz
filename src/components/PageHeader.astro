@@ -1,0 +1,61 @@
+---
+import { Icon } from "astro-icon/components"
+
+interface Props {
+  title: string
+  description?: string
+  iconName?: string
+  iconBgClass?: string
+  iconClass?: string
+  iconSizeClass?: string
+}
+
+const {
+  title,
+  description,
+  iconName,
+  iconBgClass = "bg-primary/10",
+  iconClass = "text-primary",
+  iconSizeClass = "w-8 h-8",
+} = Astro.props
+---
+
+<div class="text-center mb-16">
+  {iconName && (
+    <div
+      class={`inline-flex items-center justify-center w-16 h-16 ${iconBgClass} rounded-full mb-6 animate-fade-in-up`}
+      style="animation-delay: 0s"
+    >
+      <Icon name={iconName} class={`${iconSizeClass} ${iconClass}`} />
+    </div>
+  )}
+
+  <h1
+    class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 animate-fade-in-up"
+    style={`animation-delay: ${iconName ? "0.1s" : "0s"}`}
+  >
+    {title}
+  </h1>
+
+  {description && (
+    <p
+      class="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto mb-6 animate-fade-in-up"
+      style={`animation-delay: ${iconName ? "0.2s" : "0.1s"}`}
+    >
+      {description}
+    </p>
+  )}
+
+  {Astro.slots.has("actions") && (
+    <div
+      class="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up"
+      style={`animation-delay: ${iconName ? "0.3s" : "0.2s"}`}
+    >
+      <slot name="actions" />
+    </div>
+  )}
+
+  <div class="animate-fade-in-up" style={`animation-delay: ${iconName ? "0.35s" : "0.25s"}`}>
+    <slot />
+  </div>
+</div>
