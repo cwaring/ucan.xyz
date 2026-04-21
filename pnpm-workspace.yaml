@@ -14,6 +14,7 @@ trustPolicyExclude:
   - langium@3.3.1
   - semver@6.3.1
   - undici-types@6.21.0
+  - astro-mermaid@2.0.1
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
