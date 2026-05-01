@@ -1,22 +1,8 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+
 catalogMode: prefer
-
 cleanupUnusedCatalogs: true
-
-ignoreWorkspaceRootCheck: true
-
 shellEmulator: true
-
 trustPolicy: no-downgrade
-
-trustPolicyExclude:
-  - vite@6.4.1
-  - chokidar@4.0.3
-  - langium@3.3.1
-  - semver@6.3.1
-  - undici-types@6.21.0
-  - astro-mermaid@2.0.1
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - sharp
-  - esbuild
