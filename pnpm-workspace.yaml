@@ -1,6 +1,7 @@
 allowBuilds:
   esbuild: true
   sharp: true
+  workerd: true
 
 catalogMode: prefer
 cleanupUnusedCatalogs: true
