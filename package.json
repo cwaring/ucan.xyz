@@ -2,7 +2,7 @@
   "name": "ucan.xyz",
   "type": "module",
   "private": true,
-  "version": "1.2.4",
+  "version": "1.2.5",
   "packageManager": "pnpm@11.0.3",
   "license": "MIT OR Apache-2.0",
   "scripts": {
