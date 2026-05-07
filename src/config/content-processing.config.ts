@@ -88,7 +88,7 @@ export default defineProcessingConfig({
       },
       {
         label: 'Guides',
-        autogenerate: { directory: 'guides' },
+        items: [{autogenerate: { directory: 'guides' }}],
       },
       {
         label: 'Core Specifications',
