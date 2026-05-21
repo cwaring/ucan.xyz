@@ -23,7 +23,7 @@ catalog:
   '@tailwindcss/vite': ^4.3.0
   '@typescript-eslint/eslint-plugin': ^8.59.4
   '@typescript-eslint/parser': ^8.59.4
-  astro: ^6.3.5
+  astro: ^6.3.6
   astro-icon: ^1.1.5
   astro-mermaid: ^2.0.1
   astro-robots-txt: ^1.0.0
